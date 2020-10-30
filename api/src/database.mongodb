@@ -1,0 +1,104 @@
+
+db.createCollection( 'users', {
+    validator: {
+        $jsonSchema: {
+            bsonType: 'object',
+            required: ['name','email','password','user','links'],
+            properties: {
+                name: {
+                    bsonType: 'string'
+                },
+                email: {
+                    bsonType: 'string'
+                },
+                password: {
+                    bsonType: 'string'
+                },
+                user: {
+                    bsonType: 'string'
+                },
+                photograph: {
+                    bsonType: 'string'
+                },friends: {
+                    bsonType: 'array',
+                    items: {
+                        required: ['id_friend'],
+                        properties: {
+                            id_friend: {
+                                bsonType: 'int'
+                            }
+                        }
+                    }
+                },
+                favorites: {
+                    bsonType: 'array',
+                    items: {
+                        required: ['id_favorites'],
+                        properties: {
+                            id_favorites: {
+                                bsonType: 'int'
+                            }
+                        }
+                    }
+                },
+                links: {
+                    bsonType: 'objectId'
+                }
+            }
+        }      
+    },
+    autoIndexId:true
+});  
+db.createCollection( 'links', {
+    validator: {
+        $jsonSchema: {
+            bsonType: 'object',
+            required: ['name_link','type','tag'],
+            properties: {
+                name_link: {
+                    bsonType: 'string'
+                },
+                description: {
+                    bsonType: 'string'
+                },photograph_link: {
+                    bsonType: 'string'
+                },
+                rating: {
+                    bsonType: 'decimal'
+                },
+                type: {
+                    bsonType: 'objectId'
+                },
+                tag: {
+                    bsonType: 'objectId'
+                }
+            }         
+        }      
+    }
+});  
+db.createCollection( 'tag', {
+    validator: {
+        $jsonSchema: {
+            bsonType: 'object',
+            required: ['name'],
+            properties: {
+                name: {
+                    bsonType: 'string'
+                }
+            }        
+        }      
+    }
+});  
+db.createCollection( 'type', {
+    validator: {
+        $jsonSchema: {
+            bsonType: 'object',
+            required: ['name'],
+            properties: {
+                name: {
+                    bsonType: 'string'
+                }
+            }         
+        }      
+    }
+});  
