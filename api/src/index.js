@@ -6,7 +6,6 @@ const app = express();
 app.use(cors(
     //origin:'link'
 ));
-
 app.use(express.json());
 app.use(routes);
 
