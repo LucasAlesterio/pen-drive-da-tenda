@@ -8,6 +8,6 @@ const usersSchema = new mongoose.Schema({
     photograph:String,
     friends:[String],
     favorites:[String],
-    links:String
+    links:[String]
 });
 module.exports = mongoose.model('User',usersSchema);
