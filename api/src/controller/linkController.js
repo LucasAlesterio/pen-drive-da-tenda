@@ -2,7 +2,7 @@ const User = require('../models/users');
 const Link = require('../models/links');
 
 const {createToken, verifyToken} = require('../functions');
-const { search } = require('../routes');
+
 
 module.exports = {
     async addLink(request,response){
