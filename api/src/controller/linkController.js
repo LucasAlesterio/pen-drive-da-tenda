@@ -2,6 +2,7 @@ const User = require('../models/users');
 const Link = require('../models/links');
 
 const {createToken, verifyToken} = require('../functions');
+const { search } = require('../routes');
 
 module.exports = {
     async addLink(request,response){
@@ -63,14 +64,20 @@ module.exports = {
         }else{
             b['isMy'] = false;
         }
+        if(_user.favorites.indexOf(id) !== -1){
+            b['isFavorite'] = true;
+        }else{
+            b['isFavorite'] = false;
+        }
         var average = 0;
         if(link.rating){
             link.rating.map((score)=>{
                 average += score.nStars;
             });
-            average = average/link.rating.lenght;
-            b['average'] = average;
         }
+        //console.log(link.rating.length);
+        average = average/link.rating.length;
+        b['average'] = average;
         b['token'] = token;
         return response.json(b);
     },
@@ -93,4 +100,70 @@ module.exports = {
         return response.json({error:true,authorization:true});
     },
 
+    async updateFavorite(request,response){
+        const {authorization} = request.headers;
+        const {link} = request.body;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        const _user = await User.findOne({_id:_id});
+        // if indexOf == -1 no existe
+        if(_user.favorites.indexOf(link) !== -1){
+            _user.favorites.pop(link);
+        }else{
+            _user.favorites.push(link);
+        }
+        await _user.save();
+        const {id,name,email,user,photograph,friends,favorites,links} = _user;
+        const token = createToken(id);
+        return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+    },
+
+    async rating(request,response){
+        const {authorization} = request.headers;
+        const {link,stars} = request.body;
+        var flag = false;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        const _user = await User.findOne({_id:_id});
+        let _link = await Link.findOne({_id:link});
+        _link.rating.map((rat)=>{
+            if(rat.user === _id){
+                flag = true;
+                rat.nStars = stars;
+            }
+        });
+        if(!flag){
+            _link.rating.push({user:_id,nStars:stars});
+        }
+        _link.save();
+        return response.json(_link);
+    },
+
+    async searchLink(request,response){
+        const {authorization} = request.headers;
+        const {text,type} = request.body;
+        var flag = false;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        var tag = '';
+        var first = text.split('');
+        if(first[0]==='#'){
+            first.shift();
+            first.map((word)=>{
+                tag += word;
+            });
+            var arrayTags = text.split(/[ ,]+/);
+            var array = [];
+            arrayTags.map((a,i)=>{
+                array.push(a.substr(1));
+            })
+        }
+        return response.json(array);
+    }
 }

@@ -16,5 +16,8 @@ routes.post('/addLink',linkController.addLink);
 routes.post('/deleteLink',linkController.deleteLink);
 routes.post('/dataLink',linkController.dataLink);
 routes.post('/updateLink',linkController.updateLink);
+routes.post('/updateFavorite',linkController.updateFavorite);
+routes.post('/rating',linkController.rating);
+routes.post('/searchLink',linkController.searchLink);
 
 module.exports = routes;
