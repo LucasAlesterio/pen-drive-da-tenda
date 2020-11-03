@@ -1,6 +1,6 @@
 const User = require('../models/users');
 const {createToken, verifyToken} = require('../functions');
-//const { json } = require('body-parser');
+const Link = require('../models/links');
 
 module.exports = {
     async addUser(request,response){
@@ -70,7 +70,38 @@ module.exports = {
         const _user = await User.findOne({_id:_id});
         const {id,name,email,user,photograph,friends,favorites,links} = _user;
         const token = createToken(id);
-        return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        var average = 0;
+        var a = [];
+        var b = {};
+        var _favorites = await Link.find().select(['name','photograph','rating']).where('_id').in(favorites).exec();
+        _favorites.map((link)=>{
+            b = JSON.parse(JSON.stringify(link));
+            if(link.rating){
+                link.rating.map((score)=>{
+                    average += score.nStars;
+                });
+            }
+            average = average/link.rating.length;
+            b['average'] = average;
+            a.push(b);
+        });
+        _favorites = a;
+        b = {};
+        a = [];
+        var _links = await Link.find().select(['name','photograph','rating']).where('_id').in(links).exec();
+        _links.map((link)=>{
+            b = JSON.parse(JSON.stringify(link));
+            if(link.rating){
+                link.rating.map((score)=>{
+                    average += score.nStars;
+                });
+            }
+            average = average/link.rating.length;
+            b['average'] = average;
+            a.push(b);
+        });
+        _links = a;
+        return response.json({user:{id,name,email,user,photograph,friends,token},favorites:_favorites,links:_links});
     },
 
     async updateFriend(request,response){

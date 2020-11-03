@@ -14,7 +14,7 @@ module.exports = {
         }
         var _user = await User.findOne({_id:_id});
 
-        var _link = await Link.create({name,link,description,photograph,type,tag});
+        var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id});
 
         _user.links.push(_link._id);
         _user.save();
@@ -75,11 +75,11 @@ module.exports = {
                 average += score.nStars;
             });
         }
-        //console.log(link.rating.length);
         average = average/link.rating.length;
         b['average'] = average;
         b['token'] = token;
-        return response.json(b);
+        const userLink = await User.findOne({_id:link.user});
+        return response.json({link:b,user:{id:userLink._id,photograph:userLink.photograph,user:userLink.user}});
     },
 
     async updateLink(request,response){
@@ -146,11 +146,11 @@ module.exports = {
     async searchLink(request,response){
         const {authorization} = request.headers;
         const {text,type} = request.body;
-        var flag = false;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
+        const token = createToken(_id);
         var tag = '';
         var first = text.split('');
         if(first[0]==='#'){
@@ -162,8 +162,65 @@ module.exports = {
             var array = [];
             arrayTags.map((a,i)=>{
                 array.push(a.substr(1));
-            })
+            });
+            if(type && text){
+                var links = await Link.find().select(['name','photograph','rating']).where('tag.name').in(array).where('type.name').equals(type).exec();
+            }
+            if(!type && text){
+                var links = await Link.find().select(['name','photograph','rating']).where('tag.name').in(array).exec();
+            }
+            if(type && !text){
+                var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).exec();
+            }
+            if(!type && !text){
+                var links = await Link.find().select(['name','photograph','rating']).exec();
+            }
+            var average = 0;
+            var a = [];
+            var b = {};
+            links.map((link)=>{
+                b = JSON.parse(JSON.stringify(link));
+                if(link.rating){
+                    link.rating.map((score)=>{
+                        average += score.nStars;
+                    });
+                }
+                average = average/link.rating.length;
+                b['average'] = average;
+                a.push(b);
+            });
+
+            return response.json({link:a,token});
         }
-        return response.json(array);
+        if(type && text){
+            var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).where('name').in(text).exec();
+        }
+        if(!type && text){
+            var links = await Link.find().select(['name','photograph','rating']).where('name').in(text).exec();
+        }
+        if(type && !text){
+            var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).exec();
+        }
+        if(!type && !text){
+            var links = await Link.find().select(['name','photograph','rating']).exec();
+        }
+        var average = 0;
+        var a = [];
+        var b = {};
+        links.map((link)=>{
+            b = JSON.parse(JSON.stringify(link));
+            if(link.rating){
+                link.rating.map((score)=>{
+                    average += score.nStars;
+                });
+            }
+            average = average/link.rating.length;
+            b['average'] = average;
+            a.push(b);
+        });
+
+        return response.json({link:a,token});
+    
+
     }
 }

@@ -5,6 +5,7 @@ const typesSchema = require('./types');
 
 const linksSchema = new mongoose.Schema({
     name:String,
+    user:String,
     link:String,
     description:String,
     photograph:String,
