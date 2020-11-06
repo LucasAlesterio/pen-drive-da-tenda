@@ -1,0 +1,49 @@
+#popUp,#popUp>button{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.4);
+}
+
+#popUp .cabecalho{
+    background-color: var(--cinza-escuro);
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#popUp .corpo .containerFechar{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+#popUp .corpo .containerFechar>button{
+    background: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    bottom: 2.9rem;
+    right: .5rem;
+    width: 2rem;
+}
+
+#popUp .corpo{
+    z-index: 2;
+    background-color: var(--cinza-medio);
+    width: 40rem;
+    min-height: 10rem;
+    border:var(--amarelo) solid 2px;
+}
+
+#popUp .corpo .conteudo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}

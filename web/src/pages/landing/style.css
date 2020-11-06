@@ -1,0 +1,50 @@
+#landing{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+.botaoEntrar{
+    width: 11rem;
+}
+form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#landing .cabecalhoLanding{
+    background-color: var(--cinza-escuro);
+    position: absolute;
+    top:0;
+    width: 100%;
+    height: 4.7rem;
+}
+#landing .container{
+    display: flex;
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    align-items: center;
+    padding-bottom: 6rem;
+}
+#landing .container .logo{
+    background-color: var(--cinza-escuro);
+    height: 30rem;
+    width: 50rem;
+}
+#landing .container .containerBotao{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    min-height: 50%;
+    padding:3rem 0;
+    width: auto;
+}
+#landing .container .botao{
+    font-size: 2.4rem;
+    height: 6vh;
+    width: 100%;
+}

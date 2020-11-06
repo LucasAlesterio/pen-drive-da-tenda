@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    box-sizing: border-box;
+    font: 400 1.8rem Righteous, sans-serif;
+}
+
+:root {
+    --amarelo: #FFEB0A;
+    --cinza-claro: #C2C2C2;
+    --cinza-medio: #151515;
+    --cinza-escuro: #0A0A0A;
+    --cinza-claro-opacity: 194,194,194;
+    font-size: 60%;
+}
+
+html,body,#root {
+    height: 100vh;
+}
+
+@media (min-width: 700px) {
+    :root {
+        font-size: 62.5%;
+    }
+}
+
+body {
+    background: var(--cinza-medio);
+    -webkit-font-smoothing: antialiased;
+}
+
+button {
+    cursor: pointer;
+    border:none;
+}
+
+a {
+    text-decoration: none;
+}
+
+h3{
+    font-size: 2.5rem;
+    color:var(--amarelo);
+}
+
+input{
+    background-color: var(--cinza-claro);
+}

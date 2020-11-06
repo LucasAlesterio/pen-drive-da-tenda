@@ -1,0 +1,13 @@
+#botao{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--amarelo);
+    border-radius: 5px;
+    padding: 0.8rem;
+    color:var(--cinza-escuro);
+    border:var(--amarelo) solid 2px;
+}
+#botao:hover{
+    border:white solid 2px;
+}

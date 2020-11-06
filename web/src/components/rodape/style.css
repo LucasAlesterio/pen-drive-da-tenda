@@ -1,0 +1,16 @@
+#rodape{
+    background-color: var(--cinza-escuro);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+#rodape>div{
+    display: flex;
+    width: 12rem;
+    justify-content: space-around;
+    margin-right: 2rem;
+}

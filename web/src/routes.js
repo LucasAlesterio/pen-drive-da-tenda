@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter,Route,Switch} from 'react-router-dom';
-import Landing from './pages/landing';
+import Landing from './pages/landing/landing';
 
 export default function Routes(){
     return(
