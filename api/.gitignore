@@ -12,6 +12,7 @@ src/urlConnection.js
 /build
 
 # misc
+/trabalho-final-twm-d832cd772a44.json
 .DS_Store
 .env
 .env.local

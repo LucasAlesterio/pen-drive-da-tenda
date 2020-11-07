@@ -1,11 +1,13 @@
 const User = require('../models/users');
-const {createToken, verifyToken} = require('../functions');
+const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage} = require('../functions');
 const Link = require('../models/links');
 
+
 module.exports = {
+
     async addUser(request,response){
         var {name,email,password,user,photograph} = request.body;
-        let err = {"error":false,"email":false,"user":false};
+        let err = {"error":false,"email":false,"user":false,"photo":false};
         let _user = await User.findOne({user});
         let _email = await User.findOne({email});
         if(_user){
@@ -17,6 +19,18 @@ module.exports = {
             err.email = true;
         }
         if(!_user && !_email){
+            if(photograph){
+                await decodeBase64Image(photograph,user);
+                const url = await uploadImage(user);
+                if(url){
+                    deleteFile(user);
+                }
+                else{
+                    err.error = true;
+                    err.photo = true;
+                }
+                photograph = `https://storage.googleapis.com/twm-images/${user}.png`;
+            }
             _user = await User.create({name,email,password,user,photograph});
             var token = createToken(_user.id);
             var {id,name,email,user,photograph,friends,favorites,links} = _user;
