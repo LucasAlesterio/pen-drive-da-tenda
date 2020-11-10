@@ -46,6 +46,10 @@ h3{
     font-size: 2.5rem;
     color:var(--amarelo);
 }
+h4{
+    font-size: 1.5rem;
+    color:var(--amarelo);
+}
 
 input{
     background-color: var(--cinza-claro);

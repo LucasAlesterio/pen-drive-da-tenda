@@ -1,0 +1,54 @@
+#timeLine{
+    display: flex;
+    justify-content: center;
+}
+#timeLine .container{
+    min-height: 81vh;
+    width:100% ;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 50rem);
+    justify-content: center;
+    column-gap: 2rem;
+    row-gap: 2rem;
+    padding-top: 2rem;
+
+}
+#timeLine .container .link{
+    border:var(--amarelo) solid 2px;
+    height:30rem;
+    width: 50rem;
+    display: flex;
+}
+#timeLine .container .link img{
+    height: 100%;
+    width: 20rem;
+}
+#timeLine .container .link .infoLink{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    padding:1rem;
+}
+#timeLine .container .link .infoLink .estrelas{
+    display: flex;
+    padding:1rem;
+}
+#timeLine .container .link .infoLink .estrelas h2{
+    padding-left:1rem;
+}
+#timeLine .container .link .infoLink h2{
+    font-size: 2rem;
+    color:var(--amarelo);
+    word-wrap: break-all; 
+}
+#timeLine .container .link .infoLink .fotoUser{
+    border-radius: 50%;
+    height: 5rem;
+    width: 5rem;
+} 
+#timeLine .container .link .infoLink .containerUsuario{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}

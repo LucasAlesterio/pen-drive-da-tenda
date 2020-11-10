@@ -1,4 +1,4 @@
-#botao{
+.botao>button{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8,6 +8,6 @@
     color:var(--cinza-escuro);
     border:var(--amarelo) solid 2px;
 }
-#botao:hover{
+.botao>button:hover{
     border:white solid 2px;
 }

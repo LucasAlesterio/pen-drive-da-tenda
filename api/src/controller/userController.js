@@ -50,7 +50,7 @@ module.exports = {
                 if(_user.password === password){
                     var token = createToken(_user.id);
                     var {id,name,email,user,photograph,friends,favorites,links} = _user;
-                    return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+                    return response.json({token,id});
                 }else{
                     err.error = true;
                     err.password = true;
@@ -62,7 +62,7 @@ module.exports = {
                 if(_user.password === password){
                     var token = createToken(_user.id);
                     var {id,name,email,user,photograph,friends,favorites,links} = _user;
-                    return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+                    return response.json({token,id});
                 }else{
                     err.error = true;
                     err.password = true;
@@ -201,5 +201,15 @@ module.exports = {
             }
         });
         return response.json(b);
+    },
+    async refreshToken(request,response){
+        const {authorization} = request.headers;
+        let id = verifyToken(authorization);
+        if(!id){
+            return response.json({error:true,token:true});
+        }
+        const token = createToken(id);
+        const _user = await User.findOne({_id:id});
+        return response.json({user:_user.user,photograph:_user.photograph,id:_user._id,token});
     }
 }

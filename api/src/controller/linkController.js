@@ -2,6 +2,7 @@ const User = require('../models/users');
 const Link = require('../models/links');
 
 const {createToken, verifyToken} = require('../functions');
+const typesSchema = require('../models/types');
 
 
 module.exports = {
@@ -220,7 +221,65 @@ module.exports = {
         });
 
         return response.json({link:a,token});
-    
+    },
+    async timeline(request,response){
+        const {authorization} = request.headers;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        const _user = await User.findOne({_id:_id});
+        var links = await Link.find().select(['name','photograph','rating','user']).where('user').in(_user.friends).exec();
+        var average = 0;
+        var a = [];
+        var b = {};
+        //var usuario = '';
+        links.map(async (link)=>{
+            b = JSON.parse(JSON.stringify(link));
+            average = 0;
+            if(link.rating){
+                link.rating.map((score)=>{
+                    average += score.nStars;
+                });
+            }
+            average = average/link.rating.length;
+            b['average'] = average;
+            //usuario = await User.findOne({_id:link.user}).select(['user','photograph','name']);
+            //b['user'] = JSON.parse(JSON.stringify(await User.findOne({_id:link.user}).select(['user','photograph','name'])));
+            a.push(b);
+        });
+        var idusers = a.map((link)=>{
+            return link.user;
+        });
 
+        var usuario = await User.find().select(['user','photograph','name']).where('_id').in(idusers);
+
+        const resp = a.map((link)=>{
+            usuario.map((us)=>{
+                if(link.user == us._id){
+                    link['user'] = us;
+                    console.log(link);
+                }
+            })
+            return(link);
+        });
+        //console.log(resp);
+        return response.json({link:resp});
+    },
+    async types(request,response){
+        const {authorization} = request.headers;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        const token = createToken(_id);
+        var links = await Link.find().select('type.name');
+        var a = [];
+        links.map((link)=>{
+            if(a.indexOf(link.type.name) === -1){
+                a.push(link.type.name);
+            }
+        });
+        return response.json({types:a,token});
     }
 }

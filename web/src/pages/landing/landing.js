@@ -5,6 +5,7 @@ import PopUp from '../../components/popUp/index';
 import CampoTexto from '../../components/campoTexto/index';
 import InputFoto from '../../components/inputFoto/index';
 import {FiUser,FiKey,FiMail,FiAtSign} from 'react-icons/fi'
+import { useHistory } from "react-router-dom";
 import api from '../../service/api';
 import './style.css';
 
@@ -18,9 +19,11 @@ export default function Landing(){
     const [usuario,setUsuario] = useState({valor:'',erro:false,textoErro:''});
     const [email,setEmail] = useState({valor:'',erro:false,textoErro:''});
     const [confirmarSenha,setConfirmarSenha] = useState({valor:'',erro:false,textoErro:''});
+    let history = useHistory();
 
     async function logar(e){
         e.preventDefault();
+        
         var response = '';
         var isEmail = false;
         if(!infoLogin.valor){
@@ -74,6 +77,7 @@ export default function Landing(){
                 return null;
             }
         localStorage.setItem('token', response.data.token);
+        history.push("/");
         setOpenLogin(false);
     }
     async function cadastrar(e){
@@ -132,6 +136,7 @@ export default function Landing(){
             return null;
         }
         localStorage.setItem('token', response.data.token);
+        history.push("/");
         setOpenCadastro(false);
     }
     return(
