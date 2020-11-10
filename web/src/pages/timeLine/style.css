@@ -33,6 +33,8 @@
 #timeLine .container .link .infoLink .estrelas{
     display: flex;
     padding:1rem;
+    background: none;
+    align-items: center;
 }
 #timeLine .container .link .infoLink .estrelas h2{
     padding-left:1rem;
@@ -51,4 +53,8 @@
     width: 100%;
     display: flex;
     justify-content: flex-end;
+}
+#timeLine .popEstrelas>button{
+    padding:0.4rem;
+    background: none;
 }

@@ -21,7 +21,7 @@ export default function PopUp(props){
                     <h3>{props.title}</h3>
                 </div>
                 <div className="containerFechar">
-                    <button onClick={close}> <FiX size="" color="C2C2C2" /> </button>
+                    <button onClick={close}> <FiX size="" color="C2C2C2"/> </button>
                 </div>
                 <div className="conteudo">
                     {props.children}

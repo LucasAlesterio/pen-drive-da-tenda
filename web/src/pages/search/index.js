@@ -4,11 +4,35 @@ import Cabecalho from '../../components/cabecalho/index';
 //import { useHistory } from "react-router-dom";
 import CampoTexto from '../../components/campoTexto/index';
 import {FiSearch,FiFilter} from 'react-icons/fi'
-//import api from '../../service/api';
+import api from '../../service/api';
 import './style.css';
 export default function Search(){
 //    let history = useHistory();
     const [busca,setBusca] = useState('');
+    const [tipos,setTipos]  = useState([]);
+
+    async function buscarTipos(){
+        try{
+        const response = await api.get('/types',{headers:{Authorization:localStorage.getItem('token')}});
+        setTipos(response.data.types);
+        //console.log(response.data.link)
+        if(response.data.error){
+            alert('Erro no servidor');
+        }
+    }catch{
+        alert('Erro no servidor');
+    }
+    }
+    useEffect(()=>{
+        buscarTipos();
+    },[]);
+
+    function listTipos(){
+        const retorno = tipos.map((tipo)=>(
+        <option value={`${tipo}`}>{`${tipo}`}</option>
+        ));
+        return retorno;
+    }
 
     async function pesquisar(e){
         e.preventDefault();
@@ -35,10 +59,7 @@ export default function Search(){
                     </form>
                         <select name="Tipo" placeholder="Tipo">
                             <option selected value="">Tipo</option>
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="mercedes">Mercedes</option>
-                            <option value="audi">Audi</option>
+                            {tipos ? listTipos() : null}
                         </select>
                         <FiFilter size='30'/>
                 </div>
