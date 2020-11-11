@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 81%;
+    min-height: 85.3vh;
 
 }
 #search .busca{
@@ -17,6 +17,7 @@
     height: 4rem;
     color:var(--cinza-escuro);
     padding-right: 1rem;
+    margin: 5rem;
 }
 #search .busca .campoBuscar input{
     height: 3.5rem;
@@ -47,4 +48,14 @@
 #search .busca option{
     font: 400 1.8rem Roboto,sans-serif;
     border-radius: 5px;
+}
+#search .container{
+    width:100% ;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 20rem);
+    justify-content: center;
+    column-gap: 2rem;
+    row-gap: 2rem;
+    padding-top: 2rem;
+
 }

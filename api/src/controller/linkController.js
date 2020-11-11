@@ -1,8 +1,9 @@
 const User = require('../models/users');
 const Link = require('../models/links');
 
-const {createToken, verifyToken} = require('../functions');
+const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage} = require('../functions');
 const typesSchema = require('../models/types');
+const { v4: uuidv4 } = require('uuid');
 
 
 module.exports = {
@@ -14,8 +15,21 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         var _user = await User.findOne({_id:_id});
+        if(photograph){
+            idGerado = uuidv4();
+            await decodeBase64Image(photograph,idGerado);
+            const url = await uploadImage(idGerado);
+            if(url){
+                deleteFile(idGerado);
+            }
+            else{
+                err.error = true;
+                err.photo = true;
+            }
+            photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
+        }
 
-        var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id});
+        var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id,idImg:idGerado});
 
         _user.links.push(_link._id);
         _user.save();
@@ -258,7 +272,7 @@ module.exports = {
             usuario.map((us)=>{
                 if(link.user == us._id){
                     link['user'] = us;
-                    console.log(link);
+                    //console.log(link);
                 }
             })
             return(link);

@@ -1,15 +1,18 @@
 import React,{useState,useEffect} from 'react';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
-//import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import CampoTexto from '../../components/campoTexto/index';
+import LinkList from '../../components/link/index';
 import {FiSearch,FiFilter} from 'react-icons/fi'
 import api from '../../service/api';
 import './style.css';
 export default function Search(){
-//    let history = useHistory();
+    let history = useHistory();
     const [busca,setBusca] = useState('');
     const [tipos,setTipos]  = useState([]);
+    const [tipoSelecionado,setTipoSelecionado] = useState('');
+    const [links,setLinks] = useState([]);
 
     async function buscarTipos(){
         try{
@@ -33,10 +36,36 @@ export default function Search(){
         ));
         return retorno;
     }
+    function listLinks(){
+        const retorno  = links.map((link)=>(
+            <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+        ))
+        return retorno;
+    }
+
+    useEffect(()=>{
+        pesquisar();
+    },[tipoSelecionado])
 
     async function pesquisar(e){
-        e.preventDefault();
+        if(e){
+            e.preventDefault();
+        }
+        try{
+            const response = await api.post('/searchLink',
+            {text:busca,type:tipoSelecionado},
+            {headers:{Authorization:localStorage.getItem('token')}});
+            if(response.data.erro){
+                if(response.data.token){
+                    history.push('/landing');
+                }
+            }else{
+                setLinks(response.data.link);
+            }
 
+        }catch{
+            alert('Erro no servidor');
+        }
     }
     return(
         <>
@@ -57,11 +86,14 @@ export default function Search(){
                             </button>
                         </div>
                     </form>
-                        <select name="Tipo" placeholder="Tipo">
+                        <select name="Tipo" placeholder="Tipo" onChange={(e)=>setTipoSelecionado(e.target.value)}>
                             <option selected value="">Tipo</option>
                             {tipos ? listTipos() : null}
                         </select>
                         <FiFilter size='30'/>
+                </div>
+                <div className="container">
+                {links ? listLinks() : null}
                 </div>
         </div>
         <Rodape/>

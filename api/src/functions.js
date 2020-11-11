@@ -40,8 +40,14 @@ module.exports = {
         
     },
     async uploadImage(name){
-    const res = await gc.bucket('twm-images').upload(`./src/temp/${name}.png`);
-    const url = res[0].metadata.mediaLink;
-    return url;
-}
+        const res = await gc.bucket('twm-images').upload(`./src/temp/${name}.png`);
+        const url = res[0].metadata.mediaLink;
+        return url;
+    },
+    async deleteImage(id){
+        await gc.bucket(`twm-images/${id}.png`).delete().then(() => {
+            return true;
+        });
+        return false;
+    }
 }

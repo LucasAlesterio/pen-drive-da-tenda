@@ -78,7 +78,7 @@ export default function TimeLine(){
                             <h2>{link.name}</h2>
                         </Link>
                         <button className="estrelas" onClick={()=>onOpenEstrelas(link._id)}>
-                            <Estrelas average={link.average}/>
+                            <Estrelas average={link.average} size={20}/>
                             <h2>{link.average}</h2>
                         </button>
                     </div>

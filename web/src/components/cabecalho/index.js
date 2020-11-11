@@ -19,8 +19,10 @@ export default function Cabecalho(){
         }catch{
             alert('Error servidor');
         }
-        if(response.data.error){
-            history.push("/landing");
+        if(response.data){
+            if(response.data.error){
+                history.push("/landing");
+            }
         }
     }
     useEffect(()=>{
@@ -39,7 +41,7 @@ export default function Cabecalho(){
                 <Link to='/' >
                     <FiUsers size='20' color='C2C2C2'/>
                 </Link>
-                <Link to='/' >
+                <Link to='/addLink' >
                     <FiFilePlus size='20' color='C2C2C2'/>
                 </Link>
                 <Link to='/search' >

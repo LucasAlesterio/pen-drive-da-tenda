@@ -1,0 +1,30 @@
+.link{
+    background-color: rgba(var(--cinza-claro-opacity),.25);
+    margin:1rem;
+    display: flex;
+    justify-content: center;
+    min-height: 30rem;
+    width: 18rem;
+}
+.link>a{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.link .fotoLink{
+    height: 20rem;
+    width: 15rem;
+    margin-top:1rem;
+
+}
+.link .infos{
+    height: 100%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.link .infos h4{
+    text-align: center;
+}

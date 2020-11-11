@@ -1,0 +1,147 @@
+#addLink{
+    min-height: 85.3vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+}
+#addLink section{
+    display: flex;
+    padding-top: 3rem;
+    width: 60%;
+    justify-content: space-between;
+}
+#addLink section .foto input{
+    display: none;
+}
+#addLink section .foto label{
+    cursor: pointer;
+}
+#addLink section .foto label .fotoPerfil>img{
+    max-width:  100%;
+    max-height: 32rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#addLink section .foto label>div{
+    border:var(--amarelo) solid 2px;
+    height: 32rem;
+    width: 24rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#addLink section .inputs{
+    width: 65%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+#addLink section .inputs input{
+    height: 6vh;
+    padding-left: 1rem;
+}
+#addLink section .inputs div{
+    padding: 0;
+}
+#addLink section .inputs select{
+    font: 400 1.8rem Roboto,sans-serif;
+    background-color: var(--cinza-claro);
+    border:none;
+    width: 100%;
+    border-radius: 5px;
+    height: 6vh;
+    color:var(--cinza-medio);
+    padding-left: 0.8rem;
+}
+#addLink section .inputs select option{
+    font: 400 1.8rem Roboto,sans-serif;
+}
+#addLink .container{
+    margin-top: 2rem;
+    width: 60%;
+    height: 30rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#addLink .container .descricao textarea{
+    min-height: 100%;
+    min-width: 100%;
+    resize: none;
+    background: none;
+    border:none;
+    padding: 1rem;
+    color:var(--cinza-claro);
+}
+#addLink .container .linha{
+    border:var(--cinza-claro) solid 1px;
+    height: 80%;
+}
+#addLink .container .tag,#addLink .container .descricao{
+    height: 100%;
+    width: 49%;
+    border-radius: 10px;
+    background-color: rgba(var(--cinza-claro-opacity),0.05);
+}
+#addLink .container .tag form{
+    flex-direction: row;
+    padding: 1rem;
+}
+#addLink .container .tag form input{
+    width: 90%;
+    height: 4rem;
+    border:var(--amarelo) solid 1px;
+    border-radius: 5px;
+    background-color: rgba(var(--cinza-claro-opacity),0.12);
+    padding-left: 1rem;
+    color:var(--cinza-claro);
+}
+#addLink .container .tag form button{
+    background: none;
+    border:none;
+    width: 10%;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#addLink .container .tag .containerTag{
+    max-height: 80%;
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
+    align-content: flex-start;
+    overflow-y:auto;
+}
+::-webkit-scrollbar-track {
+    background: black;
+}
+
+#addLink .container .tag .containerTag>div{
+    height: 4rem;
+    background-color: var(--amarelo);
+    display: flex;
+    width: min-content;
+    border-radius: 2rem;
+    padding:0.5rem;
+    align-items: center;
+    margin: 0.5rem;
+}
+#addLink .container .tag .containerTag>div>button{
+    border:none;
+    background: none;
+    display: flex;
+    align-items: center;
+}
+#addLink .botao{
+    width: 17rem;
+    height: 6rem;
+    margin-bottom: 3rem;
+    font-size: 3rem;
+
+}
