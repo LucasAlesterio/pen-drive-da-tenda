@@ -9,16 +9,17 @@ import { useHistory } from "react-router-dom";
 import api from '../../service/api';
 //import {RiImageAddLine} from 'react-icons/ri'
 
-var tags = [];
 export default function AddLink(){
     const [tipoSelecionado,setTipoSelecionado] = useState({valor:'',erro:false,textoErro:''});
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
     const [link,setLink] = useState({valor:'',erro:false,textoErro:''});
     const [descricao,setDescricao] = useState('');
     const [tag,setTag] = useState('');
+    const [_tags,setTags] = useState([]);
     const [listTags,setListTags] = useState('');
     const [foto,setFoto] = useState('');
     let history = useHistory();
+    var tags = _tags;
     
     const styleErro = {
         border:'red solid 2px'
@@ -54,6 +55,7 @@ export default function AddLink(){
         e.preventDefault();
         if(tags.indexOf(tag) === -1){
             tags.push(tag);
+            setTags(tags);
             listagemTag();
         }
         setTag('');
@@ -63,6 +65,7 @@ export default function AddLink(){
         while (i < tags.length) {
             if (tags[i] === t) {
                 tags.splice(i, 1);
+                setTags(tags);
             } else {
                 ++i;
             }
@@ -109,7 +112,8 @@ export default function AddLink(){
                     history.push('/landing');
                 }
             }else{
-                history.push('/');
+                setTags([]);
+                history.push(`/linkProfile/${response.data.link._id}`);
             }
 
         }catch{

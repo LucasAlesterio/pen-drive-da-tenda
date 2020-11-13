@@ -16,7 +16,7 @@ export default function TimeLine(){
     async function buscarLinks(){
         try{
             const response = await api.get('/timeLine',{headers:{Authorization:localStorage.getItem('token')}});
-            setLinks(response.data.link);
+            setLinks((response.data.link).reverse());
             if(response.data.error){
                 if(response.data.error.token){
                     alert('Necessário logar novamente!')
@@ -50,7 +50,7 @@ export default function TimeLine(){
                         </Link>
                         <button className="estrelas" onClick={()=>openPopAvaliacao(link._id)}>
                             <Estrelas average={link.average} size={20}/>
-                            <h2>{link.average}</h2>
+                            <h2>{link.average ? parseFloat(link.average.toFixed(2)):'00'}</h2>
                         </button>
                     </div>
                     <div className="containerUsuario">

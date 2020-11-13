@@ -136,7 +136,7 @@ export default function Landing(){
             return null;
         }
         localStorage.setItem('token', response.data.token);
-        history.push("/");
+        history.push(`/profile/${usuario.valor}`);
         setOpenCadastro(false);
     }
     return(
