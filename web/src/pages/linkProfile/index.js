@@ -3,58 +3,158 @@ import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import Botao from '../../components/botao/index';
 import Estrelas from '../../components/estrelas/index';
-//import api from '../../service/api';
+import {useParams,Link,useHistory} from "react-router-dom";
+import api from '../../service/api';
 import './style.css';
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { BsStar,BsStarFill } from "react-icons/bs";
-import { FiCopy } from "react-icons/fi";
+import { FiCopy, FiTrash,FiEdit} from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
+import PopAvaliacao from '../../components/popAvaliar/index';
+import PopUp from '../../components/popUp/index';
 
-var tags = ['Cachorro','Gato'];
+
 export default function LinkProfile(){
+    const [link,setLink] = useState('');
+    const [user,setUser] = useState('');
+    const [tags,setTags] = useState([]);
+    const [openEstrelas,setOpenEstrelas] = useState('');
+    const [openExcluir,setOpenExcluir] = useState('');
+    let history = useHistory();
+    let {id} = useParams();
 
+    useEffect(()=>{
+        buscarDados();
+    },[])
+    
+    async function buscarDados(){
+        if(localStorage.getItem('token')){
+        try{
+                const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});
+                const tag =  response.data.link.tag;
+                if(response.data.error){
+                    if(response.data.error.token){
+                        alert('Necessário logar novamente!')
+                        history.push('/landing');
+                        return null;
+                    }
+                }
+                setTags(tag.map((a)=>{
+                    return(a.name);
+                }));
+                setLink(response.data.link);
+                setUser(response.data.user);
+            }catch{
+                alert('Erro no servidor');
+            }
+            }else{
+                history.push('/landing');
+                return null;
+            }
+    }
+
+    async function favoritar(){
+        try{
+            await api.post('/updateFavorite',{link:id},{headers:{Authorization:localStorage.getItem('token')}});
+            buscarDados();
+        }catch{
+            alert('Erro no servidor');
+        }
+    }
+
+    async function excluir(){
+        try{
+            await api.post('/deleteLink',{link:id},{headers:{Authorization:localStorage.getItem('token')}});
+            history.push(`/profile/${user.user}`);
+        }catch{
+            alert('Erro no servidor');
+        }
+    }
+    function copyToClipboard(){
+        const el = document.createElement('textarea');
+        el.value = link.link;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    };
 
     return(
     <>
         <Cabecalho/>
+        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={link._id} onSend={buscarDados}/>
+
         <div id="linkProfile">
-                <div className="favoritar"><AiOutlineHeart size='45' color='C2C2C2'/></div>
+            <PopUp title="Excluir" open={openExcluir} onClose={()=>setOpenExcluir(false)}>
+                <h4>Você deseja mesmo excluir este link?</h4>
+                <div className="botoesConf">
+                <Botao className="confirmacao" title="Sim, excluir link" onClick={()=>excluir()}>
+                    Sim
+                </Botao>
+                <Botao className="confirmacao" title="Não, manter link" onClick={()=>setOpenExcluir(false)}>
+                    Não
+                </Botao>
+                </div>
+            </PopUp>
+            {!link.isMy ? 
+                <>
+                {!link.isFavorite ?
+                    <div className="favoritar">
+                        <button title="Favoritar link" onClick={()=>favoritar()}>
+                            <AiOutlineHeart size='45' color='C2C2C2'/>
+                        </button>
+                    </div>
+                :<div className="favoritar">                        
+                    <button title="Favoritar link" onClick={()=>favoritar()}>
+                        <AiFillHeart size='45' color='C2C2C2'/>
+                        </button>
+                </div>}
+                </>
+                :<div className="favoritar" style={{justifyContent:'space-between'}} title="Editar link">
+                    <Link to={`/editLink/${link._id}`}>
+                        <FiEdit size="45" color='C2C2C2'/>
+                    </Link>
+                    <button title="Excluir link" onClick={()=>setOpenExcluir(true)}>
+                        <FiTrash size='45' color='C2C2C2'/>
+                    </button>
+                </div>}
             <div className="container">
                 <div className="foto">
-                    <img alt="capa" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ16QrO1VETZaZNbV0kvoI84OEsBiCi8S6xarzalsogygLRojVO"/>
+                    <div className="fotoLink"><img alt="capa" src={link.photograph} alt="capa"/></div>
                     <div className="estrelas">
-                        <Estrelas average={5} size={30}/>
+                        <button title="Avaliar" onClick={()=>setOpenEstrelas(true)}><Estrelas average={link.average} size={30}/></button>
                     </div>
                 </div>
                 <div className="infos">
-                    <h1>Piratas do Caribe: a Vingança de Salazar</h1>
+                    <h1>{link.name}</h1>
                     <div className="botoes">
-                        <Botao className="botao1" title="Copiar link">
+
+                        <Botao className="botao1" title="Copiar link" onClick={()=>copyToClipboard()}>
                             Copiar
                             <FiCopy size='35' color='151515'/>
                         </Botao>
-                        <Botao className="botao1" title="Abrir link em nova aba">
-                            Abrir
-                            <HiOutlineExternalLink size='37' color='151515'/>
-                        </Botao>
+
+                        <a target='_blank' href= {link.link} className="botao1" title="Abrir link em nova aba">
+                                Abrir
+                                <HiOutlineExternalLink size='37' color='151515'/>
+                        </a>
                     </div>
                     
-                    <div className="usuario">
-                        <img className="fotoUser" src="https://i.pinimg.com/564x/f3/d4/78/f3d478ab1d150a0806169eb2c9c9c7d9.jpg" alt="foto usuario"/>
-                        <h3>@torrent_and_chill</h3>
-                    </div>
+                    <Link to={`/profile/${user.user}`} className="usuario">
+                            <img className="fotoUser" src={user.photograph} alt="foto usuario"/>
+                            <h3>{user.user}</h3>
+                    </Link>
                 </div>
             </div>
-            <div className="descricao">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
-            </div>
-            <div className="tags">
-                {tags.map((t)=>(
-                    <div key={t}>
-                        <p >{t}</p>
-                    </div>
-                ))}
-            </div>
+            <div className="descricao">{link.description}</div>
+            {tags.length !== 0? 
+                <div className="tags">
+                    {tags.map((t)=>(
+                        <div key={t}>
+                            <p>{t}</p>
+                        </div>
+                        )) }
+                </div>
+            :null}
         </div>
         <Rodape/>
     </>

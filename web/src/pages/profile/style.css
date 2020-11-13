@@ -1,0 +1,86 @@
+#profile{
+    min-height: 85.3vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#profile .containerSenha{
+    width: 100%;
+}
+#profile .buttonSenha{
+    background: none;
+    border: none;
+    color:var(--cinza-claro);
+}
+#profile .sair{
+    height: 5vw;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 1rem;
+}
+#profile .sair button{
+    background: none;
+    border:none;
+}
+#profile .sair button:hover{
+    filter:brightness(.7);
+}
+#profile .infoProfile{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#profile .infoProfile img{
+    border-radius: 50%;
+    height: 20rem;
+    width: 20rem;
+}
+#profile .infoProfile>div{
+    display: flex;
+    align-items: center;
+}
+#profile .infoProfile>div>button{
+    background: none;
+    border:none;
+}
+#profile .infoProfile>div>button:hover{
+    filter:brightness(.7);
+}
+#profile .infoProfile h1{
+    font-size: 4rem;
+    padding-right: 1rem;
+}
+#profile .infoProfile h2{
+    font-size: 3rem;
+    color:var(--cinza-claro);
+}
+#profile .containerBotoes{
+    margin-top:3rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+#profile .containerBotoes button{
+    color: var(--cinza-claro);
+    font-size:2.5rem;
+    background: none;
+    border-bottom: var(--amarelo) solid 2px;
+    padding:1rem;
+    width: 15rem;
+}
+#profile .containerBotoes button:hover{
+    border-bottom: var(--cinza-claro) solid 2px;
+}
+#profile .containerLinks{
+    margin: 3rem 0;
+    background-color: rgba(var(--cinza-claro-opacity),0.05);
+    width:90% ;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 20rem);
+    justify-content: center;
+    column-gap: 2rem;
+    row-gap: 2rem;
+    padding-top: 2rem;
+}
+

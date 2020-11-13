@@ -5,12 +5,12 @@ import Cabecalho from '../../components/cabecalho/index';
 import CampoTexto from '../../components/campoTexto/index';
 import {FiCamera,FiPlusCircle,FiX} from 'react-icons/fi';
 import Botao from '../../components/botao/index';
-import { useHistory } from "react-router-dom";
+import { useHistory,useParams } from "react-router-dom";
 import api from '../../service/api';
 //import {RiImageAddLine} from 'react-icons/ri'
 
 var tags = [];
-export default function AddLink(){
+export default function EditLink(){
     const [tipoSelecionado,setTipoSelecionado] = useState({valor:'',erro:false,textoErro:''});
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
     const [link,setLink] = useState({valor:'',erro:false,textoErro:''});
@@ -19,7 +19,7 @@ export default function AddLink(){
     const [listTags,setListTags] = useState('');
     const [foto,setFoto] = useState('');
     let history = useHistory();
-    
+    let {id} = useParams();
     const styleErro = {
         border:'red solid 2px'
     }
@@ -76,7 +76,40 @@ export default function AddLink(){
             })
         );
     }
-
+    useEffect(()=>{
+        buscarDados();
+    },[])
+    async function buscarDados(){
+        if(localStorage.getItem('token')){
+        try{
+                const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});
+                const tag =  response.data.link.tag;
+                if(response.data.error){
+                    if(response.data.error.token){
+                        alert('Necessário logar novamente!')
+                        history.push('/landing');
+                        return null;
+                    }
+                }
+                var _link = response.data.link;
+                tags = (tag.map((a)=>{
+                    return(a.name);
+                }));
+                setNome({valor:_link.name,erro:false,textoErro:''});
+                setFoto(_link.photograph);
+                setLink({valor:_link.link,erro:false,textoErro:''});
+                setTipoSelecionado({valor:_link.type.name,erro:false,textoErro:''});
+                setDescricao(_link.description);
+                listagemTag();
+                //setUser(response.data.user);
+            }catch{
+                alert('Erro no servidor');
+            }
+            }else{
+                history.push('/landing');
+                return null;
+            }
+    }
     async function cadastrar(){ 
         //var json = jsonTags();
         if(!nome.valor){
@@ -92,8 +125,9 @@ export default function AddLink(){
             return null;
         }
         try{
-            const response = await api.post('/addLink',
+            const response = await api.post('/updateLink',
             {
+                id:id,
                 name:nome.valor,
                 type:{
                     name:tipoSelecionado.valor
@@ -109,7 +143,7 @@ export default function AddLink(){
                     history.push('/landing');
                 }
             }else{
-                history.push('/');
+                history.push(`/linkProfile/${id}`);
             }
 
         }catch{
@@ -120,7 +154,7 @@ export default function AddLink(){
         <>
         <Cabecalho/>
         <div id="addLink">
-            <h1>Cadastro de link</h1>
+            <h1>Edição de link</h1>
             <section>
                 <div className="foto">
                     <label htmlFor="imageLink">
@@ -173,7 +207,7 @@ export default function AddLink(){
             </section>
             <div className="container">
                 <div className="descricao">
-                    <textarea placeholder="Descrição" onChange={(e)=>setDescricao(e.target.value)} />
+                    <textarea placeholder="Descrição" value={descricao} onChange={(e)=>setDescricao(e.target.value)} />
                 </div>
                 <div className="linha"/>
                 <div className="tag">
@@ -186,7 +220,7 @@ export default function AddLink(){
                     </div>
                 </div>
             </div>
-            <Botao onClick={cadastrar} className="botao">Cadastrar</Botao>
+            <Botao onClick={cadastrar} className="botao">Atualizar</Botao>
         </div>
         <Rodape/>
         </>

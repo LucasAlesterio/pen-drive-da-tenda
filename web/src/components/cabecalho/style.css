@@ -1,4 +1,5 @@
 .cabecalho{
+    z-index: 2;
     background-color: var(--cinza-escuro);
     position: relative;
     top:0;

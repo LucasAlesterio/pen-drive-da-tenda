@@ -1,11 +1,11 @@
 import React,{useState,useEffect}  from 'react';
 import { Link} from "react-router-dom";
-import {FiUsers, FiFilePlus, FiSearch, FiHome, FiHeart} from 'react-icons/fi';
+import {FiUsers, FiFilePlus, FiSearch, FiHome} from 'react-icons/fi';
 import { useHistory } from "react-router-dom";
 import api from '../../service/api';
 import './style.css';
 
-export default function Cabecalho(){
+export default function Cabecalho(props){
     let history = useHistory();
     const [dataUser,setDatauser] = useState({});
 
@@ -16,14 +16,15 @@ export default function Cabecalho(){
             response = await api.get('/refreshToken',{ headers:{Authorization:token}});
             setDatauser(response.data);
             localStorage.setItem('token',response.data.token);
-        }catch{
-            alert('Error servidor');
-        }
-        if(response.data){
+            if(response.data){
             if(response.data.error){
                 history.push("/landing");
             }
         }
+        }catch{
+            alert('Error servidor');
+        }
+        
     }
     useEffect(()=>{
         if(localStorage.getItem('token')){
@@ -31,27 +32,24 @@ export default function Cabecalho(){
         }else{
             history.push("/landing");
         }
-    },[history]);
+    },[history,props.refresh]);
     return(
         <div className="cabecalho">
             <div>
-                <Link to='/' >
-                    <FiHeart size='20' color='C2C2C2'/>
-                </Link>
-                <Link to='/' >
+                <Link to='/friends' title="Amigos">
                     <FiUsers size='20' color='C2C2C2'/>
                 </Link>
-                <Link to='/addLink' >
+                <Link to='/addLink' title="Adicionar link">
                     <FiFilePlus size='20' color='C2C2C2'/>
                 </Link>
-                <Link to='/search' >
+                <Link to='/search' title="Buscar">
                     <FiSearch size='20' color='C2C2C2'/>
                 </Link>
-                <Link to='/' >
+                <Link to='/' title="Timeline">
                     <FiHome size='20' color='C2C2C2'/>
                 </Link>
             </div>
-            <Link to={`/profile/${dataUser.user ? dataUser.user : null}`}>
+            <Link to={`/profile/${dataUser.user ? dataUser.user : null}`} title="Ver perfil">
                 <h4>{dataUser.user ? dataUser.user : null}</h4>
                 <img src={dataUser.user ? dataUser.photograph : 'https://p7.hiclipart.com/preview/340/956/944/computer-icons-user-profile-head-ico-download.jpg'} alt="foto perfil"/>
             </Link>

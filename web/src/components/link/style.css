@@ -11,11 +11,22 @@
     align-items: center;
     flex-direction: column;
 }
-.link .fotoLink{
-    height: 20rem;
+.link .fotoContainer{
+    min-height: 20rem;
     width: 15rem;
     margin-top:1rem;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.link .fotoLink{
+    max-height: 20rem;
+    max-width: 15rem;
+}
+.link .semFoto{
+    background-color: rgb(255, 138, 138);
+    height: 20rem;
+    width: 15rem;
 }
 .link .infos{
     height: 100%;

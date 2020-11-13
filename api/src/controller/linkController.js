@@ -1,7 +1,7 @@
 const User = require('../models/users');
 const Link = require('../models/links');
 
-const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage} = require('../functions');
+const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage, deleteImage} = require('../functions');
 const typesSchema = require('../models/types');
 const { v4: uuidv4 } = require('uuid');
 
@@ -48,13 +48,13 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         var _user = await User.findOne({_id:_id});
-
-        if(_user.friends.indexOf(friend._id) !== -1){
+        if(_user.links.indexOf(link) !== -1){
+            const _link = await Link.findOne({_id:link});
+            await deleteImage(_link.idImg);
             await Link.findByIdAndDelete({_id:link});
             _user.links.pop(link);
             _user.save();
-            var token = createToken(_user.id);
-            return response.json(_user,token);
+            return response.send(true);
         }
         return response.json({error:true,authorization:true});
     },
@@ -98,11 +98,28 @@ module.exports = {
     },
 
     async updateLink(request,response){
-        const data = request.body;
+        var data = request.body;
         const {authorization} = request.headers;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
+        }
+        var _link = await Link.findOne({_id:data.id});
+        if(data.photograph && data.photograph != _link.photograph){
+             //console.log(_link.idImg);
+            await deleteImage(_link.idImg);
+            idGerado = uuidv4();
+            await decodeBase64Image(data.photograph,idGerado);
+            const url = await uploadImage(idGerado);
+            if(url){
+                deleteFile(idGerado);
+            }
+            else{
+                err.error = true;
+                err.photo = true;
+            }
+            data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
+            data.idImg = idGerado;
         }
         var _user = await User.findOne({_id:_id});
         if(_user.links.indexOf(data.id) !== -1){
@@ -194,6 +211,7 @@ module.exports = {
             var a = [];
             var b = {};
             links.map((link)=>{
+                average = 0;
                 b = JSON.parse(JSON.stringify(link));
                 if(link.rating){
                     link.rating.map((score)=>{
@@ -223,6 +241,7 @@ module.exports = {
         var a = [];
         var b = {};
         links.map((link)=>{
+            average = 0;
             b = JSON.parse(JSON.stringify(link));
             if(link.rating){
                 link.rating.map((score)=>{

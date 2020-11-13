@@ -11,6 +11,7 @@ const linksSchema = new mongoose.Schema({
     photograph:String,
     rating:[ratingsSchema],
     type:typesSchema,
-    tag:[tagsSchema]
+    tag:[tagsSchema],
+    idImg:String
 });
 module.exports = mongoose.model('Links',linksSchema);

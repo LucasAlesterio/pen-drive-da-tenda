@@ -1,0 +1,29 @@
+#friends{
+    min-height: 85.3vh;
+    width:100% ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#friends .container{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, 25%);
+    justify-content: center;
+    column-gap: 2rem;
+    row-gap: 2rem;
+}
+#friends .busca{
+    width: 50%;
+    flex-direction: row;
+    padding:4% 0;
+}
+#friends .busca input{
+    padding-left: 1rem;
+}
+#friends .busca button{
+    background: none;
+    border:none;
+    margin-left: -3rem;
+    margin-bottom:-.2rem;
+}

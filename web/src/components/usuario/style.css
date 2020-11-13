@@ -1,0 +1,39 @@
+.usuario{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 3rem;
+}
+.usuario .foto>img{
+    height: 13rem;
+    width: 13rem;
+    border-radius: 50%;
+    border:var(--amarelo) solid 2px;
+}
+.usuario .foto:hover{
+    filter:brightness(0.7);
+}
+.usuario .containerUsuario{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+.usuario .containerUsuario .linkTag{
+    width: min-content;
+    height: min-content;
+}
+.usuario .containerUsuario h2{
+    text-align: center;
+    color:var(--amarelo);
+    font-size: 3rem; 
+    height: 4rem;
+}
+.usuario .containerUsuario button{
+    background-color: var(--amarelo);
+    border:none;
+    border-radius: 5px;
+    color:var(--cinza-escuro);
+    padding:0 0.5rem;
+}

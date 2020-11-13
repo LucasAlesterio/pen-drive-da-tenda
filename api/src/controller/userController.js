@@ -1,7 +1,7 @@
 const User = require('../models/users');
-const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage} = require('../functions');
+const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage,deleteImage,deleteOldImage} = require('../functions');
 const Link = require('../models/links');
-
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
 
@@ -76,34 +76,44 @@ module.exports = {
     },
 
     async dataUser(request,response){
+        //let err = {"error":false,"email":false,"password":false};
         const {authorization} = request.headers;
+        const {idUser} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
-        const _user = await User.findOne({_id:_id});
+        var _user = '';
+        _user = await User.findOne({user:idUser});
+        if(!_user){
+            return response.json({error:true,token:true});
+        }
         const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        const token = createToken(id);
         var average = 0;
         var a = [];
         var b = {};
-        var _favorites = await Link.find().select(['name','photograph','rating']).where('_id').in(favorites).exec();
-        _favorites.map((link)=>{
-            b = JSON.parse(JSON.stringify(link));
-            if(link.rating){
-                link.rating.map((score)=>{
-                    average += score.nStars;
-                });
-            }
-            average = average/link.rating.length;
-            b['average'] = average;
-            a.push(b);
-        });
-        _favorites = a;
-        b = {};
-        a = [];
+        const myProfile = await User.findOne({_id:_id});
+        if(idUser == myProfile.user){
+            var _favorites = await Link.find().select(['name','photograph','rating']).where('_id').in(favorites).exec();
+            _favorites.map((link)=>{
+                average = 0;
+                b = JSON.parse(JSON.stringify(link));
+                if(link.rating){
+                    link.rating.map((score)=>{
+                        average += score.nStars;
+                    });
+                }
+                average = average/link.rating.length;
+                b['average'] = average;
+                a.push(b);
+            });
+            _favorites = a;
+            b = {};
+            a = [];
+        
         var _links = await Link.find().select(['name','photograph','rating']).where('_id').in(links).exec();
         _links.map((link)=>{
+            average = 0;
             b = JSON.parse(JSON.stringify(link));
             if(link.rating){
                 link.rating.map((score)=>{
@@ -115,7 +125,31 @@ module.exports = {
             a.push(b);
         });
         _links = a;
-        return response.json({user:{id,name,email,user,photograph,friends,token},favorites:_favorites,links:_links});
+        return response.json({user:{id,name,email,user,photograph,friends,me:true},favorites:_favorites,links:_links});
+    }else{
+        var _links = await Link.find().select(['name','photograph','rating']).where('_id').in(links).exec();
+        _links.map((link)=>{
+            average = 0;
+            b = JSON.parse(JSON.stringify(link));
+            if(link.rating){
+                link.rating.map((score)=>{
+                    average += score.nStars;
+                });
+            }
+            average = average/link.rating.length;
+            b['average'] = average;
+            a.push(b);
+        });
+        _links = a;
+        var flag = false;
+        const _userLink = await User.findOne({user:idUser});
+        if(myProfile.friends.indexOf(_userLink._id) !== -1){
+            flag = true;
+        }else{
+            flag = false;
+        }
+        return response.json({user:{id,name,email,user,photograph,friends,me:false,isFriend:flag},links:_links});
+    }
     },
 
     async updateFriend(request,response){
@@ -156,11 +190,45 @@ module.exports = {
         }
     },
     async updateProfile(request,response){
-        const data = request.body;
+        let err = {"error":false,"user":false,"photo":false};
+        var data = request.body;
         const {authorization} = request.headers;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
+        }
+        const myData = await User.findOne({_id:_id});
+        if(data.user){
+            if(data.user != myData.user){
+                const testeUser = await User.findOne({user:data.user});
+                if(testeUser){
+                    err.error = true;
+                    err.user = true;
+                    return response.json(err);
+                }
+            }
+        }
+        if(data.photograph != myData.photograph){
+            idGerado = uuidv4();
+            
+            if(myData.photograph === `https://storage.googleapis.com/twm-images/${data.user}.png`){
+                deleteImage(data.user);
+                console.log('jaisofgaskopfjopas');
+            }else{
+                deleteImage(myData.idImg);
+            }
+            
+            await decodeBase64Image(data.photograph,idGerado);
+            const url = await uploadImage(idGerado);
+            if(url){
+                deleteFile(idGerado);
+            }
+            else{
+                err.error = true;
+                err.photo = true;
+            }
+            data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
+            data.idImg = idGerado;
         }
         const _user = await User.findOneAndUpdate({_id:_id},data, {upsert: true}, function(err, doc) {
             if (err) return response.json({error:true,message:err});

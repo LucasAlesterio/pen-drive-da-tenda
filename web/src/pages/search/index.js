@@ -20,7 +20,10 @@ export default function Search(){
         setTipos(response.data.types);
         //console.log(response.data.link)
         if(response.data.error){
-            alert('Erro no servidor');
+            if(response.data.token){
+                history.push('/landing');
+                return null;
+            }
         }
     }catch{
         alert('Erro no servidor');

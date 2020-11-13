@@ -45,8 +45,8 @@ module.exports = {
         return url;
     },
     async deleteImage(id){
-        await gc.bucket(`twm-images/${id}.png`).delete().then(() => {
-            return true;
+        await bucket.file(`${id}.png`).delete().then(()=>{
+            return true
         });
         return false;
     }
