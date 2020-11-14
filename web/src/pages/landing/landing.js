@@ -4,6 +4,7 @@ import Botao from '../../components/botao/index';
 import PopUp from '../../components/popUp/index';
 import CampoTexto from '../../components/campoTexto/index';
 import InputFoto from '../../components/inputFoto/index';
+import Loading from '../../components/loading/index';
 import {FiUser,FiKey,FiMail,FiAtSign} from 'react-icons/fi'
 import { useHistory } from "react-router-dom";
 import api from '../../service/api';
@@ -19,19 +20,22 @@ export default function Landing(){
     const [usuario,setUsuario] = useState({valor:'',erro:false,textoErro:''});
     const [email,setEmail] = useState({valor:'',erro:false,textoErro:''});
     const [confirmarSenha,setConfirmarSenha] = useState({valor:'',erro:false,textoErro:''});
+    const [loading,setLoading] = useState(false);
     let history = useHistory();
 
     async function logar(e){
         e.preventDefault();
-        
+        setLoading(true);
         var response = '';
         var isEmail = false;
         if(!infoLogin.valor){
             setInfoLogin({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         if(!senha.valor){
             setSenha({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         var letras = infoLogin.valor.split('');
@@ -50,6 +54,7 @@ export default function Landing(){
                     password:senha.valor
                 });
             }catch{
+                setLoading(false);
                 alert('Erro no servidor!');
             }
         }else{
@@ -74,6 +79,7 @@ export default function Landing(){
                 if(response.data.password){
                     setSenha({valor:usuario.valor,erro:true,textoErro:"Senha incorreta"});
                 }
+                setLoading(false);
                 return null;
             }
         localStorage.setItem('token', response.data.token);
@@ -82,33 +88,41 @@ export default function Landing(){
     }
     async function cadastrar(e){
         e.preventDefault();
+        setLoading(true);
         var response = '';
         if(!nome.valor){
             setNome({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         if(!email.valor){
             setEmail({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         if(!usuario.valor){
             setUsuario({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         if(!senha.valor){
             setSenha({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         if(senha.valor.length < 8){
             setSenha({valor:senha.valor,erro:true,textoErro:"Necessário no minimo 8 caracteres"});
+            setLoading(false);
             return null;
         }
         if(!confirmarSenha.valor){
             setConfirmarSenha({valor:"",erro:true,textoErro:"Campo obrigatório"});
+            setLoading(false);
             return null;
         }
         if(senha.valor !== confirmarSenha.valor){
             setConfirmarSenha({valor:confirmarSenha.valor,erro:true,textoErro:"Senhas não coincidem"});
+            setLoading(false);
             return null;
         }
         try{
@@ -133,6 +147,7 @@ export default function Landing(){
             if(response.data.photo){
                 alert('Erro ao carregar a foto, tente novamente!');
             }
+            setLoading(false);
             return null;
         }
         localStorage.setItem('token', response.data.token);
@@ -141,6 +156,7 @@ export default function Landing(){
     }
     return(
     <>
+        {loading ? <Loading/>:null}
         <PopUp title="Login" open={openLogin} onClose={()=>setOpenLogin(false)}>
             <form onSubmit={e=>logar(e)}>
                 <CampoTexto 

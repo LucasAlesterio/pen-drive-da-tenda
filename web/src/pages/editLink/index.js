@@ -3,6 +3,7 @@ import './style.css';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import CampoTexto from '../../components/campoTexto/index';
+import Loading from '../../components/loading/index';
 import {FiCamera,FiPlusCircle,FiX} from 'react-icons/fi';
 import Botao from '../../components/botao/index';
 import { useHistory,useParams } from "react-router-dom";
@@ -18,6 +19,7 @@ export default function EditLink(){
     const [tag,setTag] = useState('');
     const [listTags,setListTags] = useState('');
     const [foto,setFoto] = useState('');
+    const [loading,setLoading] = useState(false);
     let history = useHistory();
     let {id} = useParams();
     const styleErro = {
@@ -111,17 +113,21 @@ export default function EditLink(){
             }
     }
     async function cadastrar(){ 
+        setLoading(true)
         //var json = jsonTags();
         if(!nome.valor){
             setNome({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         if(!link.valor){
             setLink({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         if(tipoSelecionado.valor === ""){
             setTipoSelecionado({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         try{
@@ -147,13 +153,16 @@ export default function EditLink(){
             }
 
         }catch{
+            setLoading(false);
             alert('Erro no servidor');
         }
     }
     return(
         <>
         <Cabecalho/>
+        {loading ? <Loading/>:null}
         <div id="addLink">
+            {link.valor ?<>
             <h1>Edição de link</h1>
             <section>
                 <div className="foto">
@@ -221,6 +230,7 @@ export default function EditLink(){
                 </div>
             </div>
             <Botao onClick={cadastrar} className="botao">Atualizar</Botao>
+            </>:<Loading/>}
         </div>
         <Rodape/>
         </>

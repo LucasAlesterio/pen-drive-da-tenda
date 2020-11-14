@@ -3,6 +3,7 @@ import Cabecalho from '../../components/cabecalho/index';
 import Rodape from '../../components/rodape/index';
 import CampoTexto from '../../components/campoTexto';
 import Usuario from '../../components/usuario/index';
+import Loading from '../../components/loading/index';
 import api from '../../service/api';
 import {FiSearch} from 'react-icons/fi';
 import './style.css';
@@ -63,6 +64,7 @@ export default function Friends(){
 
             <div className="container">
                 {listagemAmigos}
+                {listagemAmigos === 'loading'?<Loading/>:null}
                 {!listagemAmigos && listagemAmigos !== 'loading' ?<h1>Você ainda não tem amigos :(</h1> : null}
             </div>
         </div>

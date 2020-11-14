@@ -3,6 +3,7 @@ import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import Botao from '../../components/botao/index';
 import Estrelas from '../../components/estrelas/index';
+import Loading from '../../components/loading/index';
 import {useParams,Link,useHistory} from "react-router-dom";
 import api from '../../service/api';
 import './style.css';
@@ -84,6 +85,7 @@ export default function LinkProfile(){
         <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={link._id} onSend={buscarDados}/>
 
         <div id="linkProfile">
+            {user ?<>
             <PopUp title="Excluir" open={openExcluir} onClose={()=>setOpenExcluir(false)}>
                 <h4>Você deseja mesmo excluir este link?</h4>
                 <div className="botoesConf">
@@ -155,6 +157,7 @@ export default function LinkProfile(){
                         )) }
                 </div>
             :null}
+            </>:<Loading/>}
         </div>
         <Rodape/>
     </>

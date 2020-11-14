@@ -4,6 +4,7 @@ import Cabecalho from '../../components/cabecalho/index';
 import { useHistory } from "react-router-dom";
 import CampoTexto from '../../components/campoTexto/index';
 import LinkList from '../../components/link/index';
+import Loading from '../../components/loading/index';
 import {FiSearch,FiFilter} from 'react-icons/fi'
 import api from '../../service/api';
 import './style.css';
@@ -13,6 +14,7 @@ export default function Search(){
     const [tipos,setTipos]  = useState([]);
     const [tipoSelecionado,setTipoSelecionado] = useState('');
     const [links,setLinks] = useState([]);
+    const [loading,setLoading] = useState(false);
 
     async function buscarTipos(){
         try{
@@ -51,7 +53,8 @@ export default function Search(){
     },[tipoSelecionado])
 
     async function pesquisar(e){
-        if(e){
+        setLoading(true);
+        if(e)
             e.preventDefault();
         }
         try{
@@ -65,14 +68,18 @@ export default function Search(){
             }else{
                 setLinks(response.data.link);
             }
+            setLoading(false);
 
         }catch{
+            setLoading(false);
             alert('Erro no servidor');
         }
     }
     return(
         <>
+        {tipos ?<>
         <Cabecalho/>
+        {loading ? <Loading/> : null}
         <div id="search">
                 <div className="busca">
                     <form onSubmit={pesquisar}>
@@ -100,6 +107,7 @@ export default function Search(){
                 </div>
         </div>
         <Rodape/>
+        </>:<Loading/>}
         </>
     );
 }

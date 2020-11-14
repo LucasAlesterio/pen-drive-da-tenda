@@ -3,6 +3,7 @@ import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import Estrelas from '../../components/estrelas/index';
 import PopAvaliacao from '../../components/popAvaliar/index';
+import Loading from '../../components/loading/index';
 import { Link, useHistory} from "react-router-dom";
 import api from '../../service/api';
 import './style.css';
@@ -50,7 +51,7 @@ export default function TimeLine(){
                         </Link>
                         <button className="estrelas" onClick={()=>openPopAvaliacao(link._id)}>
                             <Estrelas average={link.average} size={20}/>
-                            <h2>{link.average ? parseFloat(link.average.toFixed(2)):'00'}</h2>
+                            <h2>{link.average ? parseFloat(link.average.toFixed(2)):null}</h2>
                         </button>
                     </div>
                     <div className="containerUsuario">
@@ -69,6 +70,7 @@ export default function TimeLine(){
         <div id="timeLine">
         <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} onSend={buscarLinks}/>
             <div className="container">
+                {links === 'loading' ? <Loading/> : null}
                 {links !== 'loading' ? listagem() : null }
                 {links === [] ? <h1>Não encontramos links :( </h1> : null}
             </div>

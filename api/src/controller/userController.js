@@ -33,8 +33,8 @@ module.exports = {
             }
             _user = await User.create({name,email,password,user,photograph});
             var token = createToken(_user.id);
-            var {id,name,email,user,photograph,friends,favorites,links} = _user;
-            return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+            //var {id,name,email,user,photograph,friends,favorites,links} = _user;
+            return response.json(token);
         }else{
             return response.json(err);
         }
@@ -45,12 +45,12 @@ module.exports = {
         let err = {"error":false,"email":false,"password":false};
         let _user = {};
         if(user){
-            _user = await  User.findOne({user});
+            _user = await User.findOne({user});
             if(_user){
                 if(_user.password === password){
                     var token = createToken(_user.id);
-                    var {id,name,email,user,photograph,friends,favorites,links} = _user;
-                    return response.json({token,id});
+                    //var {id,name,email,user,photograph,friends,favorites,links} = _user;
+                    return response.json({token});
                 }else{
                     err.error = true;
                     err.password = true;
@@ -61,8 +61,8 @@ module.exports = {
             if(_user){
                 if(_user.password === password){
                     var token = createToken(_user.id);
-                    var {id,name,email,user,photograph,friends,favorites,links} = _user;
-                    return response.json({token,id});
+                    //var {id,name,email,user,photograph,friends,favorites,links} = _user;
+                    return response.json({token});
                 }else{
                     err.error = true;
                     err.password = true;
@@ -167,9 +167,10 @@ module.exports = {
             _user.friends.push(friend);
         }
         await _user.save();
-        const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        const token = createToken(id);
-        return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        //const {id,name,email,user,photograph,friends,favorites,links} = _user;
+        //const token = createToken(id);
+        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        return response.status(200).send('Ok!');
     },
     async updatePassword(request,response){
         const {oldPassword,newPassword} = request.body;
@@ -182,9 +183,10 @@ module.exports = {
         if(_user.password === oldPassword){
             _user.password = newPassword;
             await _user.save();
-            const {id,name,email,user,photograph,friends,favorites,links} = _user;
-            const token = createToken(id);
-            return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+            //const {id,name,email,user,photograph,friends,favorites,links} = _user;
+            //const token = createToken(id);
+            //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+            return response.status(200).send('Ok!');
         }else{
             return response.json({error:true,password:true});
         }
@@ -208,6 +210,7 @@ module.exports = {
                 }
             }
         }
+        if(data.photograph){
         if(data.photograph != myData.photograph){
             idGerado = uuidv4();
             
@@ -229,13 +232,15 @@ module.exports = {
             }
             data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
             data.idImg = idGerado;
-        }
+        }}
         const _user = await User.findOneAndUpdate({_id:_id},data, {upsert: true}, function(err, doc) {
             if (err) return response.json({error:true,message:err});
         });
-        const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        const token = createToken(id);
-        return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        //const {id,name,email,user,photograph,friends,favorites,links} = _user;
+        //const token = createToken(id);
+        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        return response.status(200).send('Ok!');
+    
     },
 
     async listFriends(request,response){

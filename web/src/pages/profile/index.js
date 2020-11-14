@@ -6,6 +6,7 @@ import PopUp from '../../components/popUp/index';
 import CampoTexto from '../../components/campoTexto/index';
 import Botao from '../../components/botao/index';
 import InputFoto from '../../components/inputFoto/index';
+import Loading from '../../components/loading/index';
 import { useParams,useHistory } from "react-router-dom";
 import { FiUserPlus, FiUserCheck, FiEdit, FiLogOut, FiUser, FiAtSign, FiKey} from 'react-icons/fi';
 import api from '../../service/api';
@@ -187,6 +188,7 @@ export default function Profile(){
         <>
         <Cabecalho refresh={dataUser}/>
         <div id="profile">
+        {dataUser ?<>
             <div className="sair">
                 {dataUser.me ? <button title="Deslogar" onClick={()=>desconectar()}><FiLogOut color="FF2626" size="45"/></button>:null}
             </div>
@@ -279,6 +281,7 @@ export default function Profile(){
                 {listagem}
             </div>
 
+            </>:<Loading/>}
         </div>
         <Rodape/>
         </>

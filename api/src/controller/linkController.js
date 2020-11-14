@@ -35,9 +35,10 @@ module.exports = {
         _user.save();
 
         var token = createToken(_user.id);
-        var {id,name,email,user,photograph,friends,favorites,links} = _user;
+        //var {id,name,email,user,photograph,friends,favorites,links} = _user;
         //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
-        return response.json({user:{id,name,email,user,photograph,friends,favorites,links,token},link:_link});
+        //return response.json({user:{id,name,email,user,photograph,friends,favorites,links,token},link:_link});
+        return response.json({id:_link._id});
     },
 
     async deleteLink(request,response){
@@ -68,7 +69,7 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         var _user = await User.findOne({_id:_id});
-        var token = createToken(_user.id);
+        //var token = createToken(_user.id);
         const link = await Link.findOne({_id:id});
         
         const a = JSON.stringify(link);
@@ -92,7 +93,7 @@ module.exports = {
         }
         average = average/link.rating.length;
         b['average'] = average;
-        b['token'] = token;
+        //b['token'] = token;
         const userLink = await User.findOne({_id:link.user});
         return response.json({link:b,user:{id:userLink._id,photograph:userLink.photograph,user:userLink.user}});
     },
@@ -123,11 +124,13 @@ module.exports = {
         }
         var _user = await User.findOne({_id:_id});
         if(_user.links.indexOf(data.id) !== -1){
-            const _link = await Link.findOneAndUpdate({_id:data.id},data, {upsert: true}, function(err, doc) {
+            //const _link = 
+            await Link.findOneAndUpdate({_id:data.id},data, {upsert: true}, function(err, doc) {
                 if (err) return response.json({error:true,message:err});
             });
-            const token = createToken(_id);
-            return response.json({link:_link,token});
+            //const token = createToken(_id);
+            //return response.json({link:_link,token});
+            return response.status(200).send('Ok!');
         }
         return response.json({error:true,authorization:true});
     },
@@ -147,9 +150,10 @@ module.exports = {
             _user.favorites.push(link);
         }
         await _user.save();
-        const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        const token = createToken(id);
-        return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        //const {id,name,email,user,photograph,friends,favorites,links} = _user;
+        //const token = createToken(id);
+        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
+        return response.status(200).send('Ok!');
     },
 
     async rating(request,response){
@@ -172,7 +176,8 @@ module.exports = {
             _link.rating.push({user:_id,nStars:stars});
         }
         _link.save();
-        return response.json(_link);
+        //return response.json(_link);
+        return response.status(200).send('Ok!');
     },
 
     async searchLink(request,response){
@@ -182,7 +187,7 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
-        const token = createToken(_id);
+        //const token = createToken(_id);
         var tag = '';
         var first = text.split('');
         if(first[0]==='#'){
@@ -223,7 +228,7 @@ module.exports = {
                 a.push(b);
             });
 
-            return response.json({link:a,token});
+            return response.json({link:a});
         }
         if(type && text){
             var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).where('name').in(text).exec();
@@ -253,7 +258,7 @@ module.exports = {
             a.push(b);
         });
 
-        return response.json({link:a,token});
+        return response.json({link:a});
     },
     async timeline(request,response){
         const {authorization} = request.headers;
@@ -305,7 +310,7 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
-        const token = createToken(_id);
+        //const token = createToken(_id);
         var links = await Link.find().select('type.name');
         var a = [];
         links.map((link)=>{
@@ -313,6 +318,6 @@ module.exports = {
                 a.push(link.type.name);
             }
         });
-        return response.json({types:a,token});
+        return response.json({types:a});
     }
 }

@@ -3,6 +3,7 @@ import './style.css';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import CampoTexto from '../../components/campoTexto/index';
+import Loading from '../../components/loading/index';
 import {FiCamera,FiPlusCircle,FiX} from 'react-icons/fi';
 import Botao from '../../components/botao/index';
 import { useHistory } from "react-router-dom";
@@ -18,6 +19,7 @@ export default function AddLink(){
     const [_tags,setTags] = useState([]);
     const [listTags,setListTags] = useState('');
     const [foto,setFoto] = useState('');
+    const [loading,setLoading] = useState(false);
     let history = useHistory();
     var tags = _tags;
     
@@ -82,16 +84,20 @@ export default function AddLink(){
 
     async function cadastrar(){ 
         //var json = jsonTags();
+        setLoading(true);
         if(!nome.valor){
             setNome({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         if(!link.valor){
             setLink({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         if(tipoSelecionado.valor === ""){
             setTipoSelecionado({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         try{
@@ -113,16 +119,18 @@ export default function AddLink(){
                 }
             }else{
                 setTags([]);
-                history.push(`/linkProfile/${response.data.link._id}`);
+                history.push(`/linkProfile/${response.data.id}`);
             }
 
         }catch{
+            setLoading(false);
             alert('Erro no servidor');
         }
     }
     return(
         <>
         <Cabecalho/>
+        {loading ? <Loading/>:null}
         <div id="addLink">
             <h1>Cadastro de link</h1>
             <section>
