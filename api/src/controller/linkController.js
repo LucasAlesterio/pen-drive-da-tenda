@@ -150,9 +150,6 @@ module.exports = {
             _user.favorites.push(link);
         }
         await _user.save();
-        //const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        //const token = createToken(id);
-        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
         return response.status(200).send('Ok!');
     },
 
@@ -262,7 +259,15 @@ module.exports = {
     },
     async timeline(request,response){
         const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
+        let _id = '';
+        try{
+            _id = verifyToken(authorization);
+        }catch{
+            console.log('Error');
+        }
+        if(_id == 'expired'){
+            return response.json({error:true,token:true});
+        }
         if(!_id){
             return response.json({error:true,token:true});
         }

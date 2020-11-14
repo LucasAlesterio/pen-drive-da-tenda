@@ -13,12 +13,19 @@ module.exports = {
     },
     verifyToken(token){
         let id = "";
+        //var e = "";
         jwt.verify(token, process.env.SECRET, function(err, decoded) {
         if(err){
-            console.log(err);
+            //
+            if(err.name == 'TokenExpiredError'){
+                //console.log(err.name);
+                return('expired')
+            }
             return null;
         }
+        //id = err.name
         id = decoded.id;
+
         }       
     );
     return id;

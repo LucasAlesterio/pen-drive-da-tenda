@@ -25,7 +25,8 @@ export default function TimeLine(){
                 }
             }
         }catch{
-            alert('Erro no servidor');
+            alert('Necessário logar novamente!')
+                    history.push('/landing');
         }
     }
     useEffect(()=>{
