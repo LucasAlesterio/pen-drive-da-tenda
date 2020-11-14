@@ -13,6 +13,7 @@ export default function Friends(){
     const [amigos,setAmigos] = useState([]);
     const [listagemAmigos,setListagemAmigos] = useState('loading');
     const [flagAmigos,setFlagAmigos] = useState(false);
+    const [loading,setLoading] = useState(false);
 
     useEffect(()=>{
         buscarDados();
@@ -21,21 +22,26 @@ export default function Friends(){
         setListagemAmigos(listAmigos());
     },[amigos])
     async function buscarDados(){
+        setLoading(true);
         try{
             const response = await api.get('/listFriends',{headers:{Authorization:localStorage.getItem('token')}});
             setAmigos(response.data);
+            setLoading(false);
         }catch{
+            setLoading(false);
             alert('Erro no servidor!');
         }
     }
     async function buscarAmigos(e){
         e.preventDefault();
+        setLoading(false);
         try{
             const response = await api.post('/findUser',{search:campoBusca},{headers:{Authorization:localStorage.getItem('token')}});
             setAmigos(response.data);
             setFlagAmigos(true);
         }catch{
             alert('Erro no servidor!');
+            setLoading(false);
         }
     }
 
@@ -64,7 +70,7 @@ export default function Friends(){
 
             <div className="container">
                 {listagemAmigos}
-                {listagemAmigos === 'loading'?<Loading/>:null}
+                {loading?<Loading/>:null}
                 {!listagemAmigos && listagemAmigos !== 'loading' ?<h1>Você ainda não tem amigos :(</h1> : null}
             </div>
         </div>

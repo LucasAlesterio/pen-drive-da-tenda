@@ -54,7 +54,7 @@ export default function Search(){
 
     async function pesquisar(e){
         setLoading(true);
-        if(e)
+        if(e){
             e.preventDefault();
         }
         try{
