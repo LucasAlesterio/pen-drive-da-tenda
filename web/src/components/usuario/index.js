@@ -9,6 +9,7 @@ export default function Usuario(props){
             await api.post('/updateFriend',{
                 friend:props.id
             },{headers:{Authorization:localStorage.getItem('token')}});
+            props.refresh();
         }catch{
             alert('Erro no servidor!');
         }
@@ -24,7 +25,6 @@ export default function Usuario(props){
                 </Link>
                 {props.button && props.isFriend ? <button onClick={()=>updateFriend()}>Deixar de seguir</button>:null}
                 {props.button && !props.isFriend ? <button onClick={()=>updateFriend()}>Seguir</button>:null}
-                
             </div>
         </div>
     );

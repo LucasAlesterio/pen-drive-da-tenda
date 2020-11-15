@@ -167,7 +167,12 @@ module.exports = {
         const _user = await User.findOne({_id:_id});
         // if indexOf == -1 no existe
         if(_user.friends.indexOf(friend) !== -1){
-            _user.friends.pop(friend);
+            _user.friends.map((f,index)=>{
+                if(f === friend){
+                    _user.friends.splice(index,1);
+                }
+            })
+           // _user.friends.pop(friend);
         }else{
             _user.friends.push(friend);
         }
@@ -255,7 +260,13 @@ module.exports = {
         }
         const _user = await User.findOne({_id:id});
         const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).exec();
-        return response.json(list);
+        const a = JSON.stringify(list);
+        var b = JSON.parse(a);
+        // if indexOf == -1 no existe
+        b.map((b)=>{
+            return(b['isFriend'] = true)
+        });
+        return response.json(b);
     },
     
     async findUser(request,response){

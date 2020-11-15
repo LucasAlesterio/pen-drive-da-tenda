@@ -54,7 +54,12 @@ module.exports = {
             const _link = await Link.findOne({_id:link});
             await deleteImage(_link.idImg);
             await Link.findByIdAndDelete({_id:link});
-            _user.links.pop(link);
+            //_user.links.pop(link);
+            _user.links.map((f,index)=>{
+                if(f === link){
+                    _user.links.splice(index,1);
+                }
+            })
             _user.save();
             return response.send(true);
         }
@@ -151,7 +156,12 @@ module.exports = {
         const _user = await User.findOne({_id:_id});
         // if indexOf == -1 no existe
         if(_user.favorites.indexOf(link) !== -1){
-            _user.favorites.pop(link);
+            //_user.favorites.pop(link);
+            _user.favorites.map((f,index)=>{
+                if(f === link){
+                    _user.favorites.splice(index,1);
+                }
+            })
         }else{
             _user.favorites.push(link);
         }

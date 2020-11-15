@@ -12,20 +12,23 @@ export default function Friends(){
     const [campoBusca,setCampoBusca] = useState('');
     const [amigos,setAmigos] = useState([]);
     const [listagemAmigos,setListagemAmigos] = useState('loading');
-    const [flagAmigos,setFlagAmigos] = useState(false);
+    //const [flagAmigos,setFlagAmigos] = useState(false);
     const [loading,setLoading] = useState(false);
-
+    //var flagAmigos = false;
     useEffect(()=>{
         buscarDados();
-    },[])
-    useEffect(()=>{
-        setListagemAmigos(listAmigos());
-    },[amigos])
+    },[]);
+
+    //useEffect(()=>{
+        //setListagemAmigos(listAmigos());
+    //},[amigos]);
+
     async function buscarDados(){
         setLoading(true);
         try{
             const response = await api.get('/listFriends',{headers:{Authorization:localStorage.getItem('token')}});
             setAmigos(response.data);
+            listAmigos(response.data);
             setLoading(false);
         }catch{
             setLoading(false);
@@ -33,12 +36,21 @@ export default function Friends(){
         }
     }
     async function buscarAmigos(e){
-        e.preventDefault();
-        setLoading(false);
+        setLoading(true);
+        if(e){
+            e.preventDefault();
+        }
+        if(!campoBusca){
+            buscarDados();
+            return null;
+        }
+        //flagAmigos = true;
         try{
             const response = await api.post('/findUser',{search:campoBusca},{headers:{Authorization:localStorage.getItem('token')}});
+            //listAmigos(response.data);
             setAmigos(response.data);
-            setFlagAmigos(true);
+            setLoading(false);
+            //setFlagAmigos(true);
         }catch{
             alert('Erro no servidor!');
             setLoading(false);
@@ -46,10 +58,10 @@ export default function Friends(){
     }
 
     function listAmigos(){
-        
         const retorno  = amigos.map((amigo)=>(
-            <Usuario user={amigo.user} photo={amigo.photograph} button={flagAmigos} isFriend={amigo.isFriend} id={amigo._id}/>
+            <Usuario user={amigo.user} photo={amigo.photograph} button={true} isFriend={amigo.isFriend} id={amigo._id} refresh={()=>buscarAmigos()}/>
         ))
+        //setListagemAmigos(retorno);
         return retorno;
     }
     return(
@@ -69,9 +81,9 @@ export default function Friends(){
             </form>
 
             <div className="container">
-                {listagemAmigos}
-                {loading?<Loading/>:null}
-                {!listagemAmigos && listagemAmigos !== 'loading' ?<h1>Você ainda não tem amigos :(</h1> : null}
+
+                {loading?<Loading/>:listAmigos()}
+                {!listagemAmigos && listagemAmigos !== 'loading' ?<h1>Você ainda não tem amigos :(</h1> :null}
             </div>
         </div>
         <Rodape/>
