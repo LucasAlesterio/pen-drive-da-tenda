@@ -13,20 +13,12 @@ module.exports = {
     },
     verifyToken(token){
         let id = "";
-        //var e = "";
-        jwt.verify(token, process.env.SECRET, function(err, decoded) {
-        if(err){
-            //
-            if(err.name == 'TokenExpiredError'){
-                //console.log(err.name);
-                return('expired')
+        jwt.verify(token, process.env.SECRET, function(err, decoded){
+            if(err){
+                return err;
             }
-            return null;
+            id = decoded.id;
         }
-        //id = err.name
-        id = decoded.id;
-
-        }       
     );
     return id;
     },

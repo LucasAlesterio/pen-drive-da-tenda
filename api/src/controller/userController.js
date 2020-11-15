@@ -277,7 +277,27 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        var list = await User.find().select(['user','name','photograph']).where('user').in(search).exec();
+        //var list = await User.find().select(['user','name','photograph']).where('user').in(search).exec();
+        let list = await User.aggregate([
+            {
+                '$search': {
+                    'search': {
+                    'path': [
+                        'name', 'user'
+                    ], 
+                    'query': search
+                    }
+                }
+                }, {
+                '$project': { 
+                    'photograph': 1, 
+                    '_id': 1, 
+                    'user': 1,
+                    'friends':1
+                }
+            }
+        ]);
+
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
         // if indexOf == -1 no existe

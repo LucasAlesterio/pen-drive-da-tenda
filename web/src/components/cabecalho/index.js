@@ -36,7 +36,7 @@ export default function Cabecalho(props){
     return(
         <div className="cabecalho">
             <div>
-                <Link to='/friends' replace title="Amigos">
+                <Link to='/friends' title="Amigos">
                     <FiUsers size='20' color='C2C2C2'/>
                 </Link>
                 <Link to='/addLink' title="Adicionar link">

@@ -17,16 +17,19 @@ export default function TimeLine(){
     async function buscarLinks(){
         try{
             const response = await api.get('/timeLine',{headers:{Authorization:localStorage.getItem('token')}});
-            setLinks((response.data.link).reverse());
             if(response.data.error){
-                if(response.data.error.token){
+                if(response.data.token){
                     alert('Necessário logar novamente!')
                     history.push('/landing');
+                    return null;
                 }
             }
-        }catch{
-            alert('Necessário logar novamente!')
-                    history.push('/landing');
+            if(response.data.link){
+                setLinks((response.data.link).reverse());
+            }
+        }catch(e){
+            alert(e)
+            //history.push('/landing');
         }
     }
     useEffect(()=>{
@@ -37,7 +40,6 @@ export default function TimeLine(){
         setOpenEstrelas(true);
         setLinkSelecionado(id);
     }
-
 
     function listagem(){
         const list = links.map((link)=>(

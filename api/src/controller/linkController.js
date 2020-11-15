@@ -310,14 +310,7 @@ module.exports = {
     async timeline(request,response){
         const {authorization} = request.headers;
         let _id = '';
-        try{
-            _id = verifyToken(authorization);
-        }catch{
-            console.log('Error');
-        }
-        if(_id == 'expired'){
-            return response.json({error:true,token:true});
-        }
+        _id = await verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
