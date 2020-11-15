@@ -2,9 +2,7 @@ const User = require('../models/users');
 const Link = require('../models/links');
 
 const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage, deleteImage} = require('../functions');
-const typesSchema = require('../models/types');
 const { v4: uuidv4 } = require('uuid');
-
 
 module.exports = {
     async addLink(request,response){
@@ -29,16 +27,9 @@ module.exports = {
             }
             photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
         }
-
         var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id,idImg:idGerado});
-
         _user.links.push(_link._id);
         _user.save();
-
-        var token = createToken(_user.id);
-        //var {id,name,email,user,photograph,friends,favorites,links} = _user;
-        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
-        //return response.json({user:{id,name,email,user,photograph,friends,favorites,links,token},link:_link});
         return response.json({id:_link._id});
     },
 
@@ -52,9 +43,10 @@ module.exports = {
         var _user = await User.findOne({_id:_id});
         if(_user.links.indexOf(link) !== -1){
             const _link = await Link.findOne({_id:link});
-            await deleteImage(_link.idImg);
+            if(_link.photograph){
+                await deleteImage(_link.idImg);
+            }
             await Link.findByIdAndDelete({_id:link});
-            //_user.links.pop(link);
             _user.links.map((f,index)=>{
                 if(f === link){
                     _user.links.splice(index,1);
@@ -68,19 +60,15 @@ module.exports = {
 
     async dataLink(request,response){
         const {id} = request.body;
-        
         const {authorization} = request.headers;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
         var _user = await User.findOne({_id:_id});
-        //var token = createToken(_user.id);
         const link = await Link.findOne({_id:id});
-        
         const a = JSON.stringify(link);
         var b = JSON.parse(a);
-        // if indexOf == -1 no existe
         if(_user.links.indexOf(id) !== -1){
             b['isMy'] = true;
         }else{
@@ -91,17 +79,6 @@ module.exports = {
         }else{
             b['isFavorite'] = false;
         }
-        /*
-        var average = 0;
-        if(link.rating){
-            link.rating.map((score)=>{
-                average += score.nStars;
-            });
-        }
-        average = average/link.rating.length;
-        b['average'] = average;
-        //b['token'] = token;
-     */
         const userLink = await User.findOne({_id:link.user});
         return response.json({link:b,user:{id:userLink._id,photograph:userLink.photograph,user:userLink.user}});
     },
@@ -116,7 +93,6 @@ module.exports = {
         var idGerado = null;
         var _link = await Link.findOne({_id:data.id});
         if(data.photograph && data.photograph != _link.photograph){
-             //console.log(_link.idImg);
             if(_link.photograph){
                 await deleteImage(_link.idImg);
             }
@@ -135,12 +111,9 @@ module.exports = {
         }
         var _user = await User.findOne({_id:_id});
         if(_user.links.indexOf(data.id) !== -1){
-            //const _link = 
             await Link.findOneAndUpdate({_id:data.id},data, {upsert: true}, function(err, doc) {
                 if (err) return response.json({error:true,message:err});
             });
-            //const token = createToken(_id);
-            //return response.json({link:_link,token});
             return response.status(200).send('Ok!');
         }
         return response.json({error:true,authorization:true});
@@ -154,9 +127,7 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
-        // if indexOf == -1 no existe
         if(_user.favorites.indexOf(link) !== -1){
-            //_user.favorites.pop(link);
             _user.favorites.map((f,index)=>{
                 if(f === link){
                     _user.favorites.splice(index,1);
@@ -202,7 +173,7 @@ module.exports = {
 
     async searchLink(request,response){
         const {authorization} = request.headers;
-        const {text,type} = request.body;
+        const {text} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
@@ -232,80 +203,6 @@ module.exports = {
             var links = await Link.find().select(['name','photograph','average']).exec();
             return response.json(links);
         }
-        //const token = createToken(_id);
-        /*
-        var tag = '';
-        var first = text.split('');
-        if(first[0]==='#'){
-            first.shift();
-            first.map((word)=>{
-                tag += word;
-            });
-            var arrayTags = text.split(/[ ,]+/);
-            var array = [];
-            arrayTags.map((a,i)=>{
-                array.push(a.substr(1));
-            });
-            if(type && text){
-                var links = await Link.find().select(['name','photograph','rating']).where('tag.name').in(array).where('type.name').equals(type).exec();
-            }
-            if(!type && text){
-                var links = await Link.find().select(['name','photograph','rating']).where('tag.name').in(array).exec();
-            }
-            if(type && !text){
-                var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).exec();
-            }
-            if(!type && !text){
-                var links = await Link.find().select(['name','photograph','rating']).exec();
-            }
-            var average = 0;
-            var a = [];
-            var b = {};
-            links.map((link)=>{
-                average = 0;
-                b = JSON.parse(JSON.stringify(link));
-                if(link.rating){
-                    link.rating.map((score)=>{
-                        average += score.nStars;
-                    });
-                }
-                average = average/link.rating.length;
-                b['average'] = average;
-                a.push(b);
-            });
-
-            return response.json({link:a});
-        }
-        if(type && text){
-            var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).where('name').in(text).exec();
-        }
-        if(!type && text){
-            var links = await Link.find().select(['name','photograph','rating']).where('name').in(text).exec();
-        }
-        if(type && !text){
-            var links = await Link.find().select(['name','photograph','rating']).where('type.name').equals(type).exec();
-        }
-        if(!type && !text){
-            var links = await Link.find().select(['name','photograph','rating']).exec();
-        }
-        var average = 0;
-        var a = [];
-        var b = {};
-        links.map((link)=>{
-            average = 0;
-            b = JSON.parse(JSON.stringify(link));
-            if(link.rating){
-                link.rating.map((score)=>{
-                    average += score.nStars;
-                });
-            }
-            average = average/link.rating.length;
-            b['average'] = average;
-            a.push(b);
-        });
-
-        return response.json({link:a});
-        */
     },
     async timeline(request,response){
         const {authorization} = request.headers;
@@ -316,43 +213,19 @@ module.exports = {
         }
         const _user = await User.findOne({_id:_id});
         var links = await Link.find().select(['name','photograph','average','user']).where('user').in(_user.friends).exec();
-        var average = 0;
-        var a = [];
-        var b = {};
-        /*
-        //var usuario = '';
-        links.map(async (link)=>{
-            b = JSON.parse(JSON.stringify(link));
-            average = 0;
-            if(link.rating){
-                link.rating.map((score)=>{
-                    average += score.nStars;
-                });
-            }
-            average = average/link.rating.length;
-            b['average'] = average;
-            //usuario = await User.findOne({_id:link.user}).select(['user','photograph','name']);
-            //b['user'] = JSON.parse(JSON.stringify(await User.findOne({_id:link.user}).select(['user','photograph','name'])));
-            a.push(b);
-        });
-        */
         links = JSON.parse(JSON.stringify(links));
         var idusers = links.map((link)=>{
             return link.user;
         });
-
         var usuario = await User.find().select(['user','photograph','name']).where('_id').in(idusers);
-
         const resp = links.map((link)=>{
             usuario.map((us)=>{
                 if(link.user == us._id){
                     link['user'] = us;
-                    //console.log(link);
                 }
             })
             return(link);
         });
-        //console.log(resp);
         return response.json({link:resp});
     },
 
@@ -362,7 +235,6 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
-        //const token = createToken(_id);
         var links = await Link.find().select('type.name');
         var a = [];
         links.map((link)=>{

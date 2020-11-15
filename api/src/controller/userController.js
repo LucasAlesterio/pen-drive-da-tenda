@@ -33,7 +33,6 @@ module.exports = {
             }
             _user = await User.create({name,email,password,user,photograph});
             var token = createToken(_user.id);
-            //var {id,name,email,user,photograph,friends,favorites,links} = _user;
             return response.json(token);
         }else{
             return response.json(err);
@@ -49,7 +48,6 @@ module.exports = {
             if(_user){
                 if(_user.password === password){
                     var token = createToken(_user.id);
-                    //var {id,name,email,user,photograph,friends,favorites,links} = _user;
                     return response.json({token});
                 }else{
                     err.error = true;
@@ -61,7 +59,6 @@ module.exports = {
             if(_user){
                 if(_user.password === password){
                     var token = createToken(_user.id);
-                    //var {id,name,email,user,photograph,friends,favorites,links} = _user;
                     return response.json({token});
                 }else{
                     err.error = true;
@@ -76,7 +73,6 @@ module.exports = {
     },
 
     async dataUser(request,response){
-        //let err = {"error":false,"email":false,"password":false};
         const {authorization} = request.headers;
         const {idUser} = request.body;
         let _id = verifyToken(authorization);
@@ -89,63 +85,13 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        var average = 0;
-        var a = [];
-        var b = {};
         const myProfile = await User.findOne({_id:_id});
         if(idUser == myProfile.user){
             var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).exec();
-            /*
-            _favorites.map((link)=>{
-                average = 0;
-                b = JSON.parse(JSON.stringify(link));
-                if(link.rating){
-                    link.rating.map((score)=>{
-                        average += score.nStars;
-                    });
-                }
-                average = average/link.rating.length;
-                b['average'] = average;
-                a.push(b);
-            });
-            _favorites = a;
-            b = {};
-            a = [];
-        */
         var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
-        /*
-        _links.map((link)=>{
-            average = 0;
-            b = JSON.parse(JSON.stringify(link));
-            if(link.rating){
-                link.rating.map((score)=>{
-                    average += score.nStars;
-                });
-            }
-            average = average/link.rating.length;
-            b['average'] = average;
-            a.push(b);
-        });
-        _links = a;
-        */
         return response.json({user:{id,name,email,user,photograph,friends,me:true},favorites:_favorites,links:_links});
     }else{
         var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
-        /*
-        _links.map((link)=>{
-            average = 0;
-            b = JSON.parse(JSON.stringify(link));
-            if(link.rating){
-                link.rating.map((score)=>{
-                    average += score.nStars;
-                });
-            }
-            average = average/link.rating.length;
-            b['average'] = average;
-            a.push(b);
-        });
-        _links = a;
-        */
         var flag = false;
         const _userLink = await User.findOne({user:idUser});
         if(myProfile.friends.indexOf(_userLink._id) !== -1){
@@ -165,21 +111,16 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
-        // if indexOf == -1 no existe
         if(_user.friends.indexOf(friend) !== -1){
             _user.friends.map((f,index)=>{
                 if(f === friend){
                     _user.friends.splice(index,1);
                 }
             })
-           // _user.friends.pop(friend);
         }else{
             _user.friends.push(friend);
         }
         await _user.save();
-        //const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        //const token = createToken(id);
-        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
         return response.status(200).send('Ok!');
     },
     async updatePassword(request,response){
@@ -193,9 +134,6 @@ module.exports = {
         if(_user.password === oldPassword){
             _user.password = newPassword;
             await _user.save();
-            //const {id,name,email,user,photograph,friends,favorites,links} = _user;
-            //const token = createToken(id);
-            //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
             return response.status(200).send('Ok!');
         }else{
             return response.json({error:true,password:true});
@@ -242,12 +180,9 @@ module.exports = {
             data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
             data.idImg = idGerado;
         }}
-        const _user = await User.findOneAndUpdate({_id:_id},data, {upsert: true}, function(err, doc) {
+        await User.findOneAndUpdate({_id:_id},data, {upsert: true}, function(err, doc) {
             if (err) return response.json({error:true,message:err});
         });
-        //const {id,name,email,user,photograph,friends,favorites,links} = _user;
-        //const token = createToken(id);
-        //return response.json({id,name,email,user,photograph,friends,favorites,links,token});
         return response.status(200).send('Ok!');
     
     },
@@ -262,7 +197,6 @@ module.exports = {
         const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).exec();
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
-        // if indexOf == -1 no existe
         b.map((b)=>{
             return(b['isFriend'] = true)
         });
@@ -277,7 +211,6 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        //var list = await User.find().select(['user','name','photograph']).where('user').in(search).exec();
         let list = await User.aggregate([
             {
                 '$search': {
@@ -300,7 +233,6 @@ module.exports = {
 
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
-        // if indexOf == -1 no existe
         b.map((friend,index)=>{
             if(_user.friends.indexOf(friend._id) !== -1){
                 b[index]['isFriend'] = true;

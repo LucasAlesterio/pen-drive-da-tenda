@@ -20,6 +20,7 @@ export default function LinkProfile(){
     const [tags,setTags] = useState([]);
     const [openEstrelas,setOpenEstrelas] = useState('');
     const [openExcluir,setOpenExcluir] = useState('');
+    const [loading,setLoading] = useState(false);
     let history = useHistory();
     let {id} = useParams();
 
@@ -54,19 +55,25 @@ export default function LinkProfile(){
     }
 
     async function favoritar(){
+        setLoading(true);
         try{
             await api.post('/updateFavorite',{link:id},{headers:{Authorization:localStorage.getItem('token')}});
             buscarDados();
+            setLoading(false);
         }catch{
+            setLoading(false);
             alert('Erro no servidor');
         }
     }
 
     async function excluir(){
+        setLoading(true);
         try{
             await api.post('/deleteLink',{link:id},{headers:{Authorization:localStorage.getItem('token')}});
             history.push(`/profile/${user.user}`);
+            setLoading(false);
         }catch{
+            setLoading(false);
             alert('Erro no servidor');
         }
     }
@@ -83,7 +90,7 @@ export default function LinkProfile(){
     <>
         <Cabecalho/>
         <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={link._id} onSend={buscarDados}/>
-
+        {loading ? <Loading /> : null}
         <div id="linkProfile">
             {user ?<>
             <PopUp title="Excluir" open={openExcluir} onClose={()=>setOpenExcluir(false)}>
