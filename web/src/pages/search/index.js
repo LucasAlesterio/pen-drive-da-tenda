@@ -66,7 +66,7 @@ export default function Search(){
                     history.push('/landing');
                 }
             }else{
-                setLinks(response.data.link);
+                setLinks(response.data);
             }
             setLoading(false);
 

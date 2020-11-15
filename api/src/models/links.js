@@ -12,6 +12,7 @@ const linksSchema = new mongoose.Schema({
     rating:[ratingsSchema],
     type:typesSchema,
     tag:[tagsSchema],
-    idImg:String
+    idImg:String,
+    average:Number
 });
 module.exports = mongoose.model('Links',linksSchema);

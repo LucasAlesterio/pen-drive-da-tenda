@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import './style.css';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
@@ -8,7 +8,6 @@ import {FiCamera,FiPlusCircle,FiX} from 'react-icons/fi';
 import Botao from '../../components/botao/index';
 import { useHistory } from "react-router-dom";
 import api from '../../service/api';
-//import {RiImageAddLine} from 'react-icons/ri'
 
 export default function AddLink(){
     const [tipoSelecionado,setTipoSelecionado] = useState({valor:'',erro:false,textoErro:''});
@@ -43,19 +42,19 @@ export default function AddLink(){
     }
     function listagemTag(){
         const response = tags.map((t)=>(
-            <div key={t}>
-                <p>{t}</p>
-                <button  onClick={()=>deleteTag(t)}>
-                    <FiX  color="151515" size="20"/>
-                </button>
-            </div>
+                <section key={t}>
+                    <p>{t}</p>
+                    <button  onClick={()=>deleteTag(t)}>
+                        <FiX  color="151515" size="20"/>
+                    </button>
+                </section>
         ));
         setListTags(response);
     }
 
     function addTag(e){
         e.preventDefault();
-        if(tags.indexOf(tag) === -1){
+        if(tags.indexOf(tag) === -1 && tag !== ""){
             tags.push(tag);
             setTags(tags);
             listagemTag();

@@ -121,7 +121,9 @@ export default function LinkProfile(){
                 </div>}
             <div className="container">
                 <div className="foto">
-                    <div className="fotoLink"><img alt="capa" src={link.photograph} alt="capa"/></div>
+                    <div className="fotoLink" style={!link.photograph ? {backgroundColor:'var(--rosa)'} : null}>
+                        {link.photograph ? <img alt="capa" src={link.photograph} alt="capa"/> : null}
+                    </div>
                     <div className="estrelas">
                         <button title="Avaliar" onClick={()=>setOpenEstrelas(true)}><Estrelas average={link.average} size={30}/></button>
                     </div>
@@ -149,7 +151,10 @@ export default function LinkProfile(){
             </div>
             <div className="descricao">{link.description}</div>
             {tags.length !== 0? 
-                <div className="tags">
+                <div className="tagsContainer">
+                    <div style={{backgroundColor:'var(--cinza-escuro)',color:'var(--amarelo)'}}>
+                        <p>{link.type.name}</p>
+                    </div>
                     {tags.map((t)=>(
                         <div key={t}>
                             <p>{t}</p>

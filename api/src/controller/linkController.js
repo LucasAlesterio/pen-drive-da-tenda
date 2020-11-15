@@ -14,6 +14,7 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
+        var idGerado = null;
         var _user = await User.findOne({_id:_id});
         if(photograph){
             idGerado = uuidv4();
@@ -85,6 +86,7 @@ module.exports = {
         }else{
             b['isFavorite'] = false;
         }
+        /*
         var average = 0;
         if(link.rating){
             link.rating.map((score)=>{
@@ -94,6 +96,7 @@ module.exports = {
         average = average/link.rating.length;
         b['average'] = average;
         //b['token'] = token;
+     */
         const userLink = await User.findOne({_id:link.user});
         return response.json({link:b,user:{id:userLink._id,photograph:userLink.photograph,user:userLink.user}});
     },
@@ -105,10 +108,13 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
+        var idGerado = null;
         var _link = await Link.findOne({_id:data.id});
         if(data.photograph && data.photograph != _link.photograph){
              //console.log(_link.idImg);
-            await deleteImage(_link.idImg);
+            if(_link.photograph){
+                await deleteImage(_link.idImg);
+            }
             idGerado = uuidv4();
             await decodeBase64Image(data.photograph,idGerado);
             const url = await uploadImage(idGerado);
@@ -172,6 +178,13 @@ module.exports = {
         if(!flag){
             _link.rating.push({user:_id,nStars:stars});
         }
+        average = 0;
+        _link.rating.map((score)=>{
+            average += score.nStars;
+        });
+        average = average/_link.rating.length;
+        _link.average = average;
+        //console.log(average);
         _link.save();
         //return response.json(_link);
         return response.status(200).send('Ok!');
@@ -184,7 +197,33 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
+        if(text){
+            const resp = await Link.aggregate([
+                {
+                    '$search': {
+                        'search': {
+                        'path': [
+                            'name', 'description', 'tag.name','type.name'
+                        ], 
+                        'query': text
+                        }
+                    }
+                    }, {
+                    '$project': {
+                        'name': 1, 
+                        'photograph': 1, 
+                        '_id': 1, 
+                        'average': 1
+                    }
+                }
+            ]);
+            return response.json(resp);
+        }else{
+            var links = await Link.find().select(['name','photograph','average']).exec();
+            return response.json(links);
+        }
         //const token = createToken(_id);
+        /*
         var tag = '';
         var first = text.split('');
         if(first[0]==='#'){
@@ -256,6 +295,7 @@ module.exports = {
         });
 
         return response.json({link:a});
+        */
     },
     async timeline(request,response){
         const {authorization} = request.headers;
@@ -272,10 +312,11 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
-        var links = await Link.find().select(['name','photograph','rating','user']).where('user').in(_user.friends).exec();
+        var links = await Link.find().select(['name','photograph','average','user']).where('user').in(_user.friends).exec();
         var average = 0;
         var a = [];
         var b = {};
+        /*
         //var usuario = '';
         links.map(async (link)=>{
             b = JSON.parse(JSON.stringify(link));
@@ -291,13 +332,15 @@ module.exports = {
             //b['user'] = JSON.parse(JSON.stringify(await User.findOne({_id:link.user}).select(['user','photograph','name'])));
             a.push(b);
         });
-        var idusers = a.map((link)=>{
+        */
+        links = JSON.parse(JSON.stringify(links));
+        var idusers = links.map((link)=>{
             return link.user;
         });
 
         var usuario = await User.find().select(['user','photograph','name']).where('_id').in(idusers);
 
-        const resp = a.map((link)=>{
+        const resp = links.map((link)=>{
             usuario.map((us)=>{
                 if(link.user == us._id){
                     link['user'] = us;
@@ -309,6 +352,7 @@ module.exports = {
         //console.log(resp);
         return response.json({link:resp});
     },
+
     async types(request,response){
         const {authorization} = request.headers;
         let _id = verifyToken(authorization);

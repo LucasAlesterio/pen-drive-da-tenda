@@ -16,21 +16,14 @@
     --cinza-medio: #151515;
     --cinza-escuro: #0A0A0A;
     --cinza-claro-opacity: 194,194,194;
+    --rosa: #FF6F6F;
     font-size: 60%;
-}
-
-html,body,#root {
-    height: 100vh;
-}
-body::-webkit-scrollbar-track{
-    background-color: #0A0A0A;
 }
 @media (min-width: 700px) {
     :root {
         font-size: 62.5%;
     }
 }
-
 body {
     background: var(--cinza-medio);
     -webkit-font-smoothing: antialiased;

@@ -94,7 +94,8 @@ module.exports = {
         var b = {};
         const myProfile = await User.findOne({_id:_id});
         if(idUser == myProfile.user){
-            var _favorites = await Link.find().select(['name','photograph','rating']).where('_id').in(favorites).exec();
+            var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).exec();
+            /*
             _favorites.map((link)=>{
                 average = 0;
                 b = JSON.parse(JSON.stringify(link));
@@ -110,8 +111,9 @@ module.exports = {
             _favorites = a;
             b = {};
             a = [];
-        
-        var _links = await Link.find().select(['name','photograph','rating']).where('_id').in(links).exec();
+        */
+        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
+        /*
         _links.map((link)=>{
             average = 0;
             b = JSON.parse(JSON.stringify(link));
@@ -125,9 +127,11 @@ module.exports = {
             a.push(b);
         });
         _links = a;
+        */
         return response.json({user:{id,name,email,user,photograph,friends,me:true},favorites:_favorites,links:_links});
     }else{
-        var _links = await Link.find().select(['name','photograph','rating']).where('_id').in(links).exec();
+        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
+        /*
         _links.map((link)=>{
             average = 0;
             b = JSON.parse(JSON.stringify(link));
@@ -141,6 +145,7 @@ module.exports = {
             a.push(b);
         });
         _links = a;
+        */
         var flag = false;
         const _userLink = await User.findOne({user:idUser});
         if(myProfile.friends.indexOf(_userLink._id) !== -1){
@@ -216,7 +221,6 @@ module.exports = {
             
             if(myData.photograph === `https://storage.googleapis.com/twm-images/${data.user}.png`){
                 deleteImage(data.user);
-                console.log('jaisofgaskopfjopas');
             }else{
                 deleteImage(myData.idImg);
             }

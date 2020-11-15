@@ -125,7 +125,7 @@
     font: 400 1.8rem Roboto, sans-serif;
     text-align: justify;
 }
-#linkProfile .tags{
+#linkProfile .tagsContainer{
     background-color: rgba(var(--cinza-claro-opacity),0.05);
     width: 58%;
     height: auto;
@@ -135,15 +135,17 @@
     display: flex;
     flex-wrap: wrap;
 }
-#linkProfile .tags>div{
+#linkProfile .tagsContainer>div{
     height: 4rem;
     background-color: var(--amarelo);
+    border:var(--amarelo) solid 1px;
     display: flex;
     width: min-content;
     border-radius: 2rem;
-    padding:0.5rem;
+    padding:0.5rem 1rem;
     align-items: center;
     margin: 0.5rem;
+    height: max-content;
 }
 #linkProfile h4{
     color: var(--cinza-claro);

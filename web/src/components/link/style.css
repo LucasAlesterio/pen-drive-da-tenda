@@ -24,7 +24,7 @@
     max-width: 15rem;
 }
 .link .semFoto{
-    background-color: rgb(255, 138, 138);
+    background-color: var(--rosa);
     height: 20rem;
     width: 15rem;
 }

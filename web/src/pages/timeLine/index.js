@@ -42,8 +42,8 @@ export default function TimeLine(){
     function listagem(){
         const list = links.map((link)=>(
             <div className="link" key={link._id}>
-                <Link className="containerImagem" to={`linkProfile/${link._id}`}>
-                    <img alt="imagem link" src={link.photograph}/>
+                <Link className="containerImagem" to={`linkProfile/${link._id}`} style={!link.photograph ?{backgroundColor:'var(--rosa)'}:null}>
+                    {link.photograph ? <img alt="imagem link" src={link.photograph}/> : null}
                 </Link>
                 <div className="infoLink">
                     <div className="containerInfo">

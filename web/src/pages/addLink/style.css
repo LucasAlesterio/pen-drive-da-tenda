@@ -116,18 +116,10 @@
     justify-content: center;
 }
 #addLink .container .tag .containerTag{
-    max-height: 80%;
-    width: 100%;
-    flex-wrap: wrap;
     display: flex;
-    align-content: flex-start;
-    overflow-y:auto;
+    flex-wrap: wrap;
 }
-::-webkit-scrollbar-track {
-    background: black;
-}
-
-#addLink .container .tag .containerTag>div{
+#addLink .container .tag .containerTag>section{
     height: 4rem;
     background-color: var(--amarelo);
     display: flex;
@@ -136,8 +128,13 @@
     padding:0.5rem;
     align-items: center;
     margin: 0.5rem;
+    height: fit-content;
+    
 }
-#addLink .container .tag .containerTag>div>button{
+#addLink .container .tag .containerTag>section>p{
+    padding:0 0.4rem 0 1rem;
+}
+#addLink .container .tag .containerTag>section>button{
     border:none;
     background: none;
     display: flex;
