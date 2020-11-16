@@ -82,7 +82,7 @@ module.exports = {
         var _user = '';
         _user = await User.findOne({user:idUser});
         if(!_user){
-            return response.json({error:true,token:true});
+            return response.json({error:true,empty:true});
         }
         const {id,name,email,user,photograph,friends,favorites,links} = _user;
         const myProfile = await User.findOne({_id:_id});

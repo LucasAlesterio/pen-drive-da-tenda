@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import CampoTexto from '../../components/campoTexto/index';
 import LinkList from '../../components/link/index';
 import Loading from '../../components/loading/index';
+import Paginacao from '../../components/paginacao/index';
 import {FiSearch,FiFilter} from 'react-icons/fi'
 import api from '../../service/api';
 import './style.css';
@@ -15,6 +16,9 @@ export default function Search(){
     const [tipoSelecionado,setTipoSelecionado] = useState('');
     const [links,setLinks] = useState([]);
     const [loading,setLoading] = useState(false);
+    const [page,setPage] = useState(0);
+    const [pageSize,setPageSize] = useState(18);
+    const [count,setCount] = useState(0);
 
     async function buscarTipos(){
         try{
@@ -50,7 +54,7 @@ export default function Search(){
 
     useEffect(()=>{
         pesquisar();
-    },[tipoSelecionado])
+    },[tipoSelecionado,page])
 
     async function pesquisar(e){
         setLoading(true);
@@ -59,14 +63,15 @@ export default function Search(){
         }
         try{
             const response = await api.post('/searchLink',
-            {text:busca,type:tipoSelecionado},
+            {text:busca,pageSize:pageSize,page:page},
             {headers:{Authorization:localStorage.getItem('token')}});
             if(response.data.erro){
                 if(response.data.token){
                     history.push('/landing');
                 }
             }else{
-                setLinks(response.data);
+                setLinks(response.data.links);
+                setCount(response.data.count);
             }
             setLoading(false);
 
@@ -105,6 +110,7 @@ export default function Search(){
                 <div className="container">
                 {links ? listLinks() : null}
                 </div>
+                <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={5}/>
         </div>
         <Rodape/>
         </>:<Loading/>}

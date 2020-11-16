@@ -24,9 +24,7 @@ export default function TimeLine(){
                     return null;
                 }
             }
-            if(response.data.link){
-                setLinks((response.data.link).reverse());
-            }
+            setLinks((response.data.link).reverse());
         }catch(e){
             alert(e)
             //history.push('/landing');

@@ -23,16 +23,15 @@ export default function Profile(){
     const [estilo,setEstilo] = useState(true);
     const [openEdit,setOpenEdit] = useState(false);
     const [openPass,setOpenPass] = useState(false);
+    const [loading,setLoading] = useState(false);
     let history = useHistory();
-
 
     const [senhaAntiga,setSenhaAntiga] = useState({valor:'',erro:false,textoErro:''});
     const [senha,setSenha] = useState({valor:'',erro:false,textoErro:''});
-    const [foto,setFoto] = useState(null);
+    const [fotoUser,setFoto] = useState('');
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
     const [usuario,setUsuario] = useState({valor:'',erro:false,textoErro:''});
     const [confirmarSenha,setConfirmarSenha] = useState({valor:'',erro:false,textoErro:''});
-
 
     const styleOpen ={
         transition:'transform 0.25s',
@@ -45,7 +44,7 @@ export default function Profile(){
     };
 
     function afterTime(){ 
-        setEstilo(true)
+        setEstilo(true);
         if(!aba && links){
             setListagem(listLinks());
         }
@@ -67,6 +66,11 @@ export default function Profile(){
             if(response.data.error){
                 if(response.data.token){
                     history.push('/landing');
+                    return null;
+                }
+                if(response.data.empty){
+                    alert('Não encontramos esse usuário :( ');
+                    history.push('/');
                     return null;
                 }
             }
@@ -109,46 +113,55 @@ export default function Profile(){
         history.push('/landing');
     }
     async function atualizarDados(){
+        setLoading(true);
         var response = '';
         if(!nome.valor){
             setNome({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         if(!usuario.valor){
             setUsuario({valor:'',erro:true,textoErro:'Campo obrigatório!'})
+            setLoading(false);
             return null;
         }
         try{
             response = await api.post('/updateProfile',{
                 user:usuario.valor,
                 name:nome.valor,
-                photograph:foto
+                photograph:fotoUser
             },{headers:{Authorization:localStorage.getItem('token')}});
-            if(response.data.err){
+            if(response.data.error){
                 if(response.data.user){
                     setUsuario({valor:usuario.valor,erro:true,textoErro:'Usuário já existe!'});
+                    setLoading(false);
                     return null;
                 }
             }
             if(openPass){
                 if(!senhaAntiga.valor){
                     setSenhaAntiga({valor:'',erro:true,textoErro:'Campo obrigatório!'});
+                    setLoading(false);
                     return null;
                 }
                 if(!senha.valor){
                     setSenha({valor:'',erro:true,textoErro:'Campo obrigatório!'});
+                    setLoading(false);
                     return null;
                 }
                 if(senha.valor.length < 8){
                     setSenha({valor:senha.valor,erro:true,textoErro:'Senha curta!'});
+                    setLoading(false);
                     return null;
                 }
                 if(!confirmarSenha.valor){
                     setConfirmarSenha({valor:'',erro:true,textoErro:'Campo obrigatório!'});
+                    setLoading(false);
                     return null;
                 }
                 if(senha.valor !== confirmarSenha.valor){
                     setConfirmarSenha({valor:confirmarSenha.valor,erro:true,textoErro:'Senhas não coincidem!'});
+                    setLoading(false);
                     return null;
                 }
                 try{
@@ -158,17 +171,21 @@ export default function Profile(){
                     },{headers:{Authorization:localStorage.getItem('token')}});
                     if(response.data.error && response.data.password){
                         setSenhaAntiga({valor:'',erro:true,textoErro:'Senha incorreta!'});
+                        setLoading(false);
                         return null;
                     }
                 }catch{
+                    setLoading(false);
                     alert('Erro no seridor!');
                 }
             }
             setOpenEdit(false);
             buscarDados();
             history.push(`/profile/${usuario.valor}`);
+            setLoading(false);
 
         }catch{
+            setLoading(false);
             alert('Erro no servidor!');
         }
         
@@ -187,13 +204,14 @@ export default function Profile(){
     return(
         <>
         <Cabecalho refresh={dataUser}/>
+        {loading ? <Loading/> : null}
         <div id="profile">
-        {dataUser ?<>
+        {usuario.valor ?<>
             <div className="sair">
                 {dataUser.me ? <button title="Deslogar" onClick={()=>desconectar()}><FiLogOut color="FF2626" size="45"/></button>:null}
             </div>
             <PopUp open={openEdit} onClose={()=>setOpenEdit(false)} title="Editar">
-                <InputFoto onChange={e=>setFoto(e)} value={foto}/>
+                <InputFoto onChange={e=>setFoto(e)} value={fotoUser}/>
                 <CampoTexto 
                 type="text" 
                 placeholder="Nome" 

@@ -27,27 +27,36 @@ export default function LinkProfile(){
     useEffect(()=>{
         buscarDados();
     },[])
-    
+
     async function buscarDados(){
+        //setLoading(true);
         if(localStorage.getItem('token')){
-        try{
+            try{
                 const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});
-                const tag =  response.data.link.tag;
                 if(response.data.error){
-                    if(response.data.error.token){
+                    if(response.data.token){
                         alert('Necessário logar novamente!')
                         history.push('/landing');
                         return null;
                     }
+                    if(response.data.empty){
+                        alert('Não encontramos esse link :( ');
+                        history.push('/');
+                        return null;
+                    }
                 }
+                const tag =  response.data.link.tag;
                 setTags(tag.map((a)=>{
                     return(a.name);
                 }));
                 setLink(response.data.link);
                 setUser(response.data.user);
-            }catch{
-                alert('Erro no servidor');
+                //setLoading(false);
+            }catch(e){
+                //setLoading(false);
+                alert(e);
             }
+            //setLoading(false);
             }else{
                 history.push('/landing');
                 return null;
@@ -85,14 +94,13 @@ export default function LinkProfile(){
         document.execCommand('copy');
         document.body.removeChild(el);
     };
-
     return(
     <>
         <Cabecalho/>
         <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={link._id} onSend={buscarDados}/>
         {loading ? <Loading /> : null}
         <div id="linkProfile">
-            {user ?<>
+            {link ? <> 
             <PopUp title="Excluir" open={openExcluir} onClose={()=>setOpenExcluir(false)}>
                 <h4>Você deseja mesmo excluir este link?</h4>
                 <div className="botoesConf">

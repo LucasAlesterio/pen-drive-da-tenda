@@ -1,7 +1,6 @@
 const User = require('../models/users');
 const Link = require('../models/links');
-
-const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage, deleteImage} = require('../functions');
+const {verifyToken,decodeBase64Image,deleteFile,uploadImage, deleteImage} = require('../functions');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
@@ -65,8 +64,13 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
+        let link = [];
         var _user = await User.findOne({_id:_id});
-        const link = await Link.findOne({_id:id});
+        try{
+            link = await Link.findOne({_id:id});
+        }catch{
+            return response.json({error:true,empty:true});
+        }
         const a = JSON.stringify(link);
         var b = JSON.parse(a);
         if(_user.links.indexOf(id) !== -1){
@@ -142,13 +146,13 @@ module.exports = {
 
     async rating(request,response){
         const {authorization} = request.headers;
-        const {link,stars} = request.body;
+        const {link,stars,pageSize,page} = request.body;
         var flag = false;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
-        const _user = await User.findOne({_id:_id});
+        await User.findOne({_id:_id});
         let _link = await Link.findOne({_id:link});
         _link.rating.map((rat)=>{
             if(rat.user === _id){
@@ -165,21 +169,20 @@ module.exports = {
         });
         average = average/_link.rating.length;
         _link.average = average;
-        //console.log(average);
         _link.save();
-        //return response.json(_link);
         return response.status(200).send('Ok!');
     },
 
     async searchLink(request,response){
         const {authorization} = request.headers;
-        const {text} = request.body;
+        const {text,page,pageSize} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
+        let count = 0;
         if(text){
-            const resp = await Link.aggregate([
+            let query = [
                 {
                     '$search': {
                         'search': {
@@ -197,13 +200,19 @@ module.exports = {
                         'average': 1
                     }
                 }
-            ]);
-            return response.json(resp);
+            ];
+            count =  await Link.aggregate(query).count("userCount");
+            const resp = await Link.aggregate(query).skip(page*pageSize).limit(pageSize);
+            //
+            return response.json({links:resp,count:count[0].userCount});
         }else{
-            var links = await Link.find().select(['name','photograph','average']).exec();
-            return response.json(links);
+            //var links = await Link.find().select(['name','photograph','average']).skip(0).limit(20).exec();
+            var links = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).exec();
+            count = await Link.countDocuments();
+            return response.json({links,count:count});
         }
     },
+
     async timeline(request,response){
         const {authorization} = request.headers;
         let _id = '';

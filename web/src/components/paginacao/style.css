@@ -1,0 +1,32 @@
+.paginacao{
+    display: flex;
+    padding:1rem 0 5rem 0;
+}
+.paginacao .setas{
+    background: none;
+    border:none;
+}
+.paginacao .setas:hover{
+    filter:brightness(.7);
+}
+.paginacao .pages,.paginacao .pageSelecionada{
+    border-radius: 50%;
+    border: var(--amarelo) solid 1px;
+    background: none;
+    color: var(--amarelo);
+    margin: 0 1rem;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.paginacao .pages:hover,.paginacao .pageSelecionada:hover{
+    background-color: white;
+    border: var(--cinza-escuro) solid 1px;
+    color: var(--cinza-escuro);
+}
+.paginacao .pageSelecionada{
+    background-color: var(--amarelo);
+    color:var(--cinza-escuro);
+}
