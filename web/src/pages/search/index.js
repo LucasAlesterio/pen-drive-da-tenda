@@ -24,7 +24,6 @@ export default function Search(){
         try{
         const response = await api.get('/types',{headers:{Authorization:localStorage.getItem('token')}});
         setTipos(response.data.types);
-        //console.log(response.data.link)
         if(response.data.error){
             if(response.data.token){
                 history.push('/landing');

@@ -87,11 +87,13 @@ module.exports = {
         const {id,name,email,user,photograph,friends,favorites,links} = _user;
         const myProfile = await User.findOne({_id:_id});
         if(idUser == myProfile.user){
+            /*
             var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).exec();
-        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
-        return response.json({user:{id,name,email,user,photograph,friends,me:true},favorites:_favorites,links:_links});
+            var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
+            */
+            return response.json({id,name,email,user,photograph,friends,me:true});
     }else{
-        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
+        //var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
         var flag = false;
         const _userLink = await User.findOne({user:idUser});
         if(myProfile.friends.indexOf(_userLink._id) !== -1){
@@ -99,8 +101,45 @@ module.exports = {
         }else{
             flag = false;
         }
-        return response.json({user:{id,name,email,user,photograph,friends,me:false,isFriend:flag},links:_links});
+        return response.json({id,name,email,user,photograph,friends,me:false,isFriend:flag});
     }
+    },
+    async listMyLinks(request,response){
+        let count = 0;
+        const {authorization} = request.headers;
+        const {idUser,page,pageSize} = request.body;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        _user = await User.findOne({user:idUser});
+        if(!_user){
+            return response.json({error:true,empty:true});
+        }
+        const {links} = _user;
+        count = links.length;
+        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).skip(page*pageSize).limit(pageSize).exec();
+        return response.json({links:_links,count:count});
+    },
+
+    async listMyFavorites(request,response){
+        let count = 0;
+        const {authorization} = request.headers;
+        const {page,pageSize} = request.body;
+        let _id = verifyToken(authorization);
+        if(!_id){
+            return response.json({error:true,token:true});
+        }
+        _user = await User.findOne({_id:_id});
+        if(!_user){
+            return response.json({error:true,empty:true});
+        }
+        //console.log(_user);
+        const {favorites} = _user;
+        var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).skip(page*pageSize).limit(pageSize).exec();
+        count = favorites.length;
+        //console.log(count);
+        return response.json({links:_favorites,count:count});
     },
 
     async updateFriend(request,response){

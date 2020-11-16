@@ -7,6 +7,7 @@ import CampoTexto from '../../components/campoTexto/index';
 import Botao from '../../components/botao/index';
 import InputFoto from '../../components/inputFoto/index';
 import Loading from '../../components/loading/index';
+import Paginacao from '../../components/paginacao/index';
 import { useParams,useHistory } from "react-router-dom";
 import { FiUserPlus, FiUserCheck, FiEdit, FiLogOut, FiUser, FiAtSign, FiKey} from 'react-icons/fi';
 import api from '../../service/api';
@@ -32,6 +33,12 @@ export default function Profile(){
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
     const [usuario,setUsuario] = useState({valor:'',erro:false,textoErro:''});
     const [confirmarSenha,setConfirmarSenha] = useState({valor:'',erro:false,textoErro:''});
+
+    const [pageL,setPageL] = useState(0);
+    const [pageF,setPageF] = useState(0);
+    const [pageSize,setPageSize] = useState(12);
+    const [countL,setCountL] = useState(0);
+    const [countF,setCountF] = useState(0);
 
     const styleOpen ={
         transition:'transform 0.25s',
@@ -74,20 +81,54 @@ export default function Profile(){
                     return null;
                 }
             }
-            setLinks(response.data.links);
-            setDataUser(response.data.user);
-            //console.log(response.data.user);
-            setNome({valor:response.data.user.name,erro:false,textoErro:''})
-            setUsuario({valor:response.data.user.user,erro:false,textoErro:''})
-            setFoto(response.data.user.photograph);
-
-            setFavorites(response.data.favorites);
-            setListagem(response.data.links.map((link)=>(
-                <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-                )));
-        }catch{
-            alert('Erro no servidor');
+            setDataUser(response.data);
+            setNome({valor:response.data.name,erro:false,textoErro:''})
+            setUsuario({valor:response.data.user,erro:false,textoErro:''})
+            setFoto(response.data.photograph);
+            if(response.data.me){
+                setF();
+            }
+            setL();
+            /*
+            if(a){
+                setListagem(a.map((link)=>(
+                    <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    )));
+            }
+            */
+        }catch(error){
+            alert(error);
         }
+    }
+    useEffect(()=>{
+        setLoading(true);
+        if(aba){
+            setF();
+            setLoading(false);
+        }else{
+            setL();
+            setLoading(false);
+        }
+    },[pageF,pageL])
+    async function setL(){
+        const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:pageL},{headers:{Authorization:localStorage.getItem('token')}});
+        setLinks(listLinks.data.links);
+        setCountL(listLinks.data.count);
+        //return(listLinks.data.links);
+        setListagem(listLinks.data.links.map((link)=>(
+            <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+        )));
+    }
+    async function setF(){
+        const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
+        setFavorites(listMyFavorites.data.links);
+        setCountF(listMyFavorites.data.count);
+        if(aba){
+            setListagem(listMyFavorites.data.links.map((link)=>(
+                <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+            )));
+        }
+        
     }
 
     function listLinks(){
@@ -298,6 +339,10 @@ export default function Profile(){
             <div className="containerLinks" style={estilo ? styleOpen : styleClose}>
                 {listagem}
             </div>
+                {aba ?
+                <Paginacao count={countF} page={pageF} pageSize={pageSize} onChange={(a)=>setPageF(a)} max={5}/>
+                :<Paginacao count={countL} page={pageL} pageSize={pageSize} onChange={(a)=>setPageL(a)} max={5}/>
+            }
 
             </>:<Loading/>}
         </div>

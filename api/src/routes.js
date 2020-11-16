@@ -12,6 +12,8 @@ routes.post('/updateProfile',userController.updateProfile);
 routes.get('/listFriends',userController.listFriends);
 routes.post('/findUser',userController.findUser);
 routes.get('/refreshToken',userController.refreshToken);
+routes.post('/listMyLinks',userController.listMyLinks);
+routes.post('/listMyFavorites',userController.listMyFavorites);
 
 routes.post('/addLink',linkController.addLink);
 routes.post('/deleteLink',linkController.deleteLink);
