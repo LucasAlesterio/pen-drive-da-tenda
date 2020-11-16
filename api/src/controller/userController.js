@@ -157,6 +157,9 @@ module.exports = {
                 }
             })
         }else{
+            if(friend == _id){
+                return response.json({error:true,me:true});
+            }
             _user.friends.push(friend);
         }
         await _user.save();
@@ -227,30 +230,34 @@ module.exports = {
     },
 
     async listFriends(request,response){
+        let count = 0;
         const {authorization} = request.headers;
+        const {page,pageSize} = request.body;
         let id = verifyToken(authorization);
         if(!id){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).exec();
+        const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).skip(page*pageSize).limit(pageSize).exec();
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
+        count = _user.friends.length;
         b.map((b)=>{
             return(b['isFriend'] = true)
         });
-        return response.json(b);
+        return response.json({friends:b,count:count});
     },
     
     async findUser(request,response){
+        let count = 0;
         const {authorization} = request.headers;
-        const {search} = request.body;
+        const {search,page,pageSize} = request.body;
         let id = verifyToken(authorization);
         if(!id){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        let list = await User.aggregate([
+        let query = [
             {
                 '$search': {
                     'search': {
@@ -268,8 +275,9 @@ module.exports = {
                     'friends':1
                 }
             }
-        ]);
-
+        ];
+        count =  await User.aggregate(query).count("userCount");
+        let list = await User.aggregate(query).skip(page*pageSize).limit(pageSize);
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
         b.map((friend,index)=>{
@@ -279,7 +287,7 @@ module.exports = {
                 b[index]['isFriend'] = false;
             }
         });
-        return response.json(b);
+        return response.json({friends:b,count:count[0].userCount});
     },
     async refreshToken(request,response){
         const {authorization} = request.headers;

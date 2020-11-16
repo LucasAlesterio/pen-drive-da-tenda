@@ -4,31 +4,40 @@ import Rodape from '../../components/rodape/index';
 import CampoTexto from '../../components/campoTexto';
 import Usuario from '../../components/usuario/index';
 import Loading from '../../components/loading/index';
+import Paginacao from '../../components/paginacao/index';
 import api from '../../service/api';
 import {FiSearch} from 'react-icons/fi';
 import './style.css';
 
+let flag = false;
 export default function Friends(){
     const [campoBusca,setCampoBusca] = useState('');
     const [amigos,setAmigos] = useState([]);
-    const [listagemAmigos,setListagemAmigos] = useState('loading');
-    //const [flagAmigos,setFlagAmigos] = useState(false);
     const [loading,setLoading] = useState(false);
-    //var flagAmigos = false;
+    const [page,setPage] = useState(0);
+    const [pageSize,setPageSize] = useState(12);
+    const [count,setCount] = useState(0);
+
     useEffect(()=>{
         buscarDados();
     },[]);
 
-    //useEffect(()=>{
+    useEffect(()=>{
+        if(flag){
+            buscarAmigos();
+        }else{
+            buscarDados();
+        }
         //setListagemAmigos(listAmigos());
-    //},[amigos]);
+    },[page]);
 
     async function buscarDados(){
         setLoading(true);
         try{
-            const response = await api.get('/listFriends',{headers:{Authorization:localStorage.getItem('token')}});
-            setAmigos(response.data);
-            listAmigos(response.data);
+            const response = await api.post('/listFriends',{pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
+            setAmigos(response.data.friends);
+            listAmigos(response.data.friends);
+            setCount(response.data.count);
             setLoading(false);
         }catch{
             setLoading(false);
@@ -36,6 +45,7 @@ export default function Friends(){
         }
     }
     async function buscarAmigos(e){
+        flag = true;
         setLoading(true);
         if(e){
             e.preventDefault();
@@ -46,9 +56,10 @@ export default function Friends(){
         }
         //flagAmigos = true;
         try{
-            const response = await api.post('/findUser',{search:campoBusca},{headers:{Authorization:localStorage.getItem('token')}});
+            const response = await api.post('/findUser',{search:campoBusca,pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
             //listAmigos(response.data);
-            setAmigos(response.data);
+            setAmigos(response.data.friends);
+            setCount(response.data.count);
             setLoading(false);
             //setFlagAmigos(true);
         }catch{
@@ -83,8 +94,8 @@ export default function Friends(){
             <div className="container">
 
                 {loading?<Loading/>:listAmigos()}
-                {!listagemAmigos && listagemAmigos !== 'loading' ?<h1>Você ainda não tem amigos :(</h1> :null}
             </div>
+            <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={5}/>
         </div>
         <Rodape/>
         </>

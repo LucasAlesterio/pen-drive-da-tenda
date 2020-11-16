@@ -6,9 +6,12 @@ import './style.css';
 export default function Usuario(props){
     async function updateFriend(){
         try{
-            await api.post('/updateFriend',{
+            let response = await api.post('/updateFriend',{
                 friend:props.id
             },{headers:{Authorization:localStorage.getItem('token')}});
+            if(response.data.me){
+                alert('Você não pode se seguir ;)');
+            }
             props.refresh();
         }catch{
             alert('Erro no servidor!');

@@ -9,7 +9,7 @@ routes.post('/dataUser',userController.dataUser);
 routes.post('/updateFriend',userController.updateFriend);
 routes.post('/updatePassword',userController.updatePassword);
 routes.post('/updateProfile',userController.updateProfile);
-routes.get('/listFriends',userController.listFriends);
+routes.post('/listFriends',userController.listFriends);
 routes.post('/findUser',userController.findUser);
 routes.get('/refreshToken',userController.refreshToken);
 routes.post('/listMyLinks',userController.listMyLinks);
