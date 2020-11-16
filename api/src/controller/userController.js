@@ -207,7 +207,9 @@ module.exports = {
             if(myData.photograph === `https://storage.googleapis.com/twm-images/${data.user}.png`){
                 deleteImage(data.user);
             }else{
-                deleteImage(myData.idImg);
+                if(myData.photograph){
+                    deleteImage(myData.idImg);
+                }
             }
             
             await decodeBase64Image(data.photograph,idGerado);

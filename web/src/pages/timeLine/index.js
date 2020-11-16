@@ -38,6 +38,7 @@ export default function TimeLine(){
             }
             setMax(calcMax(response.data.count));
             setLinks(response.data.link);
+            console.log(response.data.link);
         }catch(e){
             alert(e)
             //history.push('/landing');
@@ -99,7 +100,7 @@ export default function TimeLine(){
                     </div>
                     <div className="containerUsuario">
                         <Link className="tagLink" to={`/profile/${link.user.user}`}>
-                            <img className="fotoUser" src={link.user.photograph} alt="foto usuario"/>
+                            {link.user.photograph ? <img className="fotoUser" src={link.user.photograph} alt="foto usuario"/>:<div className="fotoNull"/>}
                         </Link>
                     </div>
                 </div>
@@ -116,11 +117,11 @@ export default function TimeLine(){
             <div className="container">
                 {links === 'loading' ? <Loading/> : null}
                 {links !== 'loading' ? listagem() : null }
-                {links === [] ? <h1>Não encontramos links :( </h1> : null}
+                {links.length === 0 ? <h1>Não encontramos links :( </h1> : null}
             </div>
             <div className="verMais">
-                {((page) === (max - 1))?<h1>Por hoje é só :)</h1>:
-                <Botao onClick={()=>verificaProximo()}>Ver mais</Botao>}
+                {(((page) === (max - 1)))?<h1>Por hoje é só :)</h1>:
+                (links.length > 0 && <Botao onClick={()=>verificaProximo()}>Ver mais</Botao>)}
             </div>
         </div>
         <Rodape/>

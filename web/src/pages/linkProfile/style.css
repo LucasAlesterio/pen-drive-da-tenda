@@ -115,6 +115,13 @@
     width: 5rem;
     margin-right: 1.5rem;
 } 
+#linkProfile .infos .fotoNull{
+    border-radius: 50%;
+    height: 5rem;
+    width: 5rem;
+    margin-right: 1.5rem;
+    background-color: var(--rosa);
+}
 #linkProfile .descricao{
     background-color: rgba(var(--cinza-claro-opacity),0.05);
     width: 58%;

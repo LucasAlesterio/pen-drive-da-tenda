@@ -20,7 +20,8 @@ export default function Usuario(props){
     return(
         <div className="usuario">
             <Link className="foto" to={`/profile/${props.user}`}>
-                <img alt="foto usuario" src={props.photo}/>
+                {props.photo?
+                <img alt="foto usuario" src={props.photo}/>:<div className="fotoNull"/>}
             </Link>
             <div className="containerUsuario">
                 <Link className="linkTag"to={`/profile/${props.user}`}>

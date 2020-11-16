@@ -115,9 +115,11 @@ export default function Profile(){
         setLinks(listLinks.data.links);
         setCountL(listLinks.data.count);
         //return(listLinks.data.links);
-        setListagem(listLinks.data.links.map((link)=>(
-            <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-        )));
+        if(listLinks.data.links){
+            setListagem(listLinks.data.links.map((link)=>(
+                <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+            )));
+        }
     }
     async function setF(){
         const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
@@ -312,7 +314,7 @@ export default function Profile(){
 
             </PopUp>
             <div className="infoProfile">
-                <img alt="Foto perfil" src={dataUser.photograph}/>
+                {dataUser.photograph ?  <img alt="Foto perfil" src={dataUser.photograph}/>:<div className="fotoNull"/>}
                 <div>
                     <h1>@{dataUser.user}</h1>
                     {dataUser.me ? 

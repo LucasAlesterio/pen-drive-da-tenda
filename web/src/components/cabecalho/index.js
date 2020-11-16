@@ -51,7 +51,8 @@ export default function Cabecalho(props){
             </div>
             <Link to={`/profile/${dataUser.user ? dataUser.user : null}`} title="Ver perfil">
                 <h4>{dataUser.user ? dataUser.user : null}</h4>
-                <img src={dataUser.user ? dataUser.photograph : 'https://p7.hiclipart.com/preview/340/956/944/computer-icons-user-profile-head-ico-download.jpg'} alt="foto perfil"/>
+                {dataUser.photograph ?
+                <img src={dataUser.photograph} alt="foto perfil"/>: <div className="fotoN"/>}
             </Link>
 
         </div>

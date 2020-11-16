@@ -10,6 +10,13 @@
     border-radius: 50%;
     border:var(--amarelo) solid 2px;
 }
+.usuario .foto .fotoNull{
+    background-color: var(--rosa);
+    height: 13rem;
+    width: 13rem;
+    border-radius: 50%;
+    border:var(--amarelo) solid 2px;
+}
 .usuario .foto:hover{
     filter:brightness(0.7);
 }
@@ -29,6 +36,7 @@
     color:var(--amarelo);
     font-size: 3rem; 
     height: 4rem;
+    width: max-content;
 }
 .usuario .containerUsuario button{
     background-color: var(--amarelo);

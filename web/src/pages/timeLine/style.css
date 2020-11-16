@@ -64,6 +64,12 @@
     height: 5rem;
     width: 5rem;
 } 
+#timeLine .container .link .infoLink .fotoNull{
+    border-radius: 50%;
+    height: 5rem;
+    width: 5rem;
+    background-color: var(--rosa);
+}
 #timeLine .container .link .infoLink .containerUsuario{
     width: 100%;
     display: flex;

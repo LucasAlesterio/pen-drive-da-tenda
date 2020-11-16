@@ -27,6 +27,12 @@
     height: 3.5rem;
     width: 3.5rem;
 }
+.cabecalho>a .fotoN{
+    border-radius: 50%;
+    height: 3.5rem;
+    width: 3.5rem;
+    background-color: var(--rosa);
+}
 .cabecalho>a>h4{
     padding-right:1rem;
 }

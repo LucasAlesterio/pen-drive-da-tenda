@@ -31,6 +31,12 @@
     flex-direction: column;
     align-items: center;
 }
+#profile .infoProfile .fotoNull{
+    border-radius: 50%;
+    height: 20rem;
+    width: 20rem;
+    background-color: var(--rosa);
+}
 #profile .infoProfile img{
     border-radius: 50%;
     height: 20rem;
