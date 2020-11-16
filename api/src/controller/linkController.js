@@ -214,14 +214,22 @@ module.exports = {
     },
 
     async timeline(request,response){
+        let count = 0;
         const {authorization} = request.headers;
+        const {page,pageSize} = request.body;
         let _id = '';
         _id = await verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
-        var links = await Link.find().select(['name','photograph','average','user']).where('user').in(_user.friends).exec();
+        count = await Link.find().select('name').where('user').in(_user.friends).countDocuments();
+        //console.log(!((count-pageSize)<0));
+        let sk = 0;
+        if(((count-pageSize)>0) && ((page + 1)*pageSize)<count){
+            sk = (((count)-pageSize)*(page + 1));
+        }
+        var links = await Link.find().select(['name','photograph','average','user']).where('user').in(_user.friends).skip(sk).limit(pageSize).exec();
         links = JSON.parse(JSON.stringify(links));
         var idusers = links.map((link)=>{
             return link.user;
@@ -234,8 +242,8 @@ module.exports = {
                 }
             })
             return(link);
-        });
-        return response.json({link:resp});
+        }).reverse();
+        return response.json({link:resp,count:count});
     },
 
     async types(request,response){

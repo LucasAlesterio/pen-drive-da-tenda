@@ -22,7 +22,7 @@ routes.post('/updateLink',linkController.updateLink);
 routes.post('/updateFavorite',linkController.updateFavorite);
 routes.post('/rating',linkController.rating);
 routes.post('/searchLink',linkController.searchLink);
-routes.get('/timeLine',linkController.timeline);
+routes.post('/timeLine',linkController.timeline);
 routes.get('/types',linkController.types);
 
 module.exports = routes;
