@@ -204,7 +204,10 @@ module.exports = {
             count =  await Link.aggregate(query).count("userCount");
             const resp = await Link.aggregate(query).skip(page*pageSize).limit(pageSize);
             //
-            return response.json({links:resp,count:count[0].userCount});
+            if(resp.length>0){
+                return response.json({links:resp,count:count[0].userCount});
+            }
+            return response.json({links:resp,count:0});
         }else{
             //var links = await Link.find().select(['name','photograph','average']).skip(0).limit(20).exec();
             var links = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).exec();
@@ -226,8 +229,9 @@ module.exports = {
         count = await Link.find().select('name').where('user').in(_user.friends).countDocuments();
         //console.log(!((count-pageSize)<0));
         let sk = 0;
+        console.log(count);
         if(((count-pageSize)>0) && ((page + 1)*pageSize)<count){
-            sk = (((count)-pageSize)*(page + 1));
+            sk = ((count)-(pageSize*(page + 1)));
         }
         var links = await Link.find().select(['name','photograph','average','user']).where('user').in(_user.friends).skip(sk).limit(pageSize).exec();
         links = JSON.parse(JSON.stringify(links));

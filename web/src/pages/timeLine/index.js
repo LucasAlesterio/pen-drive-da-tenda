@@ -14,7 +14,7 @@ export default function TimeLine(){
     const [openEstrelas,setOpenEstrelas] = useState('');
     const [linkSelecionado,setLinkSelecionado] = useState('');
     const [page,setPage] = useState(0);
-    const [pageSize,setPageSize] = useState(10);
+    const [pageSize,setPageSize] = useState(12);
     const [max,setMax] = useState(0);
     const [loading,setLoading] = useState(false);
     let history = useHistory();
