@@ -175,32 +175,67 @@ module.exports = {
 
     async searchLink(request,response){
         const {authorization} = request.headers;
-        const {text,page,pageSize} = request.body;
+        const {text,page,pageSize,type} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
         let count = 0;
         if(text){
-            let query = [
-                {
-                    '$search': {
-                        'search': {
-                        'path': [
-                            'name', 'description', 'tag.name','type.name'
-                        ], 
-                        'query': text
+            let query = [];
+            if(type){
+                query = [
+                    {
+                        '$search': {
+                            'search': {
+                            'path': [
+                                'name', 'description', 'tag.name'
+                            ], 
+                            'query': text
+                            }
+                            ,"highlight": { 
+                                "path": "name"
+                            }
+                        }
+                        },
+                        {'$match':{
+                            'type.name':  { '$lte':type}
+                            }   
+                        },
+                        {
+                        '$project': {
+                            'name': 1, 
+                            'photograph': 1, 
+                            '_id': 1, 
+                            'average': 1
                         }
                     }
-                    }, {
-                    '$project': {
-                        'name': 1, 
-                        'photograph': 1, 
-                        '_id': 1, 
-                        'average': 1
+                ];
+            }else{
+                query = [
+                    {
+                        '$search': {
+                            'search': {
+                            'path': [
+                                'name', 'description', 'tag.name'
+                            ], 
+                            'query': text
+                            }
+                            ,"highlight": { 
+                                "path": "name"
+                            }
+                        }
+                        },
+                        {
+                        '$project': {
+                            'name': 1, 
+                            'photograph': 1, 
+                            '_id': 1, 
+                            'average': 1
+                        }
                     }
-                }
-            ];
+                ];
+            }
             count =  await Link.aggregate(query).count("userCount");
             const resp = await Link.aggregate(query).skip(page*pageSize).limit(pageSize);
             //
@@ -209,7 +244,11 @@ module.exports = {
             }
             return response.json({links:resp,count:0});
         }else{
-            //var links = await Link.find().select(['name','photograph','average']).skip(0).limit(20).exec();
+            if(type){
+                var links = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).where('type.name').equals(type).exec();
+                count = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).where('type.name').equals(type).countDocuments();
+                return response.json({links,count:count});
+            }
             var links = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).exec();
             count = await Link.countDocuments();
             return response.json({links,count:count});

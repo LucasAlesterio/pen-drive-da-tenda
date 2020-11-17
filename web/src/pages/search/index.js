@@ -62,7 +62,7 @@ export default function Search(){
         }
         try{
             const response = await api.post('/searchLink',
-            {text:busca,pageSize:pageSize,page:page},
+            {text:busca,pageSize:pageSize,page:page,type:tipoSelecionado},
             {headers:{Authorization:localStorage.getItem('token')}});
             if(response.data.erro){
                 if(response.data.token){
