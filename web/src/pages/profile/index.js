@@ -340,6 +340,7 @@ export default function Profile(){
 
             <div className="containerLinks" style={estilo ? styleOpen : styleClose}>
                 {listagem}
+                {listagem.length <= 0 ?<div style={{width:'80vw'}}><h3>Ainda não há links :(</h3></div>:null}
             </div>
                 {aba ?
                 <Paginacao count={countF} page={pageF} pageSize={pageSize} onChange={(a)=>setPageF(a)} max={5}/>

@@ -118,7 +118,7 @@ module.exports = {
         }
         const {links} = _user;
         count = links.length;
-        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).skip(page*pageSize).limit(pageSize).exec();
+        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).skip(page*pageSize).limit(pageSize).sort('name').exec();
         return response.json({links:_links,count:count});
     },
 

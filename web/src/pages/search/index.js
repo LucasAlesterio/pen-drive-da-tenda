@@ -53,8 +53,11 @@ export default function Search(){
 
     useEffect(()=>{
         pesquisar();
-    },[tipoSelecionado,page])
-
+    },[page])
+    useEffect(()=>{
+        setPage(0);
+        pesquisar();
+    },[tipoSelecionado])
     async function pesquisar(e){
         setLoading(true);
         if(e){
