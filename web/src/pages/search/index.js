@@ -17,7 +17,7 @@ export default function Search(){
     const [links,setLinks] = useState([]);
     const [loading,setLoading] = useState(false);
     const [page,setPage] = useState(0);
-    const [pageSize,setPageSize] = useState(2);
+    const [pageSize,setPageSize] = useState(18);
     const [count,setCount] = useState(0);
 
     async function buscarTipos(){
@@ -109,7 +109,7 @@ export default function Search(){
                 <div className="container">
                 {links ? listLinks() : null}
                 </div>
-                <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={5}/>
+                <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={7}/>
         </div>
         <Rodape/>
         </>:<Loading/>}

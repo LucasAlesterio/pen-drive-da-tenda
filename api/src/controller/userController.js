@@ -289,7 +289,10 @@ module.exports = {
                 b[index]['isFriend'] = false;
             }
         });
-        return response.json({friends:b,count:count[0].userCount});
+        if(list.length>0){
+            return response.json({links:b,count:count[0].userCount});
+        }
+        return response.json({friends:b,count:0});
     },
     async refreshToken(request,response){
         const {authorization} = request.headers;
