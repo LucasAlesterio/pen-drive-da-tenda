@@ -35,9 +35,13 @@ export default function Friends(){
         setLoading(true);
         try{
             const response = await api.post('/listFriends',{pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
-            setAmigos(response.data.friends);
-            listAmigos(response.data.friends);
-            setCount(response.data.count);
+            if(response.data.friends){
+                setAmigos(response.data.friends);
+                listAmigos(response.data.friends);
+            }
+            if(response.data.count){
+                setCount(response.data.count);
+            }
             setLoading(false);
         }catch{
             setLoading(false);
@@ -69,11 +73,14 @@ export default function Friends(){
     }
 
     function listAmigos(){
-        const retorno  = amigos.map((amigo)=>(
-            <Usuario user={amigo.user} photo={amigo.photograph} button={true} isFriend={amigo.isFriend} id={amigo._id} refresh={()=>buscarAmigos()}/>
-        ))
-        //setListagemAmigos(retorno);
-        return retorno;
+        if(amigos){
+
+            const retorno  = amigos.map((amigo)=>(
+                <Usuario user={amigo.user} photo={amigo.photograph} button={true} isFriend={amigo.isFriend} id={amigo._id} refresh={()=>buscarAmigos()}/>
+            ))
+            //setListagemAmigos(retorno);
+            return retorno;
+        }
     }
     return(
     <>

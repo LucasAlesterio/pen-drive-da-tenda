@@ -290,7 +290,7 @@ module.exports = {
             }
         });
         if(list.length>0){
-            return response.json({links:b,count:count[0].userCount});
+            return response.json({friends:b,count:count[0].userCount});
         }
         return response.json({friends:b,count:0});
     },
