@@ -83,7 +83,7 @@ export default function Landing(){
                 return null;
             }
         localStorage.setItem('token', response.data.token);
-        history.push("/");
+        history.push("/search");
         setOpenLogin(false);
     }
     async function cadastrar(e){
@@ -151,7 +151,7 @@ export default function Landing(){
             return null;
         }
         localStorage.setItem('token', response.data.token);
-        history.push(`/profile/${usuario.valor}`);
+        history.push("/search");
         setOpenCadastro(false);
     }
     return(
