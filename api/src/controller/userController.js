@@ -303,5 +303,22 @@ module.exports = {
         const token = createToken(id);
         const _user = await User.findOne({_id:id});
         return response.json({user:_user.user,photograph:_user.photograph,id:_user._id,token});
+    },
+    async deleteUser(request,response){
+        const {authorization} = request.headers;
+        let id = verifyToken(authorization);
+        if(!id){
+            return response.json({error:true,token:true});
+        }
+        const _user = await User.findOne({_id:id});
+        if(_user.photograph === `https://storage.googleapis.com/twm-images/${_user.user}.png`){
+            deleteImage(_user.user);
+        }else{
+            if(_user.photograph){
+                deleteImage(_user.idImg);
+            }
+        }
+        await User.findByIdAndDelete({_id:id});
+        return response.status(200).send('Ok!')
     }
 }

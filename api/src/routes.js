@@ -14,6 +14,7 @@ routes.post('/findUser',userController.findUser);
 routes.get('/refreshToken',userController.refreshToken);
 routes.post('/listMyLinks',userController.listMyLinks);
 routes.post('/listMyFavorites',userController.listMyFavorites);
+routes.get('/deleteUser',userController.deleteUser);
 
 routes.post('/addLink',linkController.addLink);
 routes.post('/deleteLink',linkController.deleteLink);

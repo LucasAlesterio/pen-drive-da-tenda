@@ -146,7 +146,7 @@ module.exports = {
 
     async rating(request,response){
         const {authorization} = request.headers;
-        const {link,stars,pageSize,page} = request.body;
+        const {link,stars} = request.body;
         var flag = false;
         let _id = verifyToken(authorization);
         if(!_id){
