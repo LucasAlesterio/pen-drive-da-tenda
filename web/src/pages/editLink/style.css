@@ -128,7 +128,6 @@
 }
 
 #addLink .container .tag .containerTag>div{
-    height: 4rem;
     background-color: var(--amarelo);
     display: flex;
     width: min-content;
@@ -136,6 +135,7 @@
     padding:0.5rem;
     align-items: center;
     margin: 0.5rem;
+    height: min-content;
 }
 #addLink .container .tag .containerTag>div>button{
     border:none;
