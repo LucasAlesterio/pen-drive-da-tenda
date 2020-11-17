@@ -111,9 +111,9 @@ export default function TimeLine(){
     return(
         <>
         <Cabecalho />
+        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} onSend={buscarLinks}/>
         <div id="timeLine">
             {loading ? <Loading/>:null}
-        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} onSend={buscarLinks}/>
             <div className="container">
                 {links === 'loading' ? <Loading/> : null}
                 {links !== 'loading' ? listagem() : null }
