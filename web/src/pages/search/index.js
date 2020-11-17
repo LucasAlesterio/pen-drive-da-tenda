@@ -17,7 +17,7 @@ export default function Search(){
     const [links,setLinks] = useState([]);
     const [loading,setLoading] = useState(false);
     const [page,setPage] = useState(0);
-    const [pageSize,setPageSize] = useState(18);
+    const [pageSize,setPageSize] = useState(2);
     const [count,setCount] = useState(0);
 
     async function buscarTipos(){
