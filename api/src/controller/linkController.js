@@ -229,7 +229,6 @@ module.exports = {
         count = await Link.find().select('name').where('user').in(_user.friends).countDocuments();
         //console.log(!((count-pageSize)<0));
         let sk = 0;
-        console.log(count);
         if(((count-pageSize)>0) && ((page + 1)*pageSize)<count){
             sk = ((count)-(pageSize*(page + 1)));
         }
