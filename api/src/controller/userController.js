@@ -33,7 +33,7 @@ module.exports = {
             }
             _user = await User.create({name,email,password,user,photograph});
             var token = createToken(_user.id);
-            return response.json(token);
+            return response.json({token:token});
         }else{
             return response.json(err);
         }
