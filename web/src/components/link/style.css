@@ -4,7 +4,8 @@
     display: flex;
     justify-content: center;
     min-height: 30rem;
-    width: 18rem;
+    width: 14vw;
+    min-width:18rem ;
 }
 .link>a{
     display: flex;
@@ -13,7 +14,8 @@
 }
 .link .fotoContainer{
     min-height: 20rem;
-    width: 15rem;
+    width: 14vw;
+    min-width:18rem ;
     margin-top:1rem;
     display: flex;
     align-items: center;
@@ -21,7 +23,7 @@
 }
 .link .fotoLink{
     max-height: 20rem;
-    max-width: 15rem;
+    max-width: 100%;
 }
 .link .semFoto{
     background-color: var(--rosa);
