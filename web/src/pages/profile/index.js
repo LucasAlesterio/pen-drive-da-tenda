@@ -36,7 +36,7 @@ export default function Profile(){
 
     const [pageL,setPageL] = useState(0);
     const [pageF,setPageF] = useState(0);
-    const [pageSize,setPageSize] = useState(12);
+    const [pageSize,setPageSize] = useState(10);
     const [countL,setCountL] = useState(0);
     const [countF,setCountF] = useState(0);
 

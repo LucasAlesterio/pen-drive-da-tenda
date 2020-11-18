@@ -57,7 +57,7 @@ export default function Search(){
     }
     useEffect(()=>{
         history.push(`/search/${busca ? busca : 'null'}/${page}/${order}/${tipoSelecionado}`);
-    },[page,order])
+    },[page,order,tipoSelecionado])
 
     useEffect(()=>{
 
