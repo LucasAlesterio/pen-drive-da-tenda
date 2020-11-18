@@ -41,6 +41,7 @@
     border-radius: 50%;
     height: 20rem;
     width: 20rem;
+    object-fit: cover;
 }
 #profile .infoProfile>div{
     display: flex;
