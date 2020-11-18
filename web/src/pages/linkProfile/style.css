@@ -114,6 +114,7 @@
     height: 5rem;
     width: 5rem;
     margin-right: 1.5rem;
+    object-fit: cover;
 } 
 #linkProfile .infos .fotoNull{
     border-radius: 50%;

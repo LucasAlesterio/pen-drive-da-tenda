@@ -26,6 +26,7 @@
     border-radius: 50%;
     height: 3.5rem;
     width: 3.5rem;
+    object-fit: cover;
 }
 .cabecalho>a .fotoN{
     border-radius: 50%;

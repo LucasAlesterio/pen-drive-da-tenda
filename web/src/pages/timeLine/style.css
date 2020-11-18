@@ -63,6 +63,7 @@
     border-radius: 50%;
     height: 5rem;
     width: 5rem;
+    object-fit: cover;
 } 
 #timeLine .container .link .infoLink .fotoNull{
     border-radius: 50%;

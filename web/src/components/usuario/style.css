@@ -9,6 +9,7 @@
     width: 13rem;
     border-radius: 50%;
     border:var(--amarelo) solid 2px;
+    object-fit: cover;
 }
 .usuario .foto .fotoNull{
     background-color: var(--rosa);
