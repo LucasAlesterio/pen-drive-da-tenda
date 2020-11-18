@@ -175,12 +175,37 @@ module.exports = {
 
     async searchLink(request,response){
         const {authorization} = request.headers;
-        const {text,page,pageSize,type} = request.body;
+        const {text,page,pageSize,type,order} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
         let count = 0;
+        let sor = {};
+        if(order){
+            if(order == 1){
+                sor['name']=1;
+            }
+            if(order == 2){
+                sor['name']=-1;
+            }
+            if(order == 3){
+                sor['_id']=-1;
+            }
+            if(order == 4){
+                sor['_id']=1;
+            }
+            if(order == 5){
+                sor['average']=-1;
+                sor['name']=1;
+            }
+            if(order == 6){
+                sor['average']=1;
+                sor['name']=1;
+            }
+        }else{
+            sor['_id']=-1;
+        }
         if(text){
             let query = [];
             if(type){
@@ -197,6 +222,8 @@ module.exports = {
                                 "path": "name"
                             }
                         }
+                        },{
+                            '$sort': sor
                         },
                         {'$match':{
                             'type.name':  { '$lte':type}
@@ -233,8 +260,11 @@ module.exports = {
                             '_id': 1, 
                             'average': 1
                         }
-                    }
+                        },{
+                        '$sort': sor
+                        }
                 ];
+                
             }
             count =  await Link.aggregate(query).count("userCount");
             const resp = await Link.aggregate(query).skip(page*pageSize).limit(pageSize);
@@ -245,11 +275,17 @@ module.exports = {
             return response.json({links:resp,count:0});
         }else{
             if(type){
-                var links = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).where('type.name').equals(type).exec();
-                count = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).where('type.name').equals(type).countDocuments();
+                var links = await Link.find().select(['name','photograph','average'])
+                .skip(page*pageSize).limit(pageSize).where('type.name')
+                .equals(type).sort(sor).exec();
+
+                count = await Link.find().select(['name','photograph','average'])
+                .where('type.name').equals(type).
+                countDocuments();
                 return response.json({links,count:count});
             }
-            var links = await Link.find().select(['name','photograph','average']).skip(page*pageSize).limit(pageSize).exec();
+            var links = await Link.find().select(['name','photograph','average'])
+            .skip(page*pageSize).limit(pageSize).sort(sor).exec();
             count = await Link.countDocuments();
             return response.json({links,count:count});
         }

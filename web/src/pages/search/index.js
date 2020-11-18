@@ -1,24 +1,28 @@
 import React,{useState,useEffect} from 'react';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
-import { useHistory } from "react-router-dom";
+import { useHistory,useParams } from "react-router-dom";
 import CampoTexto from '../../components/campoTexto/index';
 import LinkList from '../../components/link/index';
 import Loading from '../../components/loading/index';
 import Paginacao from '../../components/paginacao/index';
-import {FiSearch,FiFilter} from 'react-icons/fi'
+import {FiSearch} from 'react-icons/fi'
 import api from '../../service/api';
 import './style.css';
 export default function Search(){
     let history = useHistory();
-    const [busca,setBusca] = useState('');
     const [tipos,setTipos]  = useState([]);
-    const [tipoSelecionado,setTipoSelecionado] = useState('');
     const [links,setLinks] = useState([]);
     const [loading,setLoading] = useState(false);
-    const [page,setPage] = useState(0);
     const [pageSize,setPageSize] = useState(18);
     const [count,setCount] = useState(0);
+    let {parSearch,parPage,parType,parOrder} = useParams();
+    const [tipoSelecionado,setTipoSelecionado] = useState(parType ? parType : '');
+    const [busca,setBusca] = useState(parSearch !== 'null' ? parSearch : '');
+    const [order,setOrder] = useState(parOrder ? parOrder : 3);
+    const [page,setPage] = useState(parPage ? parPage : 0);
+
+    console.log(parSearch,parPage,parType,parOrder)
 
     async function buscarTipos(){
         try{
@@ -35,12 +39,13 @@ export default function Search(){
     }
     }
     useEffect(()=>{
+
         buscarTipos();
     },[]);
 
     function listTipos(){
         const retorno = tipos.map((tipo)=>(
-        <option value={`${tipo}`}>{`${tipo}`}</option>
+        <option className="opcao" value={`${tipo}`}>{`${tipo}`}</option>
         ));
         return retorno;
     }
@@ -50,22 +55,42 @@ export default function Search(){
         ))
         return retorno;
     }
+    useEffect(()=>{
+        history.push(`/search/${busca ? busca : 'null'}/${page}/${order}/${tipoSelecionado}`);
+    },[page,order])
+
+    useEffect(()=>{
+
+        pesquisar();
+    //},[page,order])
+    },[parSearch,parPage,parType,parOrder]);
 
     useEffect(()=>{
         pesquisar();
-    },[page])
-    useEffect(()=>{
-        setPage(0);
-        pesquisar();
     },[tipoSelecionado])
-    async function pesquisar(e){
-        setLoading(true);
+    
+    function formBuscar(e){
         if(e){
             e.preventDefault();
         }
+        history.push(`/search/${busca ? busca : 'null'}/${page}/${order}/${tipoSelecionado}`);
+    }
+
+    async function pesquisar(){
+        setLoading(true);
         try{
+            let textBusca = '';
+            if(parSearch !== 'null'){
+                textBusca = parSearch
+            }
             const response = await api.post('/searchLink',
-            {text:busca,pageSize:pageSize,page:page,type:tipoSelecionado},
+            {
+                text:textBusca,
+                pageSize:pageSize,
+                page:parPage,
+                type:parType,
+                order:parOrder
+            },
             {headers:{Authorization:localStorage.getItem('token')}});
             if(response.data.erro){
                 if(response.data.token){
@@ -82,6 +107,10 @@ export default function Search(){
             alert('Erro no servidor');
         }
     }
+    function selecionatTipo(e){
+        setPage(0);
+        setTipoSelecionado(e.target.value)
+    }
     return(
         <>
         {tipos ?<>
@@ -89,7 +118,7 @@ export default function Search(){
         {loading ? <Loading/> : null}
         <div id="search">
                 <div className="busca">
-                    <form onSubmit={pesquisar}>
+                    <form onSubmit={formBuscar}>
                         <div className="buscar">
                             <CampoTexto
                             className="campoBuscar"
@@ -103,14 +132,25 @@ export default function Search(){
                             </button>
                         </div>
                     </form>
-                        <select name="Tipo" placeholder="Tipo" onChange={(e)=>setTipoSelecionado(e.target.value)}>
-                            <option selected value="">Tipo</option>
-                            {tipos ? listTipos() : null}
-                        </select>
-                        <FiFilter size='30'/>
+                </div>
+                <div className="containerFiltros">
+                    <select placeholder="Tipo" onChange={(e)=>selecionatTipo(e)}>
+                        <option className="opcao" selected value="">Tipo</option>
+                        {tipos ? listTipos() : null}
+                    </select>
+
+                    <select placeholder="Ordenar" onChange={(e)=>setOrder(e.target.value)}>
+                        <option className="opcao" selected value={3} >Ordenar</option>
+                        <option className="opcao" value={1}>Aa-Zz</option>
+                        <option className="opcao" value={2}>Zz-Aa</option>
+                        <option className="opcao" value={3}>Mais recente</option>
+                        <option className="opcao" value={4}>Menos recente</option>
+                        <option className="opcao" value={5}>Maior avaliação</option>
+                        <option className="opcao" value={6}>Menor avaliação</option>
+                    </select>
                 </div>
                 <div className="container">
-                {links ? listLinks() : null}
+                    {links ? listLinks() : null}
                 </div>
                 <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={7}/>
         </div>

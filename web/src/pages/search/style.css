@@ -38,17 +38,6 @@
 #search .busca form button{
     background: none;
 }
-#search .busca select{
-    font: 400 1.8rem Roboto,sans-serif;
-    background-color: var(--cinza-claro);
-    border:none;
-    width: 40%;
-    border-left: var(--cinza-medio) solid 1px;
-}
-#search .busca option{
-    font: 400 1.8rem Roboto,sans-serif;
-    border-radius: 5px;
-}
 #search .container{
     width:100% ;
     display: grid;
@@ -57,5 +46,26 @@
     column-gap: 2rem;
     row-gap: 2rem;
     padding-top: 2rem;
-
+}
+#search .containerFiltros{
+    width:95%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+#search .containerFiltros select{
+    font: 400 1.8rem Roboto,sans-serif;
+    background: none;
+    border:none;
+    border-bottom: var(--amarelo) solid 1px;
+    color:var(--amarelo);
+}
+#search .containerFiltros select option{
+    background-color:var(--cinza-medio);
+    font: 400 1.8rem Roboto,sans-serif;
+    border-radius: 5px;
+}
+#search .containerFiltros select .opcao:hover div{ 
+    border: rgb(242, 0, 113) solid 2px;
+    box-shadow: none;
 }
