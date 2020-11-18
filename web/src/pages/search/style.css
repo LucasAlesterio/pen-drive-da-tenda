@@ -40,12 +40,13 @@
 }
 #search .container{
     width:100% ;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 20rem);
-    justify-content: center;
-    column-gap: 2rem;
-    row-gap: 2rem;
+    display: flex;
+    /*grid-template-columns: repeat(auto-fit, auto);*/
+    flex-wrap: wrap;
+    justify-content:center;
+    column-gap: 1vw;
     padding-top: 2rem;
+    padding: 0 1rem;
 }
 #search .containerFiltros{
     width:95%;

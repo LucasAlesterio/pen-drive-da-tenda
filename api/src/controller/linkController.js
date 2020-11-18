@@ -170,7 +170,7 @@ module.exports = {
         average = average/_link.rating.length;
         _link.average = average;
         _link.save();
-        return response.status(200).send('Ok!');
+        return response.json({average:average});
     },
 
     async searchLink(request,response){

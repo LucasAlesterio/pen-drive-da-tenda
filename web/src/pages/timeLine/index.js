@@ -17,6 +17,7 @@ export default function TimeLine(){
     const [pageSize,setPageSize] = useState(12);
     const [max,setMax] = useState(0);
     const [loading,setLoading] = useState(false);
+    const [listagemLinks,setListagemLinks] = useState([]);
     let history = useHistory();
 
     function calcMax(i){
@@ -35,10 +36,12 @@ export default function TimeLine(){
                     history.push('/landing');
                     return null;
                 }
-            }
+            } 
             setMax(calcMax(response.data.count));
-            setLinks(response.data.link);
-            console.log(response.data.link);
+            if(links === 'loading'){
+                setLinks(response.data.link);
+            }
+            //console.log(response.data.link);
         }catch(e){
             alert(e)
             //history.push('/landing');
@@ -70,6 +73,9 @@ export default function TimeLine(){
     useEffect(()=>{
         buscarLinks();
     },[]);
+    useEffect(()=>{
+        listagem();
+    },[links]);
     function verificaProximo(){
         setLoading(true);
         if((page + 1) <= (max - 1)){
@@ -82,9 +88,16 @@ export default function TimeLine(){
         setOpenEstrelas(true);
         setLinkSelecionado(id);
     }
-    function listagem(){
-        const list = links.map((link)=>(
-            <div className="link" key={link._id}>
+    function listagem(l){
+        let a = [];
+        if(l){
+            a=l;
+        }
+        if(!l && links !== 'loading'){
+            a=links;
+        }
+        const list = a.map((link)=>(
+            <div className="link_time" key={link._id}>
                 <Link className="containerImagem" to={`linkProfile/${link._id}`} style={!link.photograph ?{backgroundColor:'var(--rosa)'}:null}>
                     {link.photograph ? <img alt="imagem link" src={link.photograph}/> : null}
                 </Link>
@@ -106,17 +119,27 @@ export default function TimeLine(){
                 </div>
             </div>
         ))
-        return(list);
+        setListagemLinks(list);
+        return null;
+    }
+    function setNewAverage(a){
+        let newList =  links.map((link)=>{
+            if(linkSelecionado === link._id){
+                link.average = a;
+            }
+            return link;
+        });
+        listagem(newList);
     }
     return(
         <>
         <Cabecalho />
-        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} onSend={buscarLinks}/>
+        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} onSend={buscarLinks} newAverage={(a)=>setNewAverage(a)}/>
         <div id="timeLine">
             {loading ? <Loading/>:null}
             <div className="container">
                 {links === 'loading' ? <Loading/> : null}
-                {links !== 'loading' ? listagem() : null }
+                {links !== 'loading' ? listagemLinks : null }
                 {links.length === 0 ? <h1>Não encontramos links :( </h1> : null}
             </div>
             <div className="verMais">

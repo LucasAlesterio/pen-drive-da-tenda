@@ -7,6 +7,7 @@ export default function Paginacao(props){
     if((props.count/props.pageSize)>maxPag){
         maxPag += 1;
     }
+    console.log(maxPag);
     function anterior(){
         if((props.page - 1)>= 0){
             props.onChange(props.page - 1);
@@ -35,7 +36,7 @@ export default function Paginacao(props){
             return buttons;
         }
         if((props.page + parseInt(props.max/2))>=maxPag){
-            for(let i = (maxPag-props.max); i < maxPag ; i++){
+            for(let i = ((maxPag)-props.max); i < maxPag ; i++){
                 buttons.push(<button className={props.page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>props.onChange(i)}>{i+1}</button>);
             }
             return buttons;
@@ -48,7 +49,7 @@ export default function Paginacao(props){
     return(<>
     {props.count && maxPag > 1?
         <div className="paginacao">
-            <button className="pages" style={!((props.page > (props.max/2)) && !(props.max > maxPag)) ? {visibility:'hidden'}:null} key={0} onClick={()=>props.onChange(0)}>{1}</button>
+            <button className="pages" style={((props.page < (props.max/2)) || (props.max >= maxPag)) ? {visibility:'hidden'}:null} key={0} onClick={()=>props.onChange(0)}>{1}</button>
             <button className="setas" onClick={()=>anterior()}>
                 <FiChevronLeft color="FFEB0A" size="30"/>
             </button>
@@ -56,7 +57,7 @@ export default function Paginacao(props){
             <button className="setas" onClick={()=>proximo()}>
                 <FiChevronRight color="FFEB0A" size="30"/>
             </button>
-            <button style={!(((props.page + parseInt(props.max/2)) < (maxPag - 1)) && !(props.max > maxPag) ) ? {visibility:'hidden'}:null} className="pages" key={maxPag} onClick={()=>props.onChange(maxPag-1)}>{maxPag}</button>
+            <button className="pages" style={(((props.page + parseInt(props.max/2)) > (maxPag - 1)) || (props.max >= maxPag) ) ? {visibility:'hidden'}:null} key={maxPag} onClick={()=>props.onChange(maxPag-1)}>{maxPag}</button>
         </div>
     :null}
     </>);

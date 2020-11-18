@@ -6,9 +6,10 @@ import CampoTexto from '../../components/campoTexto/index';
 import LinkList from '../../components/link/index';
 import Loading from '../../components/loading/index';
 import Paginacao from '../../components/paginacao/index';
-import {FiSearch} from 'react-icons/fi'
+import {FiSearch,FiGrid} from 'react-icons/fi'
 import api from '../../service/api';
 import './style.css';
+
 export default function Search(){
     let history = useHistory();
     const [tipos,setTipos]  = useState([]);
@@ -21,8 +22,6 @@ export default function Search(){
     const [busca,setBusca] = useState(parSearch !== 'null' ? parSearch : '');
     const [order,setOrder] = useState(parOrder ? parOrder : 3);
     const [page,setPage] = useState(parPage ? parPage : 0);
-
-    console.log(parSearch,parPage,parType,parOrder)
 
     async function buscarTipos(){
         try{
@@ -39,7 +38,6 @@ export default function Search(){
     }
     }
     useEffect(()=>{
-
         buscarTipos();
     },[]);
 
@@ -61,13 +59,8 @@ export default function Search(){
 
     useEffect(()=>{
         pesquisar();
-    //},[page,order])
     },[parSearch,parPage,parType,parOrder]);
-/*
-    useEffect(()=>{
-        pesquisar();
-    },[tipoSelecionado])
-*/
+
     function formBuscar(e){
         if(e){
             e.preventDefault();

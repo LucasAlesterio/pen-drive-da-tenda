@@ -83,12 +83,9 @@
     margin: 3rem 0;
     background-color: rgba(var(--cinza-claro-opacity),0.05);
     width:90% ;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 20rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
-    column-gap: 2rem;
-    row-gap: 2rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
 }
 

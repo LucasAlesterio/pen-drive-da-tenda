@@ -11,8 +11,8 @@ export default function LinkList(props){
                     {props.photo ? <img className="fotoLink"alt="Foto link" src={props.photo}/>: <div className="semFoto"/>}
                 </div>
             <div className="infos">
-            <h4>{props.name}</h4>
-            <div><Estrelas average={props.average}/></div>
+                <h4>{props.name}</h4>
+                <div><Estrelas average={props.average}/></div>
             </div>
             </Link>
         </div>
