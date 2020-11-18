@@ -60,15 +60,14 @@ export default function Search(){
     },[page,order,tipoSelecionado])
 
     useEffect(()=>{
-
         pesquisar();
     //},[page,order])
     },[parSearch,parPage,parType,parOrder]);
-
+/*
     useEffect(()=>{
         pesquisar();
     },[tipoSelecionado])
-    
+*/
     function formBuscar(e){
         if(e){
             e.preventDefault();
