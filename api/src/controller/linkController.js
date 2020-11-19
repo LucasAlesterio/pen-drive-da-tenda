@@ -226,7 +226,7 @@ module.exports = {
                             '$sort': sor
                         },
                         {'$match':{
-                            'type.name':  { '$lte':type}
+                            'type.name': type
                             }   
                         },
                         {

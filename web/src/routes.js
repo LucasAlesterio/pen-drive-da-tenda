@@ -15,13 +15,7 @@ export default function Routes(){
             <Switch>
                 <Route exact path="/" component={TimeLine}/>
                 <Route path="/landing" component={Landing}/>
-
                 <Route exact path="/search" component={Search}/>
-                <Route exact path="/search/:parSearch" component={Search}/>
-                <Route exact path="/search/:parSearch/:parPage" component={Search}/>
-                <Route exact path="/search/:parSearch/:parPage/:parOrder" component={Search}/>
-                <Route exact path="/search/:parSearch/:parPage/:parOrder/:parType" component={Search}/>
-
                 <Route path="/linkProfile/:id" component={LinkProfile}/>
                 <Route path="/editLink/:id" component={EditLink}/>
                 <Route path="/addLink" component={AddLink}/>

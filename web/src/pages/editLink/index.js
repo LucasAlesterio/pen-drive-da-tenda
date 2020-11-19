@@ -93,7 +93,6 @@ export default function EditLink(){
 
     useEffect(()=>{
         async function buscarDados(){
-            console.log('a')
             if(localStorage.getItem('token')){
             try{
                     const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});

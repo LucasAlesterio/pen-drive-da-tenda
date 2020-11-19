@@ -1,7 +1,7 @@
 import React,{useState,useEffect,useCallback} from 'react';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
-import { useHistory,useParams } from "react-router-dom";
+import { useHistory,useLocation } from "react-router-dom";
 import CampoTexto from '../../components/campoTexto/index';
 import LinkList from '../../components/link/index';
 import Loading from '../../components/loading/index';
@@ -17,9 +17,18 @@ export default function Search(){
     const [loading,setLoading] = useState(false);
     const [pageSize,setPageSize] = useState(18);
     const [count,setCount] = useState(0);
-    let {parSearch,parPage,parType,parOrder} = useParams();
+
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+    }
+    let query = useQuery();
+    let parSearch = query.get("search");
+    let parPage = query.get("page");
+    let parType = query.get("type");
+    let parOrder = query.get("order");
+
     const [tipoSelecionado,setTipoSelecionado] = useState(parType ? parType : '');
-    const [busca,setBusca] = useState(parSearch !== 'busca' ? parSearch : '');
+    const [busca,setBusca] = useState(parSearch !== 'busca' && parSearch ? parSearch : '');
     const [order,setOrder] = useState(parOrder ? parOrder : 3);
     const [page,setPage] = useState(parPage ? parPage : 0);
 
@@ -84,11 +93,7 @@ export default function Search(){
         ))
         return retorno;
     }
-    
-    useEffect(()=>{
-        history.push(`/search/busca/${page}/${order}/${tipoSelecionado}`);
-    },[page,order,tipoSelecionado,history])
-    
+
     useEffect(()=>{
         pesquisar();
     },[parSearch,parPage,parType,parOrder,pageSize,pesquisar]);
@@ -97,13 +102,17 @@ export default function Search(){
         if(e){
             e.preventDefault();
         }
-        history.push(`/search/${busca ? busca : 'busca'}/${page}/${order}/${tipoSelecionado}`);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${order}&type=${tipoSelecionado}`);
     }
-
 
     function selecionatTipo(e){
         setPage(0);
         setTipoSelecionado(e.target.value)
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${order}&type=${e.target.value}`);
+    }
+    function setOrdenar(e){
+        setOrder(e);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${e}&type=${tipoSelecionado}`);
     }
     return(
         <>
@@ -139,7 +148,7 @@ export default function Search(){
                             <option className="opcao" value={24}>24</option>
                             <option className="opcao" value={30}>30</option>
                         </select>
-                        <select placeholder="Ordenar" onChange={(e)=>setOrder(e.target.value)} value={order}>
+                        <select placeholder="Ordenar" onChange={(e)=>setOrdenar(e.target.value)} value={order}>
                             <option className="opcao" value={3} >Ordenar</option>
                             <option className="opcao" value={1}>Aa-Zz</option>
                             <option className="opcao" value={2}>Zz-Aa</option>
