@@ -32,11 +32,10 @@ export default function PopAvaliar(props){
     async function enviarAvaliacao(){
         props.onClose();
         const stars = countStars();
-        console.log(stars);
         let response = await api.post('/rating',{stars,link:estrelaSelecionada},{headers:{Authorization:localStorage.getItem('token')}});
         setEstrelasSelecionas({e1:false,e2:false,e3:false,e4:false,e5:false});
         setEstrelas({e1:false,e2:false,e3:false,e4:false,e5:false});
-        props.onSend();
+        //props.onSend();
         props.newAverage(response.data.average);
     }
 
@@ -44,7 +43,7 @@ export default function PopAvaliar(props){
         if(props.open){
             setEstrelaSelecionada(props.idLink);
         }
-    }, [props.open])
+    }, [props.open,props.idLink])
 
     return(
         <div id="popAvaliar">

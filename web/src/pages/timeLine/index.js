@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useCallback} from 'react';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import Estrelas from '../../components/estrelas/index';
@@ -14,11 +14,11 @@ export default function TimeLine(){
     const [openEstrelas,setOpenEstrelas] = useState('');
     const [linkSelecionado,setLinkSelecionado] = useState('');
     const [page,setPage] = useState(0);
-    const [pageSize,setPageSize] = useState(12);
     const [max,setMax] = useState(0);
     const [loading,setLoading] = useState(false);
     const [listagemLinks,setListagemLinks] = useState([]);
     let history = useHistory();
+    const pageSize = 12;
 
     function calcMax(i){
         let a = parseInt(i/pageSize)
@@ -27,7 +27,8 @@ export default function TimeLine(){
         }
         return a;
     }
-    async function buscarLinks(){
+
+    const buscarLinks = useCallback( async () =>{
         try{
             const response = await api.post('/timeLine',{pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
             if(response.data.error){
@@ -41,54 +42,45 @@ export default function TimeLine(){
             if(links === 'loading'){
                 setLinks(response.data.link);
             }
-            //console.log(response.data.link);
-        }catch(e){
-            alert(e)
-            //history.push('/landing');
-        }
-    }
-    async function verMais(){
-        try{
-            const response = await api.post('/timeLine',{pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
-            if(response.data.error){
-                if(response.data.token){
-                    alert('Necessário logar novamente!')
-                    history.push('/landing');
-                    return null;
-                }
-            }
-            setMax(calcMax(response.data.count));
-            setLinks(links.concat(response.data.link));
-            setLoading(false);
         }catch(e){
             alert(e)
         }
-    }
-    useEffect(()=>{
-        if(links !== 'loading'){
-            verMais();
-        }
-    },[page]);
+    },[history,links,page]);
 
     useEffect(()=>{
         buscarLinks();
-    },[]);
-    useEffect(()=>{
-        listagem();
-    },[links]);
-    function verificaProximo(){
+    },[buscarLinks]);
+
+    async function verificaProximo(){
         setLoading(true);
         if((page + 1) <= (max - 1)){
-            setPage(page+1)
+            try{
+                const response = await api.post('/timeLine',{pageSize:pageSize,page:(page + 1)},{headers:{Authorization:localStorage.getItem('token')}});
+                if(response.data.error){
+                    if(response.data.token){
+                        alert('Necessário logar novamente!')
+                        history.push('/landing');
+                        return null;
+                    }
+                }
+                setMax(calcMax(response.data.count));
+                setLinks(links.concat(response.data.link));
+                setLoading(false);
+            }catch(e){
+                alert(e)
+            }
+            setPage(page+1);
             return null;
         }
         setLoading(false);
     }
+
     function openPopAvaliacao(id){
         setOpenEstrelas(true);
         setLinkSelecionado(id);
     }
-    function listagem(l){
+
+    const listagem = useCallback((l)=>{
         let a = [];
         if(l){
             a=l;
@@ -121,7 +113,13 @@ export default function TimeLine(){
         ))
         setListagemLinks(list);
         return null;
-    }
+    },[links]);
+
+    useEffect(()=>{
+        listagem();
+    },[links,listagem]);
+
+
     function setNewAverage(a){
         let newList =  links.map((link)=>{
             if(linkSelecionado === link._id){
@@ -131,10 +129,11 @@ export default function TimeLine(){
         });
         listagem(newList);
     }
+
     return(
         <>
         <Cabecalho />
-        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} onSend={buscarLinks} newAverage={(a)=>setNewAverage(a)}/>
+        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={linkSelecionado} newAverage={(a)=>setNewAverage(a)}/>
         <div id="timeLine">
             {loading ? <Loading/>:null}
             <div className="container">

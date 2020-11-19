@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useCallback} from 'react';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import Botao from '../../components/botao/index';
@@ -24,11 +24,7 @@ export default function LinkProfile(){
     let history = useHistory();
     let {id} = useParams();
 
-    useEffect(()=>{
-        buscarDados();
-    },[])
-
-    async function buscarDados(){
+    const buscarDados = useCallback(async ()=>{
         //setLoading(true);
         if(localStorage.getItem('token')){
             try{
@@ -61,7 +57,12 @@ export default function LinkProfile(){
                 history.push('/landing');
                 return null;
             }
-    }
+    },[history,id]);
+
+    useEffect(()=>{
+        buscarDados();
+    },[buscarDados]);
+
 
     async function favoritar(){
         setLoading(true);
@@ -94,10 +95,16 @@ export default function LinkProfile(){
         document.execCommand('copy');
         document.body.removeChild(el);
     };
+    function setNewAverage(n){
+        let list = link;
+        list.average = n;
+        setLink(list);
+        setOpenEstrelas(false)
+    }
     return(
     <>
         <Cabecalho/>
-        <PopAvaliacao open={openEstrelas} onClose={()=>setOpenEstrelas(false)} idLink={link._id} onSend={buscarDados}/>
+        <PopAvaliacao open={openEstrelas} onClose={()=>{}} idLink={link._id} newAverage={(n)=>{setNewAverage(n)}}/>
         {loading ? <Loading /> : null}
         <div id="linkProfile">
             {link ? <> 
@@ -137,7 +144,7 @@ export default function LinkProfile(){
             <div className="container">
                 <div className="foto">
                     <div className="fotoLink" style={!link.photograph ? {backgroundColor:'var(--rosa)'} : null}>
-                        {link.photograph ? <img alt="capa" src={link.photograph} alt="capa"/> : null}
+                        {link.photograph ? <img src={link.photograph} alt="capa"/> : null}
                     </div>
                     <div className="estrelas">
                         <button title="Avaliar" onClick={()=>setOpenEstrelas(true)}><Estrelas average={link.average} size={30}/></button>
@@ -152,7 +159,7 @@ export default function LinkProfile(){
                             <FiCopy size='35' color='151515'/>
                         </Botao>
 
-                        <a target='_blank' href= {link.link} className="botao1" title="Abrir link em nova aba">
+                        <a rel='oopener noreferrer' target='_blank' href= {link.link} className="botao1" title="Abrir link em nova aba">
                                 Abrir
                                 <HiOutlineExternalLink size='37' color='151515'/>
                         </a>

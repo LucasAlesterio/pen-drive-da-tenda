@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React from 'react';
 import { BsStar, BsStarHalf,BsStarFill } from "react-icons/bs";
 import './style.css';
 
@@ -129,5 +129,4 @@ export default function Estrelas(props){
             </>
         )
     }
-    return null;
 }

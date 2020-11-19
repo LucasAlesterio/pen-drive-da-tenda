@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useCallback,useEffect} from 'react';
 import Cabecalho from '../../components/cabecalho/index';
 import Rodape from '../../components/rodape/index';
 import CampoTexto from '../../components/campoTexto';
@@ -9,89 +9,62 @@ import api from '../../service/api';
 import {FiSearch} from 'react-icons/fi';
 import './style.css';
 
-let flag = false;
+let text = '';
 export default function Friends(){
     const [campoBusca,setCampoBusca] = useState('');
-    const [amigos,setAmigos] = useState([]);
     const [loading,setLoading] = useState(false);
-    const [page,setPage] = useState(0);
-    const [pageSize,setPageSize] = useState(12);
     const [count,setCount] = useState(0);
-
-    useEffect(()=>{
-        buscarDados();
-    },[]);
-
-    useEffect(()=>{
-        if(flag){
-            buscarAmigos();
-        }else{
-            buscarDados();
-        }
-        //setListagemAmigos(listAmigos());
-    },[page]);
-
-    async function buscarDados(){
-        setLoading(true);
-        try{
-            const response = await api.post('/listFriends',{pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
-            if(response.data.friends){
-                setAmigos(response.data.friends);
-                listAmigos(response.data.friends);
-            }
-            if(response.data.count){
-                setCount(response.data.count);
-            }
-            setLoading(false);
-        }catch{
-            setLoading(false);
-            alert('Erro no servidor!');
-        }
-    }
-    async function buscarAmigos(e){
-        flag = true;
+    const [page,setPage] = useState(0);
+    const [listagem,setListagem] = useState([]);
+    const pageSize = 1;
+    const buscarAmigos = useCallback(async (e)=>{
         setLoading(true);
         if(e){
             e.preventDefault();
         }
-        if(!campoBusca){
-            buscarDados();
-            return null;
-        }
-        //flagAmigos = true;
         try{
-            const response = await api.post('/findUser',{search:campoBusca,pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
-            //listAmigos(response.data);
-            setAmigos(response.data.friends);
+            const response = await api.post('/findUser',
+            {search:text,pageSize:pageSize,page:page},
+            {headers:{Authorization:localStorage.getItem('token')}});
             setCount(response.data.count);
+            setListagem(response.data.friends.map((amigo)=>(
+                <Usuario key={amigo.user} user={amigo.user} 
+                photo={amigo.photograph} button={true} isFriend={amigo.isFriend} 
+                id={amigo._id} refresh={()=>buscarAmigos()}/>
+            )));
             setLoading(false);
-            //setFlagAmigos(true);
         }catch{
             alert('Erro no servidor!');
             setLoading(false);
         }
+    },[page]);
+
+    useEffect(()=>{
+        buscarAmigos()
+    },[buscarAmigos])
+
+    function setText(e){
+        setCampoBusca(e);
+        text = e;
     }
-
-    function listAmigos(){
-        if(amigos){
-
-            const retorno  = amigos.map((amigo)=>(
-                <Usuario user={amigo.user} photo={amigo.photograph} button={true} isFriend={amigo.isFriend} id={amigo._id} refresh={()=>buscarAmigos()}/>
-            ))
-            //setListagemAmigos(retorno);
-            return retorno;
-        }
+    function setSubmit(e){
+        setPage(0);
+        buscarAmigos(e);
+    }
+    function setPagina(a){
+        setPage(a);
+        console.log('pagina')
     }
     return(
     <>
         <Cabecalho/>
         <div id="friends">
-            <form className="busca" onSubmit={(e)=>buscarAmigos(e)}>
+            <form className="busca" onSubmit={(e)=>setSubmit(e)}>
                 <CampoTexto 
                 type="text" 
                 placeholder="Buscar amigo" 
-                value={campoBusca.valor}
-                onChange={e=>setCampoBusca(e.target.value)}
+                onChange={(e)=>(setText(e.target.value))}
+                value={campoBusca}
                 />
                 <button type="submit">
                     <FiSearch size="18" color="151515"/>
@@ -99,12 +72,11 @@ export default function Friends(){
             </form>
 
             <div className="container">
-
-                {loading?<Loading/>:listAmigos()}
+                {loading?<Loading/>:listagem}
             </div>
-            <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={5}/>
+            <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPagina(a)} max={5}/>
         </div>
         <Rodape/>
-        </>
+    </>
     );
 }

@@ -259,40 +259,50 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        let query = [
-            {
-                '$search': {
-                    'search': {
-                    'path': [
-                        'name', 'user'
-                    ], 
-                    'query': search
+        if(search){
+            let query = [
+                {
+                    '$search': {
+                        'search': {
+                        'path': [
+                            'name', 'user'
+                        ], 
+                        'query': search
+                        }
+                    }
+                    }, {
+                    '$project': { 
+                        'photograph': 1, 
+                        '_id': 1, 
+                        'user': 1,
+                        'friends':1
                     }
                 }
-                }, {
-                '$project': { 
-                    'photograph': 1, 
-                    '_id': 1, 
-                    'user': 1,
-                    'friends':1
+            ];
+            count =  await User.aggregate(query).count("userCount");
+            let list = await User.aggregate(query).skip(page*pageSize).limit(pageSize);
+            const a = JSON.stringify(list);
+            var b = JSON.parse(a);
+            b.map((friend,index)=>{
+                if(_user.friends.indexOf(friend._id) !== -1){
+                    b[index]['isFriend'] = true;
+                }else{
+                    b[index]['isFriend'] = false;
                 }
+            });
+            if(list.length>0){
+                return response.json({friends:b,count:count[0].userCount});
             }
-        ];
-        count =  await User.aggregate(query).count("userCount");
-        let list = await User.aggregate(query).skip(page*pageSize).limit(pageSize);
+            return response.json({friends:b,count:0});
+        }
+        const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).skip(page*pageSize).limit(pageSize).exec();
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
-        b.map((friend,index)=>{
-            if(_user.friends.indexOf(friend._id) !== -1){
-                b[index]['isFriend'] = true;
-            }else{
-                b[index]['isFriend'] = false;
-            }
+        count = _user.friends.length;
+        b.map((b)=>{
+            return(b['isFriend'] = true)
         });
-        if(list.length>0){
-            return response.json({friends:b,count:count[0].userCount});
-        }
-        return response.json({friends:b,count:0});
+        return response.json({friends:b,count:count});
     },
     async refreshToken(request,response){
         const {authorization} = request.headers;

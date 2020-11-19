@@ -9,26 +9,28 @@ export default function Cabecalho(props){
     let history = useHistory();
     const [dataUser,setDatauser] = useState({});
 
-    async function testeToken(){
-        const token = localStorage.getItem('token');
-        var response = '';
-        try{
-            response = await api.get('/refreshToken',{ headers:{Authorization:token}});
-            setDatauser(response.data);
-            localStorage.setItem('token',response.data.token);
-            if(response.data){
-            if(response.data.error){
-                history.push("/landing");
-            }
-        }
-        }catch{
-            alert('Error servidor');
-        }
-        
-    }
+
     useEffect(()=>{
         if(localStorage.getItem('token')){
-            testeToken();
+            //testeToken();
+            async function testeToken(){
+                const token = localStorage.getItem('token');
+                var response = '';
+                try{
+                    response = await api.get('/refreshToken',{ headers:{Authorization:token}});
+                    setDatauser(response.data);
+                    localStorage.setItem('token',response.data.token);
+                    if(response.data){
+                    if(response.data.error){
+                        history.push("/landing");
+                    }
+                }
+                }catch{
+                    alert('Error servidor');
+                }
+                
+            }
+            testeToken()
         }else{
             history.push("/landing");
         }

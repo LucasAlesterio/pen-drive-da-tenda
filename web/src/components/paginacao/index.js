@@ -1,13 +1,14 @@
-import React from 'react';
+import React,{useEffect,useState,useCallback} from 'react';
 import './style.css';
 import {FiChevronLeft,FiChevronRight} from 'react-icons/fi'
 
 export default function Paginacao(props){
+    const [list,setList] = useState([]);
     let maxPag = parseInt(props.count/props.pageSize);
+
     if((props.count/props.pageSize)>maxPag){
         maxPag += 1;
     }
-    console.log(maxPag);
     function anterior(){
         if((props.page - 1)>= 0){
             props.onChange(props.page - 1);
@@ -19,33 +20,50 @@ export default function Paginacao(props){
             props.onChange(props.page + 1);
         }
     }
+    let page = props.page;
+    let max = props.max;
+    let onChange = props.onChange;
 
-    function listagem(){
+    const onPress = useCallback((i)=>{
+        console.log(onChange(i));
+    },[onChange]);
+
+    const listagem = useCallback(()=>{
+        //console.log(onChange);
         let buttons = [];
-        if(props.page < (props.max/2)){
+        if(page < (max/2)){
+            console.log('esquerda')
             let a  = 0;
-            if(props.max<maxPag){
-                a = props.max;
+            if(max<maxPag){
+                a = max;
             }else{
                 a = maxPag;
-                //console.log(maxPag);
             }
             for(let i = 0; i < a ; i++){
-                buttons.push(<button className={props.page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>props.onChange(i)}>{i+1}</button>);
+                buttons.push(<button className={page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>onPress(i)}>{i+1}</button>);
             }
             return buttons;
         }
-        if((props.page + parseInt(props.max/2))>=maxPag){
-            for(let i = ((maxPag)-props.max); i < maxPag ; i++){
-                buttons.push(<button className={props.page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>props.onChange(i)}>{i+1}</button>);
+        if((page + parseInt(max/2))>=maxPag){
+            console.log('direita')
+            let b = 0
+            if(max<maxPag){
+                b = (maxPag)-max;
+            }
+            for(let i =b; i < maxPag ; i++){
+                buttons.push(<button className={page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>onPress(i)}>{i+1}</button>);
             }
             return buttons;
         }
-        for(let i = ((props.page)- parseInt(props.max/2)); i <= (parseInt(props.max/2)+props.page) ; i++){
-            buttons.push(<button className={props.page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>props.onChange(i)}>{i+1}</button>);
+        for(let i = ((page)- parseInt(max/2)); i <= (parseInt(max/2)+page) ; i++){
+            buttons.push(<button className={page === i ? "pageSelecionada" :"pages"} key={i} onClick={()=>onPress(i)}>{i+1}</button>);
         }
         return buttons;
-    }
+    },[onPress,page,max,maxPag]);
+
+    useEffect(()=>{
+        setList(listagem);
+    },[props.page,listagem])
     return(<>
     {props.count && maxPag > 1?
         <div className="paginacao">
@@ -53,7 +71,7 @@ export default function Paginacao(props){
             <button className="setas" onClick={()=>anterior()}>
                 <FiChevronLeft color="FFEB0A" size="30"/>
             </button>
-            {listagem()}
+            {list}
             <button className="setas" onClick={()=>proximo()}>
                 <FiChevronRight color="FFEB0A" size="30"/>
             </button>

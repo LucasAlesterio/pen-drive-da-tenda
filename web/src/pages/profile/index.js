@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect, useCallback} from 'react';
 import Rodape from '../../components/rodape/index';
 import Cabecalho from '../../components/cabecalho/index';
 import LinkList from '../../components/link/index';
@@ -26,19 +26,17 @@ export default function Profile(){
     const [openPass,setOpenPass] = useState(false);
     const [loading,setLoading] = useState(false);
     let history = useHistory();
-
     const [senhaAntiga,setSenhaAntiga] = useState({valor:'',erro:false,textoErro:''});
     const [senha,setSenha] = useState({valor:'',erro:false,textoErro:''});
     const [fotoUser,setFoto] = useState('');
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
     const [usuario,setUsuario] = useState({valor:'',erro:false,textoErro:''});
     const [confirmarSenha,setConfirmarSenha] = useState({valor:'',erro:false,textoErro:''});
-
     const [pageL,setPageL] = useState(0);
     const [pageF,setPageF] = useState(0);
-    const [pageSize,setPageSize] = useState(10);
     const [countL,setCountL] = useState(0);
     const [countF,setCountF] = useState(0);
+    const pageSize = 10;
 
     const styleOpen ={
         transition:'transform 0.25s',
@@ -50,26 +48,32 @@ export default function Profile(){
         transform:'scale(0,1)'
     };
 
-    function afterTime(){ 
-        setEstilo(true);
-        if(!aba && links){
-            setListagem(listLinks());
+    const setL = useCallback(async()=>{
+        const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:pageL},{headers:{Authorization:localStorage.getItem('token')}});
+        setLinks(listLinks.data.links);
+        setCountL(listLinks.data.count);
+        if(listLinks.data.links){
+            setListagem(listLinks.data.links.map((link)=>(
+                <LinkList key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+            )));
         }
-        if(aba && favorites){
-            setListagem(listFavorites());
+    },[pageL,user]);
+
+    const setF = useCallback(async ()=>{
+        const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
+        setFavorites(listMyFavorites.data.links);
+        setCountF(listMyFavorites.data.count);
+        if(aba){
+            setListagem(listMyFavorites.data.links.map((link)=>(
+                <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+            )));
         }
-    }
+        
+    },[aba,pageF]);
 
-    useEffect(()=>{
-        setEstilo(false)
-        setTimeout(()=>afterTime(),250);
-    },[aba])
-
-    async function buscarDados(){
+    const buscarDados = useCallback(async ()=>{
         try{
-
             const response = await api.post('/dataUser',{idUser:user},{headers:{Authorization:localStorage.getItem('token')}});
-            //console.log(response);
             if(response.data.error){
                 if(response.data.token){
                     history.push('/landing');
@@ -86,20 +90,19 @@ export default function Profile(){
             setUsuario({valor:response.data.user,erro:false,textoErro:''})
             setFoto(response.data.photograph);
             if(response.data.me){
-                setF();
+                const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
+                setFavorites(listMyFavorites.data.links);
+                setCountF(listMyFavorites.data.count);
             }
-            setL();
-            /*
-            if(a){
-                setListagem(a.map((link)=>(
-                    <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-                    )));
-            }
-            */
+            const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:pageL},{headers:{Authorization:localStorage.getItem('token')}});
+            setLinks(listLinks.data.links);
+            setCountL(listLinks.data.count);
+
         }catch(error){
             alert(error);
         }
-    }
+    },[history,user,pageF,pageL]);
+
     useEffect(()=>{
         setLoading(true);
         if(aba){
@@ -109,47 +112,11 @@ export default function Profile(){
             setL();
             setLoading(false);
         }
-    },[pageF,pageL])
-    async function setL(){
-        const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:pageL},{headers:{Authorization:localStorage.getItem('token')}});
-        setLinks(listLinks.data.links);
-        setCountL(listLinks.data.count);
-        //return(listLinks.data.links);
-        if(listLinks.data.links){
-            setListagem(listLinks.data.links.map((link)=>(
-                <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-            )));
-        }
-    }
-    async function setF(){
-        const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
-        setFavorites(listMyFavorites.data.links);
-        setCountF(listMyFavorites.data.count);
-        if(aba){
-            setListagem(listMyFavorites.data.links.map((link)=>(
-                <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-            )));
-        }
-        
-    }
-
-    function listLinks(){
-        const retorno  = links.map((link)=>(
-            <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-        ))
-        return retorno;
-    }
-
-    function listFavorites(){
-        const retorno  = favorites.map((link)=>(
-            <LinkList id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-        ))
-        return retorno;
-    }
+    },[pageF,pageL,aba,setF,setL])
 
     useEffect(() => {
         buscarDados();
-    }, [user])
+    }, [user,buscarDados])
 
     function desconectar(){
         localStorage.setItem('token','');
@@ -243,7 +210,24 @@ export default function Profile(){
             alert('Erro no seridor!');
         }
     }
+    async function changeAba(a){
+        setAba(a);
+        setEstilo(false)
+        setTimeout(()=>{
+            if(!a && links){
+                setListagem(links.map((link)=>(
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                )));
+            }
+            if(a && favorites){
 
+                setListagem(favorites.map((link)=>(
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                )));
+            }
+            setEstilo(true);
+            },250);
+    }
     return(
         <>
         <Cabecalho refresh={dataUser}/>
@@ -333,8 +317,8 @@ export default function Profile(){
             </div>
             <div className="containerBotoes">
                 {dataUser.me ?<> 
-                <button onClick={()=>setAba(false)}>Meus links</button>
-                <button onClick={()=>setAba(true)}>Favoritos</button>
+                <button onClick={()=>changeAba(false)}>Meus links</button>
+                <button onClick={()=>changeAba(true)}>Favoritos</button>
                 </>: <button disabled>Links</button> }
             </div>
 

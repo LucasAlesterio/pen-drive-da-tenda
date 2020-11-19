@@ -8,9 +8,7 @@ import {FiCamera,FiPlusCircle,FiX} from 'react-icons/fi';
 import Botao from '../../components/botao/index';
 import { useHistory,useParams } from "react-router-dom";
 import api from '../../service/api';
-//import {RiImageAddLine} from 'react-icons/ri'
 
-var tags = [];
 export default function EditLink(){
     const [tipoSelecionado,setTipoSelecionado] = useState({valor:'',erro:false,textoErro:''});
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
@@ -20,6 +18,7 @@ export default function EditLink(){
     const [listTags,setListTags] = useState('');
     const [foto,setFoto] = useState('');
     const [loading,setLoading] = useState(false);
+    const [arrayTag,setArrayTag] = useState([]);
     let history = useHistory();
     let {id} = useParams();
     const styleErro = {
@@ -40,8 +39,19 @@ export default function EditLink(){
         ));
         return retorno;
     }
-    function listagemTag(){
-        const response = tags.map((t)=>(
+
+    function addTag(e){
+        e.preventDefault();
+        let tags = arrayTag;
+        if(tags.indexOf(tag) === -1){
+            tags.push(tag);
+            //listagemTag();
+        }
+        setTag('');
+        setArrayTag(tags);
+        console.log(arrayTag);
+        console.log('lista')
+        const response = arrayTag.map((t)=>(
             <div key={t}>
                 <p>{t}</p>
                 <button  onClick={()=>deleteTag(t)}>
@@ -52,16 +62,18 @@ export default function EditLink(){
         setListTags(response);
     }
 
-    function addTag(e){
-        e.preventDefault();
-        if(tags.indexOf(tag) === -1){
-            tags.push(tag);
-            listagemTag();
-        }
-        setTag('');
+    function jsonTags(){
+        return(
+            arrayTag.map((a)=>{
+                return({name:a})
+            })
+        );
     }
+
     function deleteTag(t){
+        console.log('delete')
         var i = 0;
+        let tags = arrayTag;
         while (i < tags.length) {
             if (tags[i] === t) {
                 tags.splice(i, 1);
@@ -69,49 +81,54 @@ export default function EditLink(){
                 ++i;
             }
         }
-        listagemTag();
-    }
-    function jsonTags(){
-        return(
-            tags.map((a)=>{
-                return({name:a})
-            })
-        );
-    }
+        setArrayTag(tags);
+        console.log('lista')
+        const response = arrayTag.map((t)=>(
+            <div key={t}>
+                <p>{t}</p>
+                <button  onClick={()=>deleteTag(t)}>
+                    <FiX  color="151515" size="20"/>
+                </button>
+            </div>
+        ));
+        setListTags(response);
+    };
+
+
     useEffect(()=>{
-        buscarDados();
-    },[])
-    async function buscarDados(){
-        if(localStorage.getItem('token')){
-        try{
-                const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});
-                const tag =  response.data.link.tag;
-                if(response.data.error){
-                    if(response.data.error.token){
-                        alert('Necessário logar novamente!')
-                        history.push('/landing');
-                        return null;
+        async function buscarDados(){
+            if(localStorage.getItem('token')){
+            try{
+                    const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});
+                    //const tag =  response.data.link.tag;
+                    if(response.data.error){
+                        if(response.data.error.token){
+                            alert('Necessário logar novamente!')
+                            history.push('/landing');
+                            return null;
+                        }
                     }
+                    var _link = response.data.link;
+                    setArrayTag(response.data.link.tag.map((a)=>{
+                        return(a.name);
+                    }));
+                    setNome({valor:_link.name,erro:false,textoErro:''});
+                    setFoto(_link.photograph);
+                    setLink({valor:_link.link,erro:false,textoErro:''});
+                    setTipoSelecionado({valor:_link.type.name,erro:false,textoErro:''});
+                    setDescricao(_link.description);
+                    //setUser(response.data.user);
+                }catch{
+                    alert('Erro no servidor');
                 }
-                var _link = response.data.link;
-                tags = (tag.map((a)=>{
-                    return(a.name);
-                }));
-                setNome({valor:_link.name,erro:false,textoErro:''});
-                setFoto(_link.photograph);
-                setLink({valor:_link.link,erro:false,textoErro:''});
-                setTipoSelecionado({valor:_link.type.name,erro:false,textoErro:''});
-                setDescricao(_link.description);
-                listagemTag();
-                //setUser(response.data.user);
-            }catch{
-                alert('Erro no servidor');
-            }
-            }else{
-                history.push('/landing');
-                return null;
-            }
-    }
+                }else{
+                    history.push('/landing');
+                    return null;
+                }
+        }
+        buscarDados();
+    },[history,id])
+
     async function cadastrar(){ 
         setLoading(true)
         //var json = jsonTags();
@@ -225,7 +242,14 @@ export default function EditLink(){
                         <button type="submit"><FiPlusCircle color="C2C2C2" size="25"/></button>
                     </form>
                     <div className="containerTag">
-                            {listTags}
+                        {!listTags ? (arrayTag.map((t)=>(
+                            <div key={t}>
+                                <p>{t}</p>
+                                <button  onClick={()=>deleteTag(t)}>
+                                    <FiX  color="151515" size="20"/>
+                                </button>
+                            </div>
+                        ))):listTags}
                     </div>
                 </div>
             </div>
