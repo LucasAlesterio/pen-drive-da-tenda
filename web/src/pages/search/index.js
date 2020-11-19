@@ -48,7 +48,6 @@ export default function Search(){
                 setCount(response.data.count);
             }
             setLoading(false);
-
         }catch{
             setLoading(false);
             alert('Erro no servidor');
@@ -72,7 +71,6 @@ export default function Search(){
     useEffect(()=>{
         buscarTipos();
     },[buscarTipos]);
-
 
     function listTipos(){
         const retorno = tipos.map((tipo)=>(

@@ -53,7 +53,7 @@ export default function Friends(){
     }
     function setPagina(a){
         setPage(a);
-        console.log('pagina')
+        //console.log('pagina')
     }
     return(
     <>

@@ -21,7 +21,7 @@ export default function AddLink(){
     const [loading,setLoading] = useState(false);
     let history = useHistory();
     var tags = _tags;
-    
+
     const styleErro = {
         border:'red solid 2px'
     }

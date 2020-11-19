@@ -49,8 +49,6 @@ export default function EditLink(){
         }
         setTag('');
         setArrayTag(tags);
-        console.log(arrayTag);
-        console.log('lista')
         const response = arrayTag.map((t)=>(
             <div key={t}>
                 <p>{t}</p>
@@ -71,7 +69,6 @@ export default function EditLink(){
     }
 
     function deleteTag(t){
-        console.log('delete')
         var i = 0;
         let tags = arrayTag;
         while (i < tags.length) {
@@ -82,7 +79,6 @@ export default function EditLink(){
             }
         }
         setArrayTag(tags);
-        console.log('lista')
         const response = arrayTag.map((t)=>(
             <div key={t}>
                 <p>{t}</p>
@@ -97,6 +93,7 @@ export default function EditLink(){
 
     useEffect(()=>{
         async function buscarDados(){
+            console.log('a')
             if(localStorage.getItem('token')){
             try{
                     const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});

@@ -44,7 +44,7 @@ export default function Cabecalho(props){
                 <Link to='/addLink' title="Adicionar link">
                     <FiFilePlus size='20' color='C2C2C2'/>
                 </Link>
-                <Link to='/search' title="Buscar">
+                <Link to='/search/busca/0/3' title="Buscar">
                     <FiSearch size='20' color='C2C2C2'/>
                 </Link>
                 <Link to='/' title="Timeline">

@@ -25,7 +25,7 @@ export default function LinkProfile(){
     let {id} = useParams();
 
     const buscarDados = useCallback(async ()=>{
-        //setLoading(true);
+        setLoading(true);
         if(localStorage.getItem('token')){
             try{
                 const response = await api.post('/dataLink',{id},{headers:{Authorization:localStorage.getItem('token')}});
@@ -47,12 +47,12 @@ export default function LinkProfile(){
                 }));
                 setLink(response.data.link);
                 setUser(response.data.user);
-                //setLoading(false);
+                setLoading(false);
             }catch(e){
-                //setLoading(false);
+                setLoading(false);
                 alert(e);
             }
-            //setLoading(false);
+            setLoading(false);
             }else{
                 history.push('/landing');
                 return null;
@@ -62,7 +62,6 @@ export default function LinkProfile(){
     useEffect(()=>{
         buscarDados();
     },[buscarDados]);
-
 
     async function favoritar(){
         setLoading(true);
@@ -87,6 +86,7 @@ export default function LinkProfile(){
             alert('Erro no servidor');
         }
     }
+
     function copyToClipboard(){
         const el = document.createElement('textarea');
         el.value = link.link;
@@ -95,12 +95,14 @@ export default function LinkProfile(){
         document.execCommand('copy');
         document.body.removeChild(el);
     };
+
     function setNewAverage(n){
         let list = link;
         list.average = n;
         setLink(list);
         setOpenEstrelas(false)
     }
+
     return(
     <>
         <Cabecalho/>

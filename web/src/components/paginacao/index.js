@@ -2,13 +2,15 @@ import React,{useEffect,useState,useCallback} from 'react';
 import './style.css';
 import {FiChevronLeft,FiChevronRight} from 'react-icons/fi'
 
+
 export default function Paginacao(props){
     const [list,setList] = useState([]);
-    let maxPag = parseInt(props.count/props.pageSize);
 
+    let maxPag = parseInt(props.count/props.pageSize);
     if((props.count/props.pageSize)>maxPag){
         maxPag += 1;
     }
+
     function anterior(){
         if((props.page - 1)>= 0){
             props.onChange(props.page - 1);
@@ -25,14 +27,12 @@ export default function Paginacao(props){
     let onChange = props.onChange;
 
     const onPress = useCallback((i)=>{
-        console.log(onChange(i));
+        onChange(i);
     },[onChange]);
 
     const listagem = useCallback(()=>{
-        //console.log(onChange);
         let buttons = [];
         if(page < (max/2)){
-            console.log('esquerda')
             let a  = 0;
             if(max<maxPag){
                 a = max;
@@ -45,7 +45,6 @@ export default function Paginacao(props){
             return buttons;
         }
         if((page + parseInt(max/2))>=maxPag){
-            console.log('direita')
             let b = 0
             if(max<maxPag){
                 b = (maxPag)-max;
@@ -62,8 +61,9 @@ export default function Paginacao(props){
     },[onPress,page,max,maxPag]);
 
     useEffect(()=>{
-        setList(listagem);
-    },[props.page,listagem])
+        setList(listagem());
+    },[props.page,listagem,list.length,maxPag])
+
     return(<>
     {props.count && maxPag > 1?
         <div className="paginacao">

@@ -17,6 +17,7 @@ export default function TimeLine(){
     const [max,setMax] = useState(0);
     const [loading,setLoading] = useState(false);
     const [listagemLinks,setListagemLinks] = useState([]);
+    const [old,setOld] = useState('--');
     let history = useHistory();
     const pageSize = 12;
 
@@ -29,6 +30,7 @@ export default function TimeLine(){
     }
 
     const buscarLinks = useCallback( async () =>{
+        setOld(page);
         try{
             const response = await api.post('/timeLine',{pageSize:pageSize,page:page},{headers:{Authorization:localStorage.getItem('token')}});
             if(response.data.error){
@@ -37,7 +39,7 @@ export default function TimeLine(){
                     history.push('/landing');
                     return null;
                 }
-            } 
+            }
             setMax(calcMax(response.data.count));
             if(links === 'loading'){
                 setLinks(response.data.link);
@@ -45,11 +47,13 @@ export default function TimeLine(){
         }catch(e){
             alert(e)
         }
-    },[history,links,page]);
+    },[history,pageSize,page,links]);
 
     useEffect(()=>{
-        buscarLinks();
-    },[buscarLinks]);
+        if(page !== old){
+            buscarLinks();
+        }
+    },[buscarLinks,page,old]);
 
     async function verificaProximo(){
         setLoading(true);
