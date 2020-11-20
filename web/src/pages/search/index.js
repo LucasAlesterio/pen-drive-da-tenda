@@ -102,7 +102,7 @@ export default function Search(){
         if(e){
             e.preventDefault();
         }
-        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${order}&type=${tipoSelecionado}`);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${0}&order=${order}&type=${tipoSelecionado}`);
     }
 
     function selecionatTipo(e){
@@ -113,6 +113,10 @@ export default function Search(){
     function setOrdenar(e){
         setOrder(e);
         history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${e}&type=${tipoSelecionado}`);
+    }
+    function setChangePagina(e){
+        setPage(e);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${e}&order=${e}&type=${tipoSelecionado}`);
     }
     return(
         <>
@@ -162,7 +166,7 @@ export default function Search(){
                 <div className="container">
                     {links ? listLinks() : null}
                 </div>
-                <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setPage(a)} max={7}/>
+                <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setChangePagina(a)} max={7}/>
         </div>
         <Rodape/>
         </>:<Loading/>}

@@ -16,7 +16,7 @@ export default function Friends(){
     const [count,setCount] = useState(0);
     const [page,setPage] = useState(0);
     const [listagem,setListagem] = useState([]);
-    const pageSize = 1;
+    const pageSize = 12;
     const buscarAmigos = useCallback(async (e)=>{
         setLoading(true);
         if(e){
