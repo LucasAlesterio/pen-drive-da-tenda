@@ -15,7 +15,10 @@ module.exports = {
         var _user = await User.findOne({_id:_id});
         if(photograph){
             idGerado = uuidv4();
-            await decodeBase64Image(photograph,idGerado);
+            let flag = await decodeBase64Image(photograph,idGerado);
+            if(flag){
+                return response.json({error:true,image:true});
+            }
             const url = await uploadImage(idGerado);
             if(url){
                 deleteFile(idGerado);
