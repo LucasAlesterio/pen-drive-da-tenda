@@ -54,7 +54,6 @@ export default function Friends(){
     }
     function setPagina(a){
         setPage(a);
-        //console.log('pagina')
     }
     return(
     <>
