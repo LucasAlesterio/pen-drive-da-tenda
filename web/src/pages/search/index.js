@@ -15,9 +15,8 @@ export default function Search(){
     const [tipos,setTipos]  = useState([]);
     const [links,setLinks] = useState([]);
     const [loading,setLoading] = useState(false);
-    const [pageSize,setPageSize] = useState(18);
     const [count,setCount] = useState(0);
-
+    
     function useQuery() {
         return new URLSearchParams(useLocation().search);
     }
@@ -26,11 +25,13 @@ export default function Search(){
     let parPage = query.get("page");
     let parType = query.get("type");
     let parOrder = query.get("order");
-
+    let parSize = query.get("size");
+    
+    const [pageSize,setPageSize] = useState(parSize ? parSize : 18);
     const [tipoSelecionado,setTipoSelecionado] = useState(parType ? parType : '');
     const [busca,setBusca] = useState(parSearch !== 'busca' && parSearch ? parSearch : '');
     const [order,setOrder] = useState(parOrder ? parOrder : 3);
-    const [page,setPage] = useState(parPage ? parPage : 0);
+    const [page,setPage] = useState(parPage ? parseInt(parPage) : 0);
 
     const pesquisar = useCallback( async ()=>{
         setLoading(true);
@@ -99,28 +100,32 @@ export default function Search(){
     },[parSearch,parPage,parType,parOrder,pageSize,pesquisar]);
 
     function formBuscar(e){
+        setPage(0);
         if(e){
             e.preventDefault();
         }
-        history.push(`/search?search=${busca ? busca : 'busca'}&page=${0}&order=${order}&type=${tipoSelecionado}`);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${0}&order=${order}&type=${tipoSelecionado}&size=${pageSize}`);
     }
 
     function selecionatTipo(e){
         setPage(0);
         setTipoSelecionado(e.target.value)
-        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${order}&type=${e.target.value}`);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${0}&order=${order}&type=${e.target.value}&size=${pageSize}`);
     }
     function setOrdenar(e){
         setOrder(e);
-        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${e}&type=${tipoSelecionado}`);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${e}&type=${tipoSelecionado}&size=${pageSize}`);
     }
     function setChangePagina(e){
         setPage(e);
-        history.push(`/search?search=${busca ? busca : 'busca'}&page=${e}&order=${e}&type=${tipoSelecionado}`);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${e}&order=${order}&type=${tipoSelecionado}&size=${pageSize}`);
+    }
+    function setChangePageSize(e){
+        setPageSize(e);
+        history.push(`/search?search=${busca ? busca : 'busca'}&page=${page}&order=${order}&type=${tipoSelecionado}&size=${e}`);
     }
     return(
         <>
-        {tipos ?<>
         <Cabecalho/>
         {loading ? <Loading/> : null}
         <div id="search">
@@ -146,7 +151,7 @@ export default function Search(){
                         {tipos ? listTipos() : null}
                     </select>
                     <div>
-                        <select onChange={(e)=>setPageSize(e.target.value)} value={pageSize}>
+                        <select onChange={(e)=>setChangePageSize(e.target.value)} value={pageSize}>
                             <option className="opcao" value={12}>12</option>
                             <option className="opcao" value={18}>18</option>
                             <option className="opcao" value={24}>24</option>
@@ -169,7 +174,6 @@ export default function Search(){
                 <Paginacao count={count} page={page} pageSize={pageSize} onChange={(a)=>setChangePagina(a)} max={7}/>
         </div>
         <Rodape/>
-        </>:<Loading/>}
         </>
     );
 }

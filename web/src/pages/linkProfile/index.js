@@ -186,7 +186,7 @@ export default function LinkProfile(){
                         )) }
                 </div>
             :null}
-            </>:<Loading/>}
+            </>:null}
         </div>
         <Rodape/>
     </>
