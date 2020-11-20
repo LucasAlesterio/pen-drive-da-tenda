@@ -6,8 +6,9 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
 
     async addUser(request,response){
-        var {name,email,password,user,photograph} = request.body;
-        let err = {"error":false,"email":false,"user":false,"photo":false};
+        try{
+            var {name,email,password,user,photograph} = request.body;
+            let err = {"error":false,"email":false,"user":false,"photo":false};
         let _user = await User.findOne({user});
         let _email = await User.findOne({email});
         if(_user){
@@ -37,15 +38,20 @@ module.exports = {
         }else{
             return response.json(err);
         }
+        }catch(error){
+            console.log(error);
+            return response.status(500).send('Server error');
+        }
     },
-
+    
     async login(request,response){
-        var {user,email,password} = request.body;
-        let err = {"error":false,"email":false,"password":false};
-        let _user = {};
-        if(user){
-            _user = await User.findOne({user});
-            if(_user){
+        try{
+            var {user,email,password} = request.body;
+            let err = {"error":false,"email":false,"password":false};
+            let _user = {};
+            if(user){
+                _user = await User.findOne({user});
+                if(_user){
                 if(_user.password === password){
                     var token = createToken(_user.id);
                     return response.json({token});
@@ -70,12 +76,17 @@ module.exports = {
             err.email = true;
         }
         return response.json(err);
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
 
     async dataUser(request,response){
-        const {authorization} = request.headers;
-        const {idUser} = request.body;
-        let _id = verifyToken(authorization);
+        try{
+            const {authorization} = request.headers;
+            const {idUser} = request.body;
+            let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
@@ -91,7 +102,7 @@ module.exports = {
             var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).exec();
             var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
             */
-            return response.json({id,name,email,user,photograph,friends,me:true});
+           return response.json({id,name,email,user,photograph,friends,me:true});
     }else{
         //var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
         var flag = false;
@@ -103,8 +114,13 @@ module.exports = {
         }
         return response.json({id,name,email,user,photograph,friends,me:false,isFriend:flag});
     }
-    },
-    async listMyLinks(request,response){
+}catch(error){
+    console.log(error);
+    return response.status(500).send('Server error');
+}
+},
+async listMyLinks(request,response){
+    try{
         let count = 0;
         const {authorization} = request.headers;
         const {idUser,page,pageSize} = request.body;
@@ -120,11 +136,16 @@ module.exports = {
         count = links.length;
         var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).skip(page*pageSize).limit(pageSize).sort('name').exec();
         return response.json({links:_links,count:count});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
 
     async listMyFavorites(request,response){
-        let count = 0;
-        const {authorization} = request.headers;
+        try{
+            let count = 0;
+            const {authorization} = request.headers;
         const {page,pageSize} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
@@ -140,11 +161,16 @@ module.exports = {
         count = favorites.length;
         //console.log(count);
         return response.json({links:_favorites,count:count});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
 
     async updateFriend(request,response){
-        const {authorization} = request.headers;
-        const {friend} = request.body;
+        try{
+            const {authorization} = request.headers;
+            const {friend} = request.body;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
@@ -164,13 +190,18 @@ module.exports = {
         }
         await _user.save();
         return response.status(200).send('Ok!');
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
     async updatePassword(request,response){
-        const {oldPassword,newPassword} = request.body;
-        const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
+        try{
+            const {oldPassword,newPassword} = request.body;
+            const {authorization} = request.headers;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
         if(_user.password === oldPassword){
@@ -180,31 +211,37 @@ module.exports = {
         }else{
             return response.json({error:true,password:true});
         }
-    },
-    async updateProfile(request,response){
-        let err = {"error":false,"user":false,"photo":false};
-        var data = request.body;
-        const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
+        }catch(error){
+            console.log(error);
+            return response.status(500).send('Server error');
         }
-        const myData = await User.findOne({_id:_id});
-        if(data.user){
-            if(data.user != myData.user){
-                const testeUser = await User.findOne({user:data.user});
-                if(testeUser){
-                    err.error = true;
-                    err.user = true;
+    },
+
+    async updateProfile(request,response){
+        try{
+            let err = {"error":false,"user":false,"photo":false};
+            var data = request.body;
+            const {authorization} = request.headers;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
+            }
+            const myData = await User.findOne({_id:_id});
+            if(data.user){
+                if(data.user != myData.user){
+                    const testeUser = await User.findOne({user:data.user});
+                    if(testeUser){
+                        err.error = true;
+                        err.user = true;
                     return response.json(err);
                 }
             }
         }
         if(data.photograph){
-        if(data.photograph != myData.photograph){
-            idGerado = uuidv4();
+            if(data.photograph != myData.photograph){
+                idGerado = uuidv4();
             
-            if(myData.photograph === `https://storage.googleapis.com/twm-images/${data.user}.png`){
+                if(myData.photograph === `https://storage.googleapis.com/twm-images/${data.user}.png`){
                 deleteImage(data.user);
             }else{
                 if(myData.photograph){
@@ -228,12 +265,17 @@ module.exports = {
             if (err) return response.json({error:true,message:err});
         });
         return response.status(200).send('Ok!');
-    
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
+        
     },
-
+    
     async listFriends(request,response){
-        let count = 0;
-        const {authorization} = request.headers;
+        try{
+            let count = 0;
+            const {authorization} = request.headers;
         const {page,pageSize} = request.body;
         let id = verifyToken(authorization);
         if(!id){
@@ -248,12 +290,17 @@ module.exports = {
             return(b['isFriend'] = true)
         });
         return response.json({friends:b,count:count});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
     
     async findUser(request,response){
-        let count = 0;
-        const {authorization} = request.headers;
-        const {search,page,pageSize} = request.body;
+        try{
+            let count = 0;
+            const {authorization} = request.headers;
+            const {search,page,pageSize} = request.body;
         let id = verifyToken(authorization);
         if(!id){
             return response.json({error:true,token:true});
@@ -264,13 +311,13 @@ module.exports = {
                 {
                     '$search': {
                         'search': {
-                        'path': [
+                            'path': [
                             'name', 'user'
                         ], 
                         'query': search
-                        }
                     }
-                    }, {
+                    }
+                }, {
                     '$project': { 
                         'photograph': 1, 
                         '_id': 1, 
@@ -303,20 +350,30 @@ module.exports = {
             return(b['isFriend'] = true)
         });
         return response.json({friends:b,count:count});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
     async refreshToken(request,response){
-        const {authorization} = request.headers;
-        let id = verifyToken(authorization);
+        try{
+            const {authorization} = request.headers;
+            let id = verifyToken(authorization);
         if(!id){
             return response.json({error:true,token:true});
         }
         const token = createToken(id);
         const _user = await User.findOne({_id:id});
         return response.json({user:_user.user,photograph:_user.photograph,id:_user._id,token});
+        }catch(error){
+            console.log(error);
+            return response.status(500).send('Server error');
+        }
     },
     async deleteUser(request,response){
-        const {authorization} = request.headers;
-        let id = verifyToken(authorization);
+        try{
+            const {authorization} = request.headers;
+            let id = verifyToken(authorization);
         if(!id){
             return response.json({error:true,token:true});
         }
@@ -330,5 +387,9 @@ module.exports = {
         }
         await User.findByIdAndDelete({_id:id});
         return response.status(200).send('Ok!')
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     }
 }

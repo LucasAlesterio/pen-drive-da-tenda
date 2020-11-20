@@ -5,7 +5,8 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
     async addLink(request,response){
-        var {name,link,description,photograph,type,tag} = request.body;
+        try{
+            var {name,link,description,photograph,type,tag} = request.body;
         const {authorization} = request.headers;
         let _id = verifyToken(authorization);
         if(!_id){
@@ -33,11 +34,16 @@ module.exports = {
         _user.links.push(_link._id);
         _user.save();
         return response.json({id:_link._id});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
-    async deleteLink(request,response){
-        const {link} = request.body;
-        const {authorization} = request.headers;
+    
+    async deleteLink(request,response){        
+        try{
+            const {link} = request.body;
+            const {authorization} = request.headers;
         let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
@@ -58,15 +64,21 @@ module.exports = {
             return response.send(true);
         }
         return response.json({error:true,authorization:true});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
+    
     async dataLink(request,response){
-        const {id} = request.body;
-        const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
-        }
+        try{
+
+            const {id} = request.body;
+            const {authorization} = request.headers;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
+            }
         let link = [];
         var _user = await User.findOne({_id:_id});
         try{
@@ -88,12 +100,17 @@ module.exports = {
         }
         const userLink = await User.findOne({_id:link.user});
         return response.json({link:b,user:{id:userLink._id,photograph:userLink.photograph,user:userLink.user}});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
+    
     async updateLink(request,response){
-        var data = request.body;
-        const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
+        try{
+            var data = request.body;
+            const {authorization} = request.headers;
+            let _id = verifyToken(authorization);
         if(!_id){
             return response.json({error:true,token:true});
         }
@@ -124,15 +141,20 @@ module.exports = {
             return response.status(200).send('Ok!');
         }
         return response.json({error:true,authorization:true});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
+    
     async updateFavorite(request,response){
-        const {authorization} = request.headers;
-        const {link} = request.body;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
-        }
+        try{
+            const {authorization} = request.headers;
+            const {link} = request.body;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
+            }
         const _user = await User.findOne({_id:_id});
         if(_user.favorites.indexOf(link) !== -1){
             _user.favorites.map((f,index)=>{
@@ -145,11 +167,16 @@ module.exports = {
         }
         await _user.save();
         return response.status(200).send('Ok!');
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
+    
     async rating(request,response){
-        const {authorization} = request.headers;
-        const {link,stars} = request.body;
+        try{
+            const {authorization} = request.headers;
+            const {link,stars} = request.body;
         var flag = false;
         let _id = verifyToken(authorization);
         if(!_id){
@@ -174,22 +201,27 @@ module.exports = {
         _link.average = average;
         _link.save();
         return response.json({average:average});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
+    
     async searchLink(request,response){
-        const {authorization} = request.headers;
-        const {text,page,pageSize,type,order} = request.body;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
-        }
-        let count = 0;
-        let sor = {};
-        if(order){
-            if(order == 1){
-                sor['name']=1;
+        try{
+            const {authorization} = request.headers;
+            const {text,page,pageSize,type,order} = request.body;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
             }
-            if(order == 2){
+            let count = 0;
+            let sor = {};
+            if(order){
+                if(order == 1){
+                    sor['name']=1;
+                }
+                if(order == 2){
                 sor['name']=-1;
             }
             if(order == 3){
@@ -216,8 +248,8 @@ module.exports = {
                     {
                         '$search': {
                             'search': {
-                            'path': [
-                                'name', 'description', 'tag.name'
+                                'path': [
+                                    'name', 'description', 'tag.name'
                             ], 
                             'query': text
                             }
@@ -225,15 +257,15 @@ module.exports = {
                                 "path": "name"
                             }
                         }
-                        },{
-                            '$sort': sor
+                    },{
+                        '$sort': sor
                         },
                         {'$match':{
                             'type.name': type
-                            }   
-                        },
+                        }   
+                    },
                         {
-                        '$project': {
+                            '$project': {
                             'name': 1, 
                             'photograph': 1, 
                             '_id': 1, 
@@ -246,7 +278,7 @@ module.exports = {
                     {
                         '$search': {
                             'search': {
-                            'path': [
+                                'path': [
                                 'name', 'description', 'tag.name'
                             ], 
                             'query': text
@@ -263,11 +295,11 @@ module.exports = {
                             '_id': 1, 
                             'average': 1
                         }
-                        },{
+                    },{
                         '$sort': sor
                         }
-                ];
-                
+                    ];
+                    
             }
             count =  await Link.aggregate(query).count("userCount");
             const resp = await Link.aggregate(query).skip(page*pageSize).limit(pageSize);
@@ -281,7 +313,7 @@ module.exports = {
                 var links = await Link.find().select(['name','photograph','average'])
                 .skip(page*pageSize).limit(pageSize).where('type.name')
                 .equals(type).sort(sor).exec();
-
+                
                 count = await Link.find().select(['name','photograph','average'])
                 .where('type.name').equals(type).
                 countDocuments();
@@ -292,11 +324,16 @@ module.exports = {
             count = await Link.countDocuments();
             return response.json({links,count:count});
         }
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
-
+    
     async timeline(request,response){
-        let count = 0;
-        const {authorization} = request.headers;
+        try{
+            let count = 0;
+            const {authorization} = request.headers;
         const {page,pageSize} = request.body;
         let _id = '';
         _id = await verifyToken(authorization);
@@ -327,13 +364,18 @@ module.exports = {
             return(link);
         }).reverse();
         return response.json({link:resp,count:count});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     },
 
     async types(request,response){
-        const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
+        try{
+            const {authorization} = request.headers;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
         }
         var links = await Link.find().select('type.name');
         var a = [];
@@ -343,5 +385,9 @@ module.exports = {
             }
         });
         return response.json({types:a});
+    }catch(error){
+        console.log(error);
+        return response.status(500).send('Server error');
+    }
     }
 }
