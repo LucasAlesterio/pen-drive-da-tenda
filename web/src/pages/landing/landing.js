@@ -83,8 +83,8 @@ export default function Landing(){
                 return null;
             }
         localStorage.setItem('token', response.data.token);
-        history.push("/search");
         setOpenLogin(false);
+        history.push("/search");
     }
     async function cadastrar(e){
         e.preventDefault();
@@ -151,8 +151,8 @@ export default function Landing(){
             return null;
         }
         localStorage.setItem('token', response.data.token);
-        history.push("/search");
         setOpenCadastro(false);
+        history.push("/search");
     }
     return(
     <>
