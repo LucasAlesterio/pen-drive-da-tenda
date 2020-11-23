@@ -13,8 +13,8 @@ import { FiUserPlus, FiUserCheck, FiEdit, FiLogOut, FiUser, FiAtSign, FiKey, FiS
 import api from '../../service/api';
 import './style.css';
 let oldCount = [];
-export default function Profile(){
 
+export default function Profile(){
     let {user} = useParams();
     const [links,setLinks] = useState('');
     const [dataUser,setDataUser] = useState('');
@@ -36,7 +36,7 @@ export default function Profile(){
     const [countF,setCountF] = useState(0);
     const [busca,setBusca] = useState('');
     const [page,setPage] = useState(0);
-    const pageSize = 1;
+    const pageSize = 10;
     
 
     const styleOpen ={
@@ -236,17 +236,17 @@ export default function Profile(){
     async function changeAba(a){
         setAba(a);
         setBusca('');
-        setEstilo(false)
+        setEstilo(false);
         setTimeout(()=>{
             
             if(!a && links){
-                setCountL(oldCount[0])
+                setCountL(oldCount[0]);
                 setListagem(links.map((link)=>(
                     <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
                 )));
             }
             if(a && favorites){
-                setCountF(oldCount[1])
+                setCountF(oldCount[1]);
                 setListagem(favorites.map((link)=>(
                     <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
                 )));

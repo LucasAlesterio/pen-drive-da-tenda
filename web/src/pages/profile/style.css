@@ -101,8 +101,9 @@
     border: none;
     background: none;
     margin-left: -3rem;
+    display: flex;
+    align-items: center;
 }
 #profile .containerLinks form .campoBuscar{
     width: 50%;
 }
-
