@@ -9,10 +9,10 @@ import InputFoto from '../../components/inputFoto/index';
 import Loading from '../../components/loading/index';
 import Paginacao from '../../components/paginacao/index';
 import { useParams,useHistory } from "react-router-dom";
-import { FiUserPlus, FiUserCheck, FiEdit, FiLogOut, FiUser, FiAtSign, FiKey} from 'react-icons/fi';
+import { FiUserPlus, FiUserCheck, FiEdit, FiLogOut, FiUser, FiAtSign, FiKey, FiSearch} from 'react-icons/fi';
 import api from '../../service/api';
 import './style.css';
-
+let oldCount = [];
 export default function Profile(){
 
     let {user} = useParams();
@@ -32,11 +32,12 @@ export default function Profile(){
     const [nome,setNome] = useState({valor:'',erro:false,textoErro:''});
     const [usuario,setUsuario] = useState({valor:'',erro:false,textoErro:''});
     const [confirmarSenha,setConfirmarSenha] = useState({valor:'',erro:false,textoErro:''});
-    const [pageL,setPageL] = useState(0);
-    const [pageF,setPageF] = useState(0);
     const [countL,setCountL] = useState(0);
     const [countF,setCountF] = useState(0);
-    const pageSize = 10;
+    const [busca,setBusca] = useState('');
+    const [page,setPage] = useState(0);
+    const pageSize = 1;
+    
 
     const styleOpen ={
         transition:'transform 0.25s',
@@ -48,29 +49,58 @@ export default function Profile(){
         transform:'scale(0,1)'
     };
 
-    const setL = useCallback(async()=>{
-        const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:pageL},{headers:{Authorization:localStorage.getItem('token')}});
-        setLinks(listLinks.data.links);
-        setCountL(listLinks.data.count);
-        if(listLinks.data.links){
-            setListagem(listLinks.data.links.map((link)=>(
-                <LinkList key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-            )));
+    async function buscar(e,thisPage){
+        if(e){
+            e.preventDefault();
         }
-    },[pageL,user]);
-
-    const setF = useCallback(async ()=>{
-        const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
-        setFavorites(listMyFavorites.data.links);
-        setCountF(listMyFavorites.data.count);
         if(aba){
-            setListagem(listMyFavorites.data.links.map((link)=>(
-                <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
-            )));
+            //favorites
+            if(!busca){ 
+                await api.post('/listMyFavorites',
+                {idUser:user,pageSize:pageSize,page:thisPage},{headers:{Authorization:localStorage.getItem('token')}})
+                .then(function(response){
+                    setListagem(response.data.links.map((link)=>(
+                        <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    )));
+                    setCountF(oldCount[1]);
+                }).catch(function(error){
+                    console.log(error);
+                });
+                return null;
+            }
+            await api.post('/searchInMyLinks',{user:user,pageSize:pageSize,page:thisPage,text:busca,myLinks:false},
+            {headers:{Authorization:localStorage.getItem('token')}}).then( function(response){
+                setListagem(response.data.links.map((link)=>(
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                )));
+                setCountF(response.data.count);
+            }).catch(function(error){
+                console.log(error);
+                alert('Erro no servidor')
+            });
+            setLoading(false);
+        }else{
+            //links
+            if(!busca){
+                const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:thisPage},{headers:{Authorization:localStorage.getItem('token')}});
+                setListagem(listLinks.data.links.map((link)=>(
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                )));
+                setCountL(oldCount[0]);
+                return null
+            }
+            await api.post('/searchInMyLinks',{user:user,pageSize:pageSize,page:thisPage,text:busca,myLinks:true},
+            {headers:{Authorization:localStorage.getItem('token')}}).then( function(response){
+                setListagem(response.data.links.map((link)=>(
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                )));
+                setCountL(response.data.count);
+            }).catch(function(error){
+                console.log(error);
+                alert('Erro no servidor')
+            });
         }
-        
-    },[aba,pageF]);
-
+    };
     const buscarDados = useCallback(async ()=>{
         try{
             const response = await api.post('/dataUser',{idUser:user},{headers:{Authorization:localStorage.getItem('token')}});
@@ -89,30 +119,23 @@ export default function Profile(){
             setNome({valor:response.data.name,erro:false,textoErro:''})
             setUsuario({valor:response.data.user,erro:false,textoErro:''})
             setFoto(response.data.photograph);
-            if(response.data.me){
-                const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:pageF},{headers:{Authorization:localStorage.getItem('token')}});
-                setFavorites(listMyFavorites.data.links);
-                setCountF(listMyFavorites.data.count);
-            }
-            const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:pageL},{headers:{Authorization:localStorage.getItem('token')}});
+            const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:0},{headers:{Authorization:localStorage.getItem('token')}});
             setLinks(listLinks.data.links);
             setCountL(listLinks.data.count);
-
-        }catch(error){
+            setListagem(listLinks.data.links.map((link)=>(
+                <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                )));
+            oldCount.push(listLinks.data.count);
+            if(response.data.me){
+                const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:0},{headers:{Authorization:localStorage.getItem('token')}});
+                setFavorites(listMyFavorites.data.links);
+                setCountF(listMyFavorites.data.count);
+                oldCount.push(listMyFavorites.data.count);
+            }
+            }catch(error){
             alert(error);
         }
-    },[history,user,pageF,pageL]);
-
-    useEffect(()=>{
-        setLoading(true);
-        if(aba){
-            setF();
-            setLoading(false);
-        }else{
-            setL();
-            setLoading(false);
-        }
-    },[pageF,pageL,aba,setF,setL])
+    },[history,user]);
 
     useEffect(() => {
         buscarDados();
@@ -212,21 +235,33 @@ export default function Profile(){
     }
     async function changeAba(a){
         setAba(a);
+        setBusca('');
         setEstilo(false)
         setTimeout(()=>{
+            
             if(!a && links){
+                setCountL(oldCount[0])
                 setListagem(links.map((link)=>(
                     <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
                 )));
             }
             if(a && favorites){
-
+                setCountF(oldCount[1])
                 setListagem(favorites.map((link)=>(
                     <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
                 )));
             }
             setEstilo(true);
             },250);
+        
+    }
+    function callBusca(e){
+        setPage(0);
+        buscar(e,0);
+    }
+    function setNextPage(page){
+        setPage(page);
+        buscar(null,page);
     }
     return(
         <>
@@ -323,14 +358,27 @@ export default function Profile(){
             </div>
 
             <div className="containerLinks" style={estilo ? styleOpen : styleClose}>
-                {listagem}
-                {listagem.length <= 0 ?<div style={{width:'80vw'}}><h3>Ainda não há links :(</h3></div>:null}
+                <form onSubmit={(e)=>callBusca(e)}>
+                    <CampoTexto
+                    className="campoBuscar"
+                    type="text" 
+                    placeholder="Buscar" 
+                    value={busca}
+                    onChange={e=>setBusca(e.target.value)}
+                    />
+                    <button type='submit'>
+                        <FiSearch size='20'/>
+                    </button>
+                </form>
+                <div className="containerListagem">
+                    {listagem}
+                    {listagem.length <= 0 ?<div style={{width:'80vw'}}><h3>Ainda não há links :(</h3></div>:null}
+                </div>
             </div>
                 {aba ?
-                <Paginacao count={countF} page={pageF} pageSize={pageSize} onChange={(a)=>setPageF(a)} max={5}/>
-                :<Paginacao count={countL} page={pageL} pageSize={pageSize} onChange={(a)=>setPageL(a)} max={5}/>
+                <Paginacao count={countF} page={page} pageSize={pageSize} onChange={(a)=>setNextPage(a)} max={5}/>
+                :<Paginacao count={countL} page={page} pageSize={pageSize} onChange={(a)=>setNextPage(a)} max={5}/>
             }
-
             </>:<Loading/>}
         </div>
         <Rodape/>

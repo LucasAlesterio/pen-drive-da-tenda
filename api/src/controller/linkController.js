@@ -2,6 +2,7 @@ const User = require('../models/users');
 const Link = require('../models/links');
 const {verifyToken,decodeBase64Image,deleteFile,uploadImage, deleteImage} = require('../functions');
 const { v4: uuidv4 } = require('uuid');
+const mongoose  = require('mongoose');
 
 module.exports = {
     async addLink(request,response){
@@ -182,7 +183,7 @@ module.exports = {
         if(!_id){
             return response.json({error:true,token:true});
         }
-        await User.findOne({_id:_id});
+        //await User.findOne({_id:_id});
         let _link = await Link.findOne({_id:link});
         _link.rating.map((rat)=>{
             if(rat.user === _id){
@@ -259,8 +260,9 @@ module.exports = {
                         }
                     },{
                         '$sort': sor
-                        },
-                        {'$match':{
+                    },
+                    {
+                        '$match':{
                             'type.name': type
                         }   
                     },
@@ -329,7 +331,65 @@ module.exports = {
         return response.status(500).send('Server error');
     }
     },
-    
+    async searchInMyLinks(request,response){
+        try{
+            const {authorization} = request.headers;
+            const {text,page,pageSize,myLinks,user} = request.body;
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
+            }
+            const _user = await User.findOne({user:user});
+            let ids = [];
+            if(myLinks){
+                ids = _user.links.map(function(el) { return mongoose.Types.ObjectId(el) })
+            }else{
+                ids = _user.favorites.map(function(el) { return mongoose.Types.ObjectId(el) })
+            }
+            let count = 0;
+            let query = [
+                {
+                    '$search': {
+                        'search': {
+                            'path': [
+                                'name', 'description', 'tag.name'
+                            ], 
+                            'query': text
+                        },
+                        "highlight": { 
+                            "path": "name"
+                        }
+                    }
+                    
+            },{'$match':{
+                '_id':{
+                    '$in':ids
+                }
+            }},{
+                '$sort': {'name':1}
+            },
+                {
+                    '$project': {
+                        'name': 1, 
+                        '_id':1,
+                        'photograph': 1,
+                        'average': 1,
+                }
+            }
+            ];
+        count =  await Link.aggregate(query).count("userCount");
+        //console.log(_user.links)
+            const resp = await Link.aggregate(query).skip(page*pageSize).limit(pageSize);
+            if(resp.length>0){
+                return response.json({links:resp,count:count[0].userCount});
+            }
+            return response.json({links:resp,count:0});
+
+        }catch(error){
+            console.log(error);
+            return response.status(500).send('Server error');
+        }
+    },
     async timeline(request,response){
         try{
             let count = 0;

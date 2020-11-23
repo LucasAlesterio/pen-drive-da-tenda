@@ -25,5 +25,6 @@ routes.post('/rating',linkController.rating);
 routes.post('/searchLink',linkController.searchLink);
 routes.post('/timeLine',linkController.timeline);
 routes.get('/types',linkController.types);
+routes.post('/searchInMyLinks',linkController.searchInMyLinks);
 
 module.exports = routes;

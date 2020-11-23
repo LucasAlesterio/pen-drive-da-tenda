@@ -83,9 +83,26 @@
     margin: 3rem 0;
     background-color: rgba(var(--cinza-claro-opacity),0.05);
     width:90% ;
-    display: flex;
-    flex-wrap: wrap;
+}
+#profile .containerLinks .containerListagem{
+    display: flex;    
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+
+}
+#profile .containerLinks form{
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 0;
+}
+#profile .containerLinks form button{
+    border: none;
+    background: none;
+    margin-left: -3rem;
+}
+#profile .containerLinks form .campoBuscar{
+    width: 50%;
 }
 

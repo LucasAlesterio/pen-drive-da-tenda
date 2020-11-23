@@ -33,7 +33,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-right: 1rem;
 }
 #search .busca form button{
     background: none;
@@ -41,7 +40,6 @@
 #search .container{
     width:100% ;
     display: flex;
-    /*grid-template-columns: repeat(auto-fit, auto);*/
     flex-wrap: wrap;
     justify-content:center;
     column-gap: 1vw;
