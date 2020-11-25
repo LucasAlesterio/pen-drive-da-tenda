@@ -134,6 +134,7 @@ key
 heart (preenchido)
 hearto (vazio)
 link
+left (botão de voltar)
 
 **FontAwesome**
 star
