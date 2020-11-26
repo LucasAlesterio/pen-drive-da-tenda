@@ -4,7 +4,9 @@ const Link = require('../models/links');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
-
+    async default(request,response){
+        return response.send('Ola');
+    },
     async addUser(request,response){
         try{
             var {name,email,password,user,photograph} = request.body;
@@ -102,7 +104,7 @@ module.exports = {
             var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).exec();
             var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
             */
-           return response.json({id,name,email,user,photograph,friends,me:true});
+            return response.json({id,name,email,user,photograph,friends,me:true});
     }else{
         //var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
         var flag = false;

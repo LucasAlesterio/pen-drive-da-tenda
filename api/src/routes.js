@@ -3,6 +3,7 @@ const userController = require('./controller/userController');
 const linkController = require('./controller/linkController');
 
 const routes = express.Router();
+routes.get('/',userController.default);
 routes.post('/addUser',userController.addUser);
 routes.post('/login',userController.login);
 routes.post('/dataUser',userController.dataUser);

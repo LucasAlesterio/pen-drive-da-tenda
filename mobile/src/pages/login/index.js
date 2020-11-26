@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { View, Alert, Text} from 'react-native';
+import { View, Alert, Text,Image} from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import FieldText from '../../components/fieldText';
@@ -7,15 +7,29 @@ import Button from '../../components/button';
 import api from '../../service/api';
 import { AntDesign } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
+import axios from  'axios';
+
 
 export default function Login(){
     const [email,setEmail] = useState({value:'',error:false,textError:''});
     const [password,setPassword] = useState({value:'',error:false,textError:''});
     const { navigate,goBack} = useNavigation();
+    const [image,setImage] = useState('');
 
     async function logar(){
+        await api.post('/login',{
+            user:'lucas.alesterio',
+            password:'220199'
+        }).then(((response)=>
+        {   //navigate('Tabs',{screen:'Search'});
+            setImage(response.data.token);
+        })).catch((error)=>{
+            console.log(error);
+            Alert.alert('error')})
+
         //setLoading(true);
         //var response = '';
+        /*
         var isEmail = false;
         if(!email.value){
             setEmail({value:"",error:true,textError:"Campo obrigatório"});
@@ -63,7 +77,7 @@ export default function Login(){
             await api.post('login',{
                 user:text,
                 password:password.value
-            }).then(function(response){
+            }).then((response)=>{
                 if(response.data.error){
                     if(response.data.email){
                         setEmail({value:infoLogin.value,error:true,textError:"Email inválido"});
@@ -80,7 +94,7 @@ export default function Login(){
                 if(response.token){
                     navigate('Tabs',{screen:'Search'});
                 }
-            }).catch(function(error){
+            }).catch((error)=>{
                 Alert.alert('error');
                 return null;
             });
@@ -90,12 +104,12 @@ export default function Login(){
         //localStorage.setItem('token', );
         //setOpenLogin(false);
         //navigate('Tabs',{screen:'Search'});
+        */
     }
-
-    
 
     return(
     <>
+        <Text>{image}</Text>
         <View style={{backgroundColor:'#151515'}}>
             <RectButton style={styles.voltar} onPress={()=>goBack()}>
                 <AntDesign name="left" size={18} color="#C2C2C2"/>
@@ -120,7 +134,7 @@ export default function Login(){
                 textError={password.textError}
                 />
                 <Button
-                onPress={logar}
+                onPress={()=>logar()}
                 title='Logar'
                 />
             </View>
