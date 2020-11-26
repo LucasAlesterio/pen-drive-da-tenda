@@ -1,0 +1,85 @@
+import React,{useState, useEffect} from 'react';
+import {View, Alert, Text, Image} from 'react-native';
+import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
+import FieldText from '../../components/fieldText';
+import Button from '../../components/button';
+import api from '../../service/api';
+import AsyncStorage from '@react-native-community/async-storage';
+import InputImageUser from '../../components/InputImageUser';
+import { Feather} from '@expo/vector-icons';
+import colors from '../../global.json';
+import GoBack from '../../components/goBack';
+
+export default function Registration(){
+    const [photo,setPhoto] = useState('');
+    const [name,setName] = useState({value:'',error:false,textError:''});
+    const [email,setEmail] = useState({value:'',error:false,textError:''});
+    const [user,setUser] = useState({value:'',error:false,textError:''});
+    const [password,setPassword] = useState({value:'',error:false,textError:''});
+    const [confirmPass,setConfirmPass] = useState({value:'',error:false,textError:''});
+    async function cadastrar(){
+
+    }
+    return(<>
+        <GoBack/>
+        <View style={styles.container}>
+            <InputImageUser setImg={setPhoto}/>
+            <View style={styles.form}>
+                <FieldText
+                value={name.value}
+                placeholder="Nome"
+                setText={(text)=>setName({value:text,error:false,textError:''})}
+                error = {name.error}
+                textError={name.textError}
+                >
+                    <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+
+                <FieldText
+                value={email.value}
+                placeholder="Email"
+                setText={(text)=>setEmail({value:text,error:false,textError:''})}
+                error = {email.error}
+                textError={email.textError}
+                >
+                    <Feather name="mail" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+
+                <FieldText
+                value={user.value}
+                placeholder="Usuário"
+                setText={(text)=>setUser({value:text,error:false,textError:''})}
+                error = {user.error}
+                textError={user.textError}
+                >
+                    <Feather name="at-sign" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+
+                <FieldText
+                value={password.value}
+                placeholder="Senha"
+                setText={(text)=>setPassword({value:text,error:false,textError:''})}
+                password
+                error = {password.error}
+                textError={password.textError}
+                >
+                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+
+                <FieldText
+                value={confirmPass.value}
+                placeholder="Confirme sua senha"
+                setText={(text)=>setConfirmPass({value:text,error:false,textError:''})}
+                password
+                error = {confirmPass.error}
+                textError={confirmPass.textError}
+                >
+                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+                <Button style={styles.button}title="Cadastrar" onPress={cadastrar}/>
+            </View>
+        </View>
+        </>
+    );
+}

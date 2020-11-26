@@ -61,6 +61,9 @@ module.exports = {
                     err.error = true;
                     err.password = true;
                 }
+            }else{
+                err.error = true;
+                err.user = true;
             }
         }if(email){
             _user = await  User.findOne({email});

@@ -13,6 +13,9 @@ export default function Landing(){
         //navigate('Tabs',{screen:'Search'});
         navigate('Login');
     }
+    function navigateToRegistration(){
+        navigate('Registration');
+    }
     return(
         <View style={styles.container}>
             <View style={styles.containerButton}>
@@ -20,7 +23,7 @@ export default function Landing(){
                 onPress={navigateToSearch}
                 title='Logar'/>
                 <Button
-                onPress={navigateToSearch}
+                onPress={navigateToRegistration}
                 title='Cadastrar'/>
             </View>
         </View>

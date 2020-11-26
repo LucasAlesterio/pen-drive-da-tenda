@@ -5,13 +5,16 @@ import styles from './styles';
 export default function FieldText(props){
     return(
         <View style={styles.container}>
-            <TextInput
-                style={props.error ? styles.error : styles.input}
-                value={props.value}
-                placeholder={props.placeholder}
-                onChangeText={(t)=>props.setText(t)}
-                secureTextEntry={props.password}
-            />
+            <View style={styles.containerField}>
+                {props.children && <View style={styles.icon}>{props.children}</View>}
+                <TextInput
+                    style={[styles.input,props.error && styles.error,props.children ? {paddingLeft:30}: {paddingLeft:5}]}
+                    value={props.value}
+                    placeholder={props.placeholder}
+                    onChangeText={(t)=>props.setText(t)}
+                    secureTextEntry={props.password}
+                />
+            </View>
             {props.error ? <Text style={styles.textError}>{props.textError}</Text> : null}
         </View>
     );

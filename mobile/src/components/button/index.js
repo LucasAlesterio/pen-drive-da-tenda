@@ -6,7 +6,7 @@ import styles from './styles';
 export default function Landing(props){
     return(
         <RectButton
-        style={styles.button}
+        style={[styles.button,props.style && props.style]}
         onPress={()=>props.onPress()}>
             <Text 
             style={styles.text}

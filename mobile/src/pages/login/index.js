@@ -1,35 +1,32 @@
 import React,{useState} from 'react';
-import { View, Alert, Text,Image} from 'react-native';
+import { View, Alert} from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import FieldText from '../../components/fieldText';
 import Button from '../../components/button';
 import api from '../../service/api';
-import { AntDesign } from '@expo/vector-icons';
-import { RectButton } from 'react-native-gesture-handler';
-import axios from  'axios';
-
+import AsyncStorage from '@react-native-community/async-storage';
+import GoBack from '../../components/goBack';
 
 export default function Login(){
     const [email,setEmail] = useState({value:'',error:false,textError:''});
     const [password,setPassword] = useState({value:'',error:false,textError:''});
-    const { navigate,goBack} = useNavigation();
-    const [image,setImage] = useState('');
+    const { navigate} = useNavigation();
+
+    async function saveToken(token){
+        try{
+            AsyncStorage.setItem('token',token)
+        }catch(e){
+            console.log(e)
+            Alert.alert('Erro ao salvar token');
+        }
+    }
 
     async function logar(){
-        await api.post('/login',{
-            user:'lucas.alesterio',
-            password:'220199'
-        }).then(((response)=>
-        {   //navigate('Tabs',{screen:'Search'});
-            setImage(response.data.token);
-        })).catch((error)=>{
-            console.log(error);
-            Alert.alert('error')})
 
         //setLoading(true);
         //var response = '';
-        /*
+        
         var isEmail = false;
         if(!email.value){
             setEmail({value:"",error:true,textError:"Campo obrigatório"});
@@ -57,15 +54,15 @@ export default function Login(){
             }).then(function(response){
                 if(response.data.error){
                     if(response.data.email){
-                        setEmail({value:infoLogin.value,error:true,textError:"Email inválido"});
+                        setEmail({value:email.value,error:true,textError:"Email inválido"});
                         
                     }
                     if(response.data.user){ 
-                        setEmail({value:infoLogin.value,error:true,textError:"Usuário inválido"});
+                        setEmail({value:email.value,error:true,textError:"Usuário inválido"});
                         
                     }
                     if(response.data.password){
-                        setPassword({value:usuario.value,error:true,textError:"Senha incorreta"});
+                        setPassword({value:password.value,error:true,textError:"Senha incorreta"});
                     }
                     return null;
                 }
@@ -79,23 +76,26 @@ export default function Login(){
                 password:password.value
             }).then((response)=>{
                 if(response.data.error){
+                    console.log('Error')
                     if(response.data.email){
-                        setEmail({value:infoLogin.value,error:true,textError:"Email inválido"});
+                        setEmail({value:email.value,error:true,textError:"Email inválido"});
                     }
                     if(response.data.user){
-                        setEmail({value:infoLogin.value,error:true,textError:"Usuário inválido"});
+                        setEmail({value:email.value,error:true,textError:"Usuário inválido"});
                     }
                     if(response.data.password){
-                        setPassword({value:usuario.value,error:true,textError:"Senha incorreta"});
+                        setPassword({value:password.value,error:true,textError:"Senha incorreta"});
                     }
                     //etLoading(false);
                     return null;
                 }
-                if(response.token){
+                if(response.data.token){
+                    saveToken(response.data.token);
                     navigate('Tabs',{screen:'Search'});
                 }
             }).catch((error)=>{
-                Alert.alert('error');
+                console.log(error);
+                Alert.alert('Server error');
                 return null;
             });
                 //setLoading(false);
@@ -104,18 +104,11 @@ export default function Login(){
         //localStorage.setItem('token', );
         //setOpenLogin(false);
         //navigate('Tabs',{screen:'Search'});
-        */
     }
 
     return(
     <>
-        <Text>{image}</Text>
-        <View style={{backgroundColor:'#151515'}}>
-            <RectButton style={styles.voltar} onPress={()=>goBack()}>
-                <AntDesign name="left" size={18} color="#C2C2C2"/>
-                <Text style={styles.textVoltar}>Voltar</Text>
-            </RectButton>
-        </View>
+        <GoBack/>
         <View style={styles.container}>
             <View style={styles.form}>
                 <FieldText
