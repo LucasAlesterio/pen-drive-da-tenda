@@ -17,6 +17,7 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(var(--cinza-claro-opacity), 0.12);
+    overflow: hidden; 
 }
 #inputFoto .fotoPerfil{
     height: 100%;
@@ -25,8 +26,9 @@
     
 }
 #inputFoto .fotoPerfil img{
-    height: 100% ;
+    display: inline;
+    margin: 0 auto;
+    height:auto;
+    min-height: 13rem;
     width: 100%;
-    border-radius: 100%;
-    object-fit: cover;
 }

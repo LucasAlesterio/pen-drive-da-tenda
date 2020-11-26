@@ -59,11 +59,18 @@
     color:var(--amarelo);
     word-wrap: break-all; 
 }
-#timeLine .container .link_time .infoLink .fotoUser{
+#timeLine .container .link_time .infoLink .containerFoto{
     border-radius: 50%;
     height: 5rem;
     width: 5rem;
-    object-fit: cover;
+    overflow: hidden; 
+}
+#timeLine .container .link_time .infoLink .fotoUser{
+    display: inline;
+    margin: 0 auto;
+    height:auto;
+    min-height: 5rem;
+    width: 100%;
 } 
 #timeLine .container .link_time .infoLink .fotoNull{
     border-radius: 50%;

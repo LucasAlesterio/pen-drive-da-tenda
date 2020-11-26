@@ -28,6 +28,7 @@ module.exports = {
                 return true;
             });
         return false;
+        //var base64Image = new Buffer(original_data, 'binary').toString('base64');
     },
     deleteFile(name){
         try {
@@ -38,13 +39,35 @@ module.exports = {
         }
         
     },
-    async uploadImage(name){
+    async uploadImage(name,data){
+        function base64MimeType(encoded){
+            var result = null;
+            if (typeof encoded !== 'string') {
+                return result;
+            }
+            var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+            if (mime && mime.length) {
+                result = mime[1];
+            }
+            return result;
+        }
+        const fileOptions = {
+            public: true,
+            resumable: false,
+            metadata: { contentType: base64MimeType(data)},
+            validation: false
+        }
+        const base64EncodedString = data.replace(/^data:\w+\/\w+;base64,/, '')
+        const fileBuffer = Buffer.from(base64EncodedString, 'base64')
+        const url = await bucket.file(name).save(fileBuffer, fileOptions);
+        /*
         const res = await gc.bucket('twm-images').upload(`./src/temp/${name}.png`);
         const url = res[0].metadata.mediaLink;
-        return url;
+        
+        */return url;
     },
     async deleteImage(id){
-        await bucket.file(`${id}.png`).delete().then(()=>{
+        await bucket.file(id).delete().then(()=>{
             return true
         });
         return false;

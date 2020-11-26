@@ -28,6 +28,7 @@ export default function InputImageUser(props){
     async function imagePickerCall(){
         const data = await ImagePicker.launchImageLibraryAsync({
         base64:true,
+        quality:0.85,
         mediaTypes: ImagePicker.MediaTypeOptions.Images 
         });
         if (data.cancelled) {
@@ -38,7 +39,7 @@ export default function InputImageUser(props){
         }
         //console.log(data);
         setImage(data);
-        props.setImg(data);
+        props.setImg(`data:image/jpeg;base64,${data.base64}`);
     }
 
     return(

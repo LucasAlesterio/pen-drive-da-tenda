@@ -89,6 +89,7 @@ export default function Landing(){
     async function cadastrar(e){
         e.preventDefault();
         setLoading(true);
+        console.log(foto);
         var response = '';
         if(!nome.valor){
             setNome({valor:"",erro:true,textoErro:"Campo obrigatório"});

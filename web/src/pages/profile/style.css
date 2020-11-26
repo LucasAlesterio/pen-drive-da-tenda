@@ -30,6 +30,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+}
+#profile .infoProfile .containerFoto{
+    border-radius: 50%;
+    overflow: hidden; 
+    height: 20rem;
+    width: 20rem;
 }
 #profile .infoProfile .fotoNull{
     border-radius: 50%;
@@ -38,10 +45,11 @@
     background-color: var(--rosa);
 }
 #profile .infoProfile img{
-    border-radius: 50%;
-    height: 20rem;
-    width: 20rem;
-    object-fit: cover;
+    display: inline;
+    margin: 0 auto;
+    height:auto;
+    min-height: 20rem;
+    width: 100%;
 }
 #profile .infoProfile>div{
     display: flex;

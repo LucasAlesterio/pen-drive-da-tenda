@@ -333,7 +333,7 @@ export default function Profile(){
 
             </PopUp>
             <div className="infoProfile">
-                {dataUser.photograph ?  <img alt="Foto perfil" src={dataUser.photograph}/>:<div className="fotoNull"/>}
+                {dataUser.photograph ? <div className="containerFoto"> <img alt="Foto perfil" src={dataUser.photograph}/></div>:<div className="fotoNull"/>}
                 <div>
                     <h1>@{dataUser.user}</h1>
                     {dataUser.me ? 

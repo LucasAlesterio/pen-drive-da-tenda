@@ -109,7 +109,7 @@ export default function TimeLine(){
                     </div>
                     <div className="containerUsuario">
                         <Link className="tagLink" to={`/profile/${link.user.user}`}>
-                            {link.user.photograph ? <img className="fotoUser" src={link.user.photograph} alt="foto usuario"/>:<div className="fotoNull"/>}
+                            {link.user.photograph ?<div className=" containerFoto"><img className="fotoUser" src={link.user.photograph} alt="foto usuario"/></div>:<div className="fotoNull"/>}
                         </Link>
                     </div>
                 </div>

@@ -4,12 +4,22 @@
     flex-direction: column;
     padding-bottom: 3rem;
 }
-.usuario .foto>img{
+.usuario .foto{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
     height: 13rem;
-    width: 13rem;
+    width: 13rem; 
     border-radius: 50%;
     border:var(--amarelo) solid 2px;
-    object-fit: cover;
+}
+.usuario .foto>img{
+    display: inline;
+    margin: 0 auto;
+    height:auto;
+    min-height: 13rem;
+    width: 100%;
 }
 .usuario .foto .fotoNull{
     background-color: var(--rosa);

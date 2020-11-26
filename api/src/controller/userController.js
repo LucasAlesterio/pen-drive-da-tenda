@@ -2,6 +2,7 @@ const User = require('../models/users');
 const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage,deleteImage,deleteOldImage} = require('../functions');
 const Link = require('../models/links');
 const { v4: uuidv4 } = require('uuid');
+var fs = require("fs");
 
 module.exports = {
     async default(request,response){
@@ -23,16 +24,14 @@ module.exports = {
         }
         if(!_user && !_email){
             if(photograph){
-                await decodeBase64Image(photograph,user);
-                const url = await uploadImage(user);
-                if(url){
-                    deleteFile(user);
-                }
-                else{
+                const url = await uploadImage(user,photograph);
+                    
+                if(!url){
                     err.error = true;
                     err.photo = true;
+                    return response.json(err);
                 }
-                photograph = `https://storage.googleapis.com/twm-images/${user}.png`;
+                photograph = `https://storage.googleapis.com/twm-images/${user}`;
             }
             _user = await User.create({name,email,password,user,photograph});
             var token = createToken(_user.id);
@@ -103,13 +102,9 @@ module.exports = {
         const {id,name,email,user,photograph,friends,favorites,links} = _user;
         const myProfile = await User.findOne({_id:_id});
         if(idUser == myProfile.user){
-            /*
-            var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).exec();
-            var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
-            */
+
             return response.json({id,name,email,user,photograph,friends,me:true});
     }else{
-        //var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).exec();
         var flag = false;
         const _userLink = await User.findOne({user:idUser});
         if(myProfile.friends.indexOf(_userLink._id) !== -1){
@@ -232,6 +227,7 @@ async listMyLinks(request,response){
                 return response.json({error:true,token:true});
             }
             const myData = await User.findOne({_id:_id});
+            console.log(myData)
             if(data.user){
                 if(data.user != myData.user){
                     const testeUser = await User.findOne({user:data.user});
@@ -239,33 +235,32 @@ async listMyLinks(request,response){
                         err.error = true;
                         err.user = true;
                     return response.json(err);
+                    }
                 }
             }
-        }
-        if(data.photograph){
-            if(data.photograph != myData.photograph){
-                idGerado = uuidv4();
-            
-                if(myData.photograph === `https://storage.googleapis.com/twm-images/${data.user}.png`){
-                deleteImage(data.user);
-            }else{
-                if(myData.photograph){
-                    deleteImage(myData.idImg);
+            if(data.photograph){
+                
+                if(data.photograph != myData.photograph){
+                    console.log('Tem foto')
+                    var idGerado = uuidv4();
+                
+                    if(myData.photograph == `https://storage.googleapis.com/twm-images/${myData.user}`){
+                        
+                    await deleteImage(myData.user);
+                    }else{console.log('Tem foto')
+                        if(myData.photograph){
+                            deleteImage(myData.idImg);
+                        }
+                    }
+                
+                const url = await uploadImage(String(idGerado),data.photograph);
+                if(!url){
+                    err.error = true;
+                    err.photo = true;
                 }
-            }
-            
-            await decodeBase64Image(data.photograph,idGerado);
-            const url = await uploadImage(idGerado);
-            if(url){
-                deleteFile(idGerado);
-            }
-            else{
-                err.error = true;
-                err.photo = true;
-            }
-            data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
-            data.idImg = idGerado;
-        }}
+                data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}`;
+                data.idImg = idGerado;
+            }}
         await User.findOneAndUpdate({_id:_id},data, {upsert: true}, function(err, doc) {
             if (err) return response.json({error:true,message:err});
         });
@@ -383,7 +378,7 @@ async listMyLinks(request,response){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        if(_user.photograph === `https://storage.googleapis.com/twm-images/${_user.user}.png`){
+        if(_user.photograph === `https://storage.googleapis.com/twm-images/${_user.user}`){
             deleteImage(_user.user);
         }else{
             if(_user.photograph){

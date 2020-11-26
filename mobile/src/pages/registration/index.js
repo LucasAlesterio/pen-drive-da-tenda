@@ -18,8 +18,80 @@ export default function Registration(){
     const [user,setUser] = useState({value:'',error:false,textError:''});
     const [password,setPassword] = useState({value:'',error:false,textError:''});
     const [confirmPass,setConfirmPass] = useState({value:'',error:false,textError:''});
-    async function cadastrar(){
+    const {navigate} = useNavigation();
 
+    async function saveToken(token){
+        try{
+            AsyncStorage.setItem('token',token)
+        }catch(e){
+            console.log(e)
+            Alert.alert('Erro ao salvar token');
+        }
+    }
+
+    async function cadastrar(){
+        //setLoading(true);
+        if(!name.value){
+            setName({value:"",error:true,textError:"Campo obrigatório"});
+            //setLoading(false);
+            return null;
+        }
+        if(!email.value){
+            setEmail({value:"",error:true,textError:"Campo obrigatório"});
+            //setLoading(false);
+            return null;
+        }
+        if(!user.value){
+            setUser({value:"",error:true,textError:"Campo obrigatório"});
+            //setLoading(false);
+            return null;
+        }
+        if(!password.value){
+            setPassword({value:"",error:true,textError:"Campo obrigatório"});
+            //setLoading(false);
+            return null;
+        }
+        if(password.value.length < 8){
+            setPassword({value:password.value,error:true,textError:"Necessário no minimo 8 caracteres"});
+            //setLoading(false);
+            return null;
+        }
+        if(!confirmPass.value){
+            setConfirmPass({value:"",error:true,textError:"Campo obrigatório"});
+            //setLoading(false);
+            return null;
+        }
+        if(password.value !== confirmPass.value){
+            setConfirmPass({value:confirmPass.value,error:true,textError:"Senhas não coincidem"});
+            //setLoading(false);
+            return null;
+        }
+        await api.post('addUser',{
+            name:name.value,
+            email:email.value,
+            password:password.value,
+            user:user.value,
+            photograph:photo
+        }).then(function(response){
+            if(response.data.error){
+                if(response.data.email){
+                    setEmail({value:email.value,error:true,textError:"Email ja cadastrado"});
+                }
+                if(response.data.user){
+                    setUser({value:user.value,error:true,textError:"Usuário ja cadastrado"});
+                }
+                if(response.data.photo){
+                    Alert.alert('Erro ao carregar a foto, tente novamente!');
+                }
+                //setLoading(false);
+                return null;
+            }
+            saveToken(response.data.token);
+            navigate('Tabs',{screen:'Search'});
+        }).catch(function(error){
+            console.log(error);
+            Alert.alert('Erro no servidor!');
+        });
     }
     return(<>
         <GoBack/>
@@ -77,7 +149,7 @@ export default function Registration(){
                 >
                     <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
                 </FieldText>
-                <Button style={styles.button}title="Cadastrar" onPress={cadastrar}/>
+                <Button style={styles.button}title="Cadastrar" onPress={()=>cadastrar()}/>
             </View>
         </View>
         </>

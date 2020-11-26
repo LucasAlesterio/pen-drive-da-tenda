@@ -17,19 +17,18 @@ module.exports = {
         var _user = await User.findOne({_id:_id});
         if(photograph){
             idGerado = uuidv4();
+            /*
             let flag = await decodeBase64Image(photograph,idGerado);
             if(flag){
                 return response.json({error:true,image:true});
             }
-            const url = await uploadImage(idGerado);
-            if(url){
-                deleteFile(idGerado);
-            }
-            else{
+            */
+            const url = await uploadImage(idGerado,photograph);
+            if(!url){
                 err.error = true;
                 err.photo = true;
             }
-            photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
+            photograph = `https://storage.googleapis.com/twm-images/${idGerado}`;
         }
         var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id,idImg:idGerado});
         _user.links.push(_link._id);
@@ -45,25 +44,25 @@ module.exports = {
         try{
             const {link} = request.body;
             const {authorization} = request.headers;
-        let _id = verifyToken(authorization);
-        if(!_id){
-            return response.json({error:true,token:true});
-        }
-        var _user = await User.findOne({_id:_id});
-        if(_user.links.indexOf(link) !== -1){
-            const _link = await Link.findOne({_id:link});
-            if(_link.photograph){
-                await deleteImage(_link.idImg);
+            let _id = verifyToken(authorization);
+            if(!_id){
+                return response.json({error:true,token:true});
             }
-            await Link.findByIdAndDelete({_id:link});
-            _user.links.map((f,index)=>{
-                if(f === link){
-                    _user.links.splice(index,1);
+            var _user = await User.findOne({_id:_id});
+            if(_user.links.indexOf(link) !== -1){
+                const _link = await Link.findOne({_id:link});
+                if(_link.photograph){
+                    await deleteImage(_link.idImg);
                 }
-            })
-            _user.save();
-            return response.send(true);
-        }
+                await Link.findByIdAndDelete({_id:link});
+                _user.links.map((f,index)=>{
+                    if(f === link){
+                        _user.links.splice(index,1);
+                    }
+                })
+                _user.save();
+                return response.send(true);
+            }
         return response.json({error:true,authorization:true});
     }catch(error){
         console.log(error);
@@ -122,16 +121,12 @@ module.exports = {
                 await deleteImage(_link.idImg);
             }
             idGerado = uuidv4();
-            await decodeBase64Image(data.photograph,idGerado);
-            const url = await uploadImage(idGerado);
-            if(url){
-                deleteFile(idGerado);
-            }
-            else{
+            const url = await uploadImage(String(idGerado),data.photograph);
+            if(!url){
                 err.error = true;
                 err.photo = true;
             }
-            data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}.png`;
+            data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}`;
             data.idImg = idGerado;
         }
         var _user = await User.findOne({_id:_id});

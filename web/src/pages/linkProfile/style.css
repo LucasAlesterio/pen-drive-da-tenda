@@ -105,16 +105,22 @@
     align-items: center;
     display: flex;
     flex-direction: row;
+    height: 5rem;
+    width: 5rem;
 } 
+#linkProfile .infos .usuario h3{
+    padding-left: 2rem;
+}
 #linkProfile .infos .usuario:hover{
     filter: brightness(70%);
 } 
 #linkProfile .infos .fotoUser{
+    display: inline;
+    margin: 0 auto;
+    height:auto;
+    min-height: 5rem;
+    width: 100%;
     border-radius: 50%;
-    height: 5rem;
-    width: 5rem;
-    margin-right: 1.5rem;
-    object-fit: cover;
 } 
 #linkProfile .infos .fotoNull{
     border-radius: 50%;
