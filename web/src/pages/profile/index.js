@@ -358,6 +358,7 @@ export default function Profile(){
             </div>
 
             <div className="containerLinks" style={estilo ? styleOpen : styleClose}>
+                {links.length > 0 && favorites.length >0?
                 <form onSubmit={(e)=>callBusca(e)}>
                     <CampoTexto
                     className="campoBuscar"
@@ -369,7 +370,7 @@ export default function Profile(){
                     <button type='submit'>
                         <FiSearch size='20'/>
                     </button>
-                </form>
+                </form> : null}
                 <div className="containerListagem">
                     {listagem}
                     {listagem.length <= 0 ?<div style={{width:'80vw'}}><h3>Ainda não há links :(</h3></div>:null}
