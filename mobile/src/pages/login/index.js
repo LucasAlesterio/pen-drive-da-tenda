@@ -8,6 +8,8 @@ import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
+import { Feather} from '@expo/vector-icons';
+import colors from '../../global.json';
 
 export default function Login(){
     const [email,setEmail] = useState({value:'',error:false,textError:''});
@@ -119,7 +121,10 @@ export default function Login(){
                 setText={(text)=>setEmail({value:text,error:false,textError:''})}
                 error = {email.error}
                 textError={email.textError}
-                />
+                >
+                    <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+
                 <FieldText
                 value={password.value}
                 placeholder="Senha"
@@ -127,7 +132,10 @@ export default function Login(){
                 password
                 error = {password.error}
                 textError={password.textError}
-                />
+                >
+                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                </FieldText>
+
                 <Button
                 onPress={()=>logar()}
                 title='Logar'

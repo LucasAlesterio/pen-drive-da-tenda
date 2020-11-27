@@ -17,7 +17,7 @@ export default function App() {
   } else {
     return (
       <>
-        <AppStack/>
+        <AppStack initial="Landing"/>
         <StatusBar style="light"/>
       </>
     );

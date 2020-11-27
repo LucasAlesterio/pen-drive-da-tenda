@@ -5,15 +5,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Landing from '../pages/Landing';
 import Login from '../pages/login';
 import Registration from '../pages/registration'
-//import GiveClasses from '../pages/GiveClasses';
 import Tabs from './tabs';
 
 const { Navigator, Screen } = createStackNavigator();
 
-function AppStack() {
+function AppStack(props) {
     return (
         <NavigationContainer>
-            <Navigator screenOptions={{ headerShown: false }}>
+            <Navigator screenOptions={{ headerShown: false }} initialRouteName={props.initial}>
                 <Screen name="Landing" component={Landing} />
                 <Screen name="Login" component={Login} />
                 <Screen name="Registration" component={Registration} />
