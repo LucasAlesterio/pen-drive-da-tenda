@@ -7,10 +7,12 @@ import Button from '../../components/button';
 import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import GoBack from '../../components/goBack';
+import Loading from '../../components/loading';
 
 export default function Login(){
     const [email,setEmail] = useState({value:'',error:false,textError:''});
     const [password,setPassword] = useState({value:'',error:false,textError:''});
+    const [loading, setLoading] = useState(false);
     const { navigate} = useNavigation();
 
     async function saveToken(token){
@@ -21,21 +23,48 @@ export default function Login(){
             Alert.alert('Erro ao salvar token');
         }
     }
+    function testError(response){
+        if(response.data.error){
+            if(response.data.password){
+                setPassword({value:password.value,error:true,textError:"Senha incorreta"});
+                setLoading(false);
+                return true;
+            }
+            if(response.data.email){
+                setEmail({value:email.value,error:true,textError:"Email inválido"});
+                setLoading(false);
+                return true;
+            }
+            if(response.data.user){ 
+                setEmail({value:email.value,error:true,textError:"Usuário inválido"});
+                setLoading(false);
+                return true;
+                
+            }
+        }
+        return false;
+    }
+    function redirect(response){
+        if(response.data.token){
+            saveToken(response.data.token);
+            setLoading(false);
+            navigate('Tabs',{screen:'Search'});
+        }else{
+            Alert.alert('Erro ao logar, por favor tente novamente!');
+        }
+    }
 
     async function logar(){
-
-        //setLoading(true);
-        //var response = '';
-        
+        setLoading(true);
         var isEmail = false;
         if(!email.value){
             setEmail({value:"",error:true,textError:"Campo obrigatório"});
-            //setLoading(false);
+            setLoading(false);
             return null;
         }
         if(!password.value){
             setPassword({value:"",error:true,textError:"Campo obrigatório"});
-            //setLoading(false);
+            setLoading(false);
             return null;
         }
         var letras = email.value.split('');
@@ -52,22 +81,13 @@ export default function Login(){
                 email:text,
                 password:password.value
             }).then(function(response){
-                if(response.data.error){
-                    if(response.data.email){
-                        setEmail({value:email.value,error:true,textError:"Email inválido"});
-                        
-                    }
-                    if(response.data.user){ 
-                        setEmail({value:email.value,error:true,textError:"Usuário inválido"});
-                        
-                    }
-                    if(response.data.password){
-                        setPassword({value:password.value,error:true,textError:"Senha incorreta"});
-                    }
+                if(testError(response)){
                     return null;
                 }
+                redirect(response);
             }).catch(function(error){
-                Alert.alert('Erro no servidor!(Nesse aqui)');
+                console.log(error);
+                Alert.alert('Erro no servidor!');
                 return null;
             });
         }else{
@@ -75,39 +95,21 @@ export default function Login(){
                 user:text,
                 password:password.value
             }).then((response)=>{
-                if(response.data.error){
-                    console.log('Error')
-                    if(response.data.email){
-                        setEmail({value:email.value,error:true,textError:"Email inválido"});
-                    }
-                    if(response.data.user){
-                        setEmail({value:email.value,error:true,textError:"Usuário inválido"});
-                    }
-                    if(response.data.password){
-                        setPassword({value:password.value,error:true,textError:"Senha incorreta"});
-                    }
-                    //etLoading(false);
+                if(testError(response)){
                     return null;
                 }
-                if(response.data.token){
-                    saveToken(response.data.token);
-                    navigate('Tabs',{screen:'Search'});
-                }
+                redirect(response);
             }).catch((error)=>{
                 console.log(error);
                 Alert.alert('Server error');
                 return null;
             });
-                //setLoading(false);
-                //return null;
-            }
-        //localStorage.setItem('token', );
-        //setOpenLogin(false);
-        //navigate('Tabs',{screen:'Search'});
     }
+}
 
     return(
     <>
+        {loading ? <Loading/> : null}
         <GoBack/>
         <View style={styles.container}>
             <View style={styles.form}>
