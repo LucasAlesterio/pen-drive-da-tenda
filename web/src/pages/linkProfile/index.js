@@ -97,10 +97,12 @@ export default function LinkProfile(){
     };
 
     function setNewAverage(n){
+        setLoading(true);
         let list = link;
         list.average = n;
         setLink(list);
-        setOpenEstrelas(false)
+        setOpenEstrelas(false);
+        setLoading(false);
     }
 
     return(
