@@ -3,8 +3,6 @@ import { View, Text,Image, StyleSheet, Dimensions} from 'react-native';
 import colors from '../../global.json';
 import { RectButton } from 'react-native-gesture-handler';
 import Stars from '../../components/stars';
-
-
 export default function Link(props){
     const [imageSize,setImageSize] = useState({})
     const vw = Dimensions.get('window').width;
@@ -37,7 +35,7 @@ export default function Link(props){
         image:{
             width:'95%',
             height:(heightImage || '50%'),
-            resizeMode:"contain"
+
         },
         imageNone:{
             backgroundColor:colors.rosa,
@@ -51,8 +49,8 @@ export default function Link(props){
     })
     return(
         <RectButton style={styles.button}>
-            <View style={{minHeight:(vw*0.5),width:'100%',justifyContent:'center',alignItems:'center'}}>
-                {props.image ? <Image source={{uri:props.image}} style={styles.image} /> : 
+            <View style={{minHeight:(vw*0.3),width:'100%',justifyContent:'center',alignItems:'center'}}>
+                {props.image ? <Image source={{uri:props.image}} style={styles.image} resizeMethod="scale" /> : 
                 <View style={styles.imageNone}/>}
             </View>
             <View style={styles.containerInfos}>

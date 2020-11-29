@@ -135,8 +135,8 @@ export default function Search(){
                     {links ? links.map((link)=>(
                         <Link 
                         key={link._id}
-                        //image={link.photograph}
-                        image="https://dogmemes.com/wp-content/uploads/2020/03/tumblr_onyvh1wbss1vi3bo0o1_500-255x270.jpg"
+                        image={link.photograph}
+                        //image="https://dogmemes.com/wp-content/uploads/2020/03/tumblr_onyvh1wbss1vi3bo0o1_500-255x270.jpg"
                         average={link.average} 
                         title={link.name}
                         />
