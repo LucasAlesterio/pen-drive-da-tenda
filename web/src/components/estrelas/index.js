@@ -110,7 +110,7 @@ export default function Estrelas(props){
             )
         }
     }
-    if(n>0.5){
+    if(n>=0.5){
         return(<>
             <BsStarHalf color="FFEB0A" size={props.size}/> 
             <BsStar color="FFEB0A" size={props.size}/> 

@@ -117,7 +117,7 @@ export default function Login(){
             <View style={styles.form}>
                 <FieldText
                 value={email.value}
-                placeholder="Email"
+                placeholder="Email ou usuário"
                 setText={(text)=>setEmail({value:text,error:false,textError:''})}
                 error = {email.error}
                 textError={email.textError}

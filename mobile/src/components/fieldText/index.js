@@ -13,6 +13,7 @@ export default function FieldText(props){
                     placeholder={props.placeholder}
                     onChangeText={(t)=>props.setText(t)}
                     secureTextEntry={props.password}
+                    onSubmitEditing={(e)=>props.onSubmit(e)}
                 />
             </View>
             {props.error ? <Text style={styles.textError}>{props.textError}</Text> : null}
