@@ -18,7 +18,7 @@ export default function Search(){
     const [page,setPage] = useState(0);
     const [links,setLinks] = useState([]);
     const [typeList,setTypeList] = useState([]);
-    const [pageSize,setPageSize] = useState(12);
+    const [pageSize,setPageSize] = useState(102);
     const nLinks = 12;
     //navigate('Tabs',{screen:'Search'});
     const { navigate } = useNavigation();
@@ -44,7 +44,7 @@ export default function Search(){
     
     async function searchLinks(initial){
         setLoading(true);
-        console.log('Page:',page)
+        //console.log('Page:',page)
         const token = await AsyncStorage.getItem('token');
         try{
             const response = await api.post('/searchLink',
@@ -108,6 +108,12 @@ export default function Search(){
         setLinks([]);
         searchLinks(true);
     }
+    async function getRandomImage(){
+        const response = await api.get('https://api.thecatapi.com/v1/images/search');
+            if(response.data[0].url){
+                return response.data[0].url;   
+            }
+    }
     return(<>
         {loading ? <Loading/> : null}
         <View style={styles.container}
@@ -144,7 +150,7 @@ export default function Search(){
                         key={link._id}
                         image={link.photograph}
                         id={link._id}
-                        //image="https://dogmemes.com/wp-content/uploads/2020/03/tumblr_onyvh1wbss1vi3bo0o1_500-255x270.jpg"
+                        //image={getRandomImage()}
                         average={link.average} 
                         title={link.name}
                         />

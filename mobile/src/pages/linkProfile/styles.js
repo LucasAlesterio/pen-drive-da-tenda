@@ -23,20 +23,17 @@ const styles = StyleSheet.create({
     },
     photo:{
         alignItems: 'center',
-        justifyContent: 'space-around'
+        marginBottom: 10,
     },
     image:{
         height: 320,
-        //maxHeight: 320,
-        //minHeight: 150,
         width: 300,
         resizeMode: 'contain',
         marginBottom: 10,
     },
     buttons:{
-        margin: 10,
+        margin: 20,
         flexDirection: 'row',
-        padding: 15,
         justifyContent: 'space-around',
     },
     button:{
@@ -52,6 +49,22 @@ const styles = StyleSheet.create({
         color:colors.cinzaEscuro,
         fontSize:27,
         fontFamily:'Righteous_400Regular'
+    },
+    userInfo:{
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    userPhoto:{
+        height: 45,
+        width: 45,
+        borderRadius: 50,
+    },
+    user:{
+        fontFamily: 'Righteous_400Regular',
+        color: colors.amarelo,
+        fontSize: 20,
+        paddingLeft: 10,
+        maxWidth: '85%'
     },
     box:{
         flexDirection: 'row',

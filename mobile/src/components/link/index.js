@@ -4,18 +4,31 @@ import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import Stars from '../../components/stars';
 import colors from '../../global.json';
+import api from '../../service/api';
 
 export default function Link(props){
     const [imageSize,setImageSize] = useState({})
+    const [image,setImage] = useState('');
     const vw = Dimensions.get('window').width;
     const { navigate } = useNavigation();
+
+    async function getRandomImage(){
+        const response = await api.get('https://api.thecatapi.com/v1/images/search');
+        if(response.data[0].url){
+            console.log(response.data[0].url);
+            setImage(response.data[0].url);
+            return response.data[0].url;   
+        }
+    }
+
     var heightImage = 0;
-    
     useEffect(()=>{
         if(props.image){
             Image.getSize(props.image,(width, height) => {
                 setImageSize([width,height]);
             });
+            getRandomImage();
+            //console.log(img);
         }
     },[])
     if(props.image){
@@ -37,7 +50,7 @@ export default function Link(props){
         },   
         image:{
             width:'95%',
-            height:(heightImage || '50%'),
+            height:(heightImage|| '50%'),
         },
         imageNone:{
             backgroundColor:colors.rosa,
@@ -52,7 +65,7 @@ export default function Link(props){
     return(
         <RectButton style={styles.button} onPress={()=>navigate('LinkProfile',{id:props.id})}>
             <View style={{minHeight:(vw*0.3),width:'100%',justifyContent:'center',alignItems:'center'}}>
-                {props.image ? <Image source={{uri:props.image}} style={styles.image} /> : 
+                {props.image ? <Image source={{uri:image||null}} style={styles.image} /> : 
                 <View style={styles.imageNone}/>}
             </View>
             <View style={styles.containerInfos}>

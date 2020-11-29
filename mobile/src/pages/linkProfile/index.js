@@ -10,13 +10,14 @@ import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
 import Stars from '../../components/stars';
 
-export default function LinkProfile(){
+export default function LinkProfile({route}){
     const [link,setLink] = useState('');
     const [user,setUser] = useState('');
     //const [id,setId] = useState([]);
-    //const [tags,setTags] = useState([]);
+    const [tags,setTags] = useState([]);
     const [loading,setLoading] = useState(false);
     const { navigate } = useNavigation();
+    const { id } = route.params;
 
     async function getLink(){
         setLoading(true);
@@ -33,9 +34,9 @@ export default function LinkProfile(){
                         Alert.alert('Não encontramos este link!');
                     }
                 }
-                //const tag =  response.data.link.tag;
-                //setTags(tag.map((a)=>{
-                //    return(a.name);
+                const tag =  response.data.link.tag;
+                setTags(tag.map((a)=>{
+                return(a.name)}));
                 setLink(response.data.link);
                 setUser(response.data.user);
                 setLoading(false);
@@ -49,7 +50,33 @@ export default function LinkProfile(){
         }
     };
     
-    useEffect(()=>{getLink},[]);
+    useEffect(()=>{getLink()},[]);
+
+    async function favoriteLink(){
+        const token = await AsyncStorage.getItem('token');
+        setLoading(true);
+        try{
+            await api.post('/updateFavorite',{link:id},{headers:{Authorization:token}});
+            getLink();
+            setLoading(false);
+        }catch{
+            setLoading(false);
+            Alert.alert('Erro no servidor');
+        }
+    };
+
+    async function deleteLink(){
+        setLoading(true);
+        try{
+            await api.post('/deleteLink',{link:id},{headers:{Authorization:token}});
+            navigate(`/profile/${user.user}`);
+            setLoading(false);
+        }catch{
+            setLoading(false);
+            Alert.alert('Erro no servidor');
+        }
+    };
+
 
     return(<>
         {loading ? <Loading/> :null}
@@ -57,7 +84,11 @@ export default function LinkProfile(){
             <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.top}>
                 <GoBack/>
-                <RectButton style={{marginTop:50}}><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton>
+                {!link.isMy ? <> 
+                    {(link.isFavorite && !link.isMy) ? <RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton>
+                    :<RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton>}
+                </> :<RectButton style={{marginTop:50}}><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>}
+                
             </View>
             <Text style={styles.title}>{link.name}</Text>
             <View style={styles.photo}>
@@ -74,10 +105,16 @@ export default function LinkProfile(){
                     <Feather name='external-link' size={30} color='#151515'/>
                 </RectButton>
             </View>
+
+            <View style={{alignItems:'center', marginBottom:20}}>
+                <RectButton style={styles.userInfo}>
+                    <Image style={styles.userPhoto} source={{uri:user.photograph}}/>
+                    <Text style={styles.user}>{user.user}</Text>
+                </RectButton>
+            </View>
+
             <View style={styles.box}>
-                <Text style={styles.description}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </Text>
+                <Text style={styles.description}>{link.description}</Text>
             </View>
             <View style={styles.box}>
                 <View style={styles.type}>
