@@ -18,9 +18,10 @@ export default function Search(){
     const [page,setPage] = useState(0);
     const [links,setLinks] = useState([]);
     const [typeList,setTypeList] = useState([]);
+    const [pageSize,setPageSize] = useState(12);
+    const nLinks = 12;
     //navigate('Tabs',{screen:'Search'});
     const { navigate } = useNavigation();
-    const pageSize = 12;
 
     async function loadTypes(){
         try{
@@ -84,9 +85,22 @@ export default function Search(){
         if(layoutMeasurement.height + contentOffset.y >=
         contentSize.height){
             setPage(page + 1);
+            
         }
     }
-    console.log('type');
+    //console.log('type');
+    function setNewOrder(e){
+        setPage(0);
+        setLinks([]);
+        setPageSize(nLinks * (page + 1))
+        setOrder(e);
+    }
+    function setNewType(e){
+        setPage(0);
+        setLinks([]);
+        setPageSize(nLinks * (page + 1));
+        setType(e);
+    }
     return(<>
         {loading ? <Loading/> : null}
         <View style={styles.container}
@@ -99,13 +113,13 @@ export default function Search(){
             />
             <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between',paddingHorizontal:'6%'}}>
                 <Select
-                setValue={(v)=>setType(v)}
+                setValue={(v)=>setNewType(v)}
                 value={type}
                 placeholder="Tipo"
-                items={typeList || []}/>
+                items={(typeList) || []}/>
 
                 <Select
-                setValue={(v)=>setOrder(v)}
+                setValue={(v)=>setNewOrder(v)}
                 value={order}
                 label
                 placeholder="Ordenar"
@@ -121,7 +135,8 @@ export default function Search(){
                     {links ? links.map((link)=>(
                         <Link 
                         key={link._id}
-                        image={link.photograph}
+                        //image={link.photograph}
+                        image="https://dogmemes.com/wp-content/uploads/2020/03/tumblr_onyvh1wbss1vi3bo0o1_500-255x270.jpg"
                         average={link.average} 
                         title={link.name}
                         />

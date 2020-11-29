@@ -106,7 +106,7 @@ export default function LinkProfile(){
     return(
     <>
         <Cabecalho/>
-        <PopAvaliacao open={openEstrelas} onClose={()=>{}} idLink={link._id} newAverage={(n)=>{setNewAverage(n)}}/>
+        <PopAvaliacao open={openEstrelas} onClose={()=>{setOpenEstrelas(false)}} idLink={link._id} newAverage={(n)=>{setNewAverage(n)}}/>
         {loading ? <Loading /> : null}
         <div id="linkProfile">
             {link ? <> 
