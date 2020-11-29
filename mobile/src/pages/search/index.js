@@ -90,15 +90,15 @@ export default function Search(){
     }
     //console.log('type');
     function setNewOrder(e){
-        setPage(0);
-        setLinks([]);
-        setPageSize(nLinks * (page + 1))
+        //setPage(0);
+        //setLinks([]);
+        //setPageSize(nLinks * (page + 1))
         setOrder(e);
     }
     function setNewType(e){
-        setPage(0);
-        setLinks([]);
-        setPageSize(nLinks * (page + 1));
+        //setPage(0);
+        //setLinks([]);
+        //setPageSize(nLinks * (page + 1));
         setType(e);
     }
     return(<>

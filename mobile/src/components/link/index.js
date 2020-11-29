@@ -38,7 +38,6 @@ export default function Link(props){
         image:{
             width:'95%',
             height:(heightImage || '50%'),
-
         },
         imageNone:{
             backgroundColor:colors.rosa,
@@ -53,7 +52,7 @@ export default function Link(props){
     return(
         <RectButton style={styles.button} onPress={()=>navigate('LinkProfile')}>
             <View style={{minHeight:(vw*0.3),width:'100%',justifyContent:'center',alignItems:'center'}}>
-                {props.image ? <Image source={{uri:props.image,scale:0.02}} style={styles.image} resizeMethod="scale" /> : 
+                {props.image ? <Image source={{uri:props.image,scale:0.2,width:20,height:20}}/> : 
                 <View style={styles.imageNone}/>}
             </View>
             <View style={styles.containerInfos}>

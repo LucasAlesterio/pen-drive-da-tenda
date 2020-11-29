@@ -24,7 +24,7 @@ export default function EditLink(){
     const styleErro = {
         border:'red solid 2px'
     }
-    const tipos = ['Filme','Série','Anime','Livro','Arquivo','Mangá','Animação','Jogo'];
+    const tipos = ['Filme','Série','Anime','Livro','Arquivo','Mangá','Animação','Jogo','Reality show'];
     async function savePic(e){
         let reader = new FileReader();
         let file = e.target.files[0];
