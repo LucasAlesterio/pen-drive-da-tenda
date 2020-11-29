@@ -1,32 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, ScrollView } from 'react-native';
-import { AntDesign, FontAwesome, Feather } from '@expo/vector-icons';
+import { View, Image, Text, ScrollView, Alert } from 'react-native';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
-import Button from '../../components/button';
-//import { useNavigation } from '@react-navigation/native';
-//import api from '../../services/api';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
+import api from '../../service/api';
 import styles from './styles';
 import GoBack from '../../components/goBack';
+import Loading from '../../components/loading';
+import Stars from '../../components/stars';
 
 export default function LinkProfile(){
+    const [link,setLink] = useState('');
+    const [user,setUser] = useState('');
+    //const [id,setId] = useState([]);
+    //const [tags,setTags] = useState([]);
+    const [loading,setLoading] = useState(false);
+    const { navigate } = useNavigation();
 
-    return(
+    async function getLink(){
+        setLoading(true);
+        const token = await AsyncStorage.getItem('token');
+        if(token){
+            try{
+                const response = await api.post('/dataLink',{id:id},{headers:{Authorization:token}});
+                if(response.data.error){
+                    if(response.data.token){
+                        Alert.alert('Necessário logar novamente!');
+                        navigate('Landing');
+                    }
+                    if(response.data.empty){
+                        Alert.alert('Não encontramos este link!');
+                    }
+                }
+                //const tag =  response.data.link.tag;
+                //setTags(tag.map((a)=>{
+                //    return(a.name);
+                setLink(response.data.link);
+                setUser(response.data.user);
+                setLoading(false);
+            }catch(e){
+                setLoading(false);
+                Alert.alert('Erro no servidor');
+            }
+            setLoading(false);
+        }else{
+            navigate('Landing');
+        }
+    };
+    
+    useEffect(()=>{getLink},[]);
+
+    return(<>
+        {loading ? <Loading/> :null}
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.top}>
                 <GoBack/>
                 <RectButton style={{marginTop:50}}><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton>
             </View>
-            <Text style={styles.title}>Pedidos pra Cachorro: Au Au pras Esfinges</Text>
+            <Text style={styles.title}>{link.name}</Text>
             <View style={styles.photo}>
-                <Image style={styles.image} source={{uri: 'https://i.pinimg.com/564x/62/ca/d4/62cad433b44e8c82b00d37edc313aadc.jpg'}}/>
-                <RectButton style={styles.stars}>
-                    <FontAwesome name='star' size={30} color='#FFEB0A'/>
-                    <FontAwesome name='star' size={30} color='#FFEB0A'/>
-                    <FontAwesome name='star' size={30} color='#FFEB0A'/>
-                    <FontAwesome name='star-half-o' size={30} color='#FFEB0A'/>
-                    <FontAwesome name='star-o' size={30} color='#FFEB0A'/>
-                </RectButton>
+                <Image style={styles.image} source={{uri:link.photograph}}/>
+                <Stars size={30} average={4}/>
             </View>
             <View style={styles.buttons}>
                 <RectButton style={styles.button}>
@@ -35,7 +71,7 @@ export default function LinkProfile(){
                 </RectButton>
                 <RectButton style={styles.button}>
                     <Text style={styles.bTitle}>Abrir</Text>
-                    <AntDesign name='link' size={30} color='#151515'/>
+                    <Feather name='external-link' size={30} color='#151515'/>
                 </RectButton>
             </View>
             <View style={styles.box}>
@@ -63,5 +99,5 @@ export default function LinkProfile(){
             </View>
             </ScrollView>
         </View>
-    );
+    </>);
 }

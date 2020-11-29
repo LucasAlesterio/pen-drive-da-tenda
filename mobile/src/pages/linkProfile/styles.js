@@ -31,12 +31,7 @@ const styles = StyleSheet.create({
         //minHeight: 150,
         width: 300,
         resizeMode: 'contain',
-    },
-    stars:{
-        marginTop: 10,
-        flexDirection: 'row',
-        width:170,
-        justifyContent: 'space-around',
+        marginBottom: 10,
     },
     buttons:{
         margin: 10,
