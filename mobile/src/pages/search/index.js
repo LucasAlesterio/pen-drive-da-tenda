@@ -42,15 +42,16 @@ export default function Search(){
         }
     } 
     
-    async function searchLinks(){
+    async function searchLinks(initial){
         setLoading(true);
+        console.log('Page:',page)
         const token = await AsyncStorage.getItem('token');
         try{
             const response = await api.post('/searchLink',
             {
                 text:fieldSearch,
                 pageSize:pageSize,
-                page:page,
+                page: initial ? 0 : page,
                 type:type,
                 order:order
             },
@@ -61,7 +62,7 @@ export default function Search(){
                 }
             }else{
                 //console.log(response.data.links)
-                if(links){
+                if(links && !initial){
                     setLinks(links.concat(response.data.links));
                 }else{
                     setLinks(response.data.links);
@@ -76,7 +77,7 @@ export default function Search(){
     };
     useEffect(()=>{
         searchLinks();
-    },[page,type,order])
+    },[page,type,order,pageSize])
     useEffect(()=>{
         loadTypes();
     },[]);
@@ -90,16 +91,22 @@ export default function Search(){
     }
     //console.log('type');
     function setNewOrder(e){
-        //setPage(0);
-        //setLinks([]);
-        //setPageSize(nLinks * (page + 1))
+        setPage(0);
+        setLinks([]);
+        setPageSize(nLinks * (page + 1))
         setOrder(e);
     }
     function setNewType(e){
-        //setPage(0);
-        //setLinks([]);
-        //setPageSize(nLinks * (page + 1));
+        setPage(0);
+        setLinks([]);
+        setPageSize(nLinks * (page + 1));
         setType(e);
+    }
+
+    function onSearch(){
+        setPage(0);
+        setLinks([]);
+        searchLinks(true);
     }
     return(<>
         {loading ? <Loading/> : null}
@@ -109,7 +116,7 @@ export default function Search(){
             placeholder="Busca" 
             value={fieldSearch} 
             setText={(t)=>setFieldSearch(t)} 
-            onSubmit={(e)=>searchLinks()}
+            onSubmit={(e)=>onSearch()}
             />
             <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between',paddingHorizontal:'6%'}}>
                 <Select
@@ -136,6 +143,7 @@ export default function Search(){
                         <Link 
                         key={link._id}
                         image={link.photograph}
+                        id={link._id}
                         //image="https://dogmemes.com/wp-content/uploads/2020/03/tumblr_onyvh1wbss1vi3bo0o1_500-255x270.jpg"
                         average={link.average} 
                         title={link.name}

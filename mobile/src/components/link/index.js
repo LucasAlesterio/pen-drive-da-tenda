@@ -50,9 +50,9 @@ export default function Link(props){
         }
     })
     return(
-        <RectButton style={styles.button} onPress={()=>navigate('LinkProfile')}>
+        <RectButton style={styles.button} onPress={()=>navigate('LinkProfile',{id:props.id})}>
             <View style={{minHeight:(vw*0.3),width:'100%',justifyContent:'center',alignItems:'center'}}>
-                {props.image ? <Image source={{uri:props.image,scale:0.2,width:20,height:20}}/> : 
+                {props.image ? <Image source={{uri:props.image}} style={styles.image} /> : 
                 <View style={styles.imageNone}/>}
             </View>
             <View style={styles.containerInfos}>
