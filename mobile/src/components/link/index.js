@@ -1,11 +1,14 @@
 import React,{useState,useEffect} from 'react';
 import { View, Text,Image, StyleSheet, Dimensions} from 'react-native';
-import colors from '../../global.json';
 import { RectButton } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 import Stars from '../../components/stars';
+import colors from '../../global.json';
+
 export default function Link(props){
     const [imageSize,setImageSize] = useState({})
     const vw = Dimensions.get('window').width;
+    const { navigate } = useNavigation();
     var heightImage = 0;
     
     useEffect(()=>{
@@ -48,9 +51,9 @@ export default function Link(props){
         }
     })
     return(
-        <RectButton style={styles.button}>
+        <RectButton style={styles.button} onPress={()=>navigate('LinkProfile')}>
             <View style={{minHeight:(vw*0.3),width:'100%',justifyContent:'center',alignItems:'center'}}>
-                {props.image ? <Image source={{uri:props.image}} style={styles.image} resizeMethod="scale" /> : 
+                {props.image ? <Image source={{uri:props.image,scale:0.02}} style={styles.image} resizeMethod="scale" /> : 
                 <View style={styles.imageNone}/>}
             </View>
             <View style={styles.containerInfos}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Alert} from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import styles from './styles';

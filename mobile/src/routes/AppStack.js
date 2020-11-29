@@ -6,6 +6,7 @@ import Landing from '../pages/Landing';
 import Login from '../pages/login';
 import Registration from '../pages/registration'
 import Tabs from './tabs';
+import LinkProfile from '../pages/linkProfile';
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -16,6 +17,7 @@ function AppStack(props) {
                 <Screen name="Landing" component={Landing} />
                 <Screen name="Login" component={Login} />
                 <Screen name="Registration" component={Registration} />
+                <Screen name="LinkProfile" component={LinkProfile} />
                 <Screen name="Tabs" component={Tabs} />
             </Navigator>
         </NavigationContainer>
