@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Alert} from 'react-native';
+import { View, ScrollView, Alert, Dimensions} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,8 +18,10 @@ export default function Search(){
     const [page,setPage] = useState(0);
     const [links,setLinks] = useState([]);
     const [typeList,setTypeList] = useState([]);
-    const [pageSize,setPageSize] = useState(119);
+    const [pageSize,setPageSize] = useState(12);
     const nLinks = 12;
+    const [count,setCount] = useState(0);
+    const vw = Dimensions.get('window').width;
     //navigate('Tabs',{screen:'Search'});
     const { navigate } = useNavigation();
 
@@ -40,11 +42,10 @@ export default function Search(){
         }catch{
             alert('Erro no servidor');
         }
-    } 
+    }
     
     async function searchLinks(initial){
         setLoading(true);
-        //console.log('Page:',page)
         const token = await AsyncStorage.getItem('token');
         try{
             const response = await api.post('/searchLink',
@@ -67,40 +68,50 @@ export default function Search(){
                 }else{
                     setLinks(response.data.links);
                 }
-                //setCount(response.data.count);
+                if(count != response.data.count ){
+                    setCount(response.data.count);
+                }
             }
             setLoading(false);
+            return null;
         }catch{
             setLoading(false);
             Alert.alert('Erro no servidor!');
+            return null;
         }
     };
     useEffect(()=>{
+        console.log('count:',count,' ,links:',links.length, 'page: ',page);
         searchLinks();
     },[page,type,order,pageSize])
+
     useEffect(()=>{
         loadTypes();
     },[]);
 
     function testEndScroll({layoutMeasurement, contentOffset, contentSize}){
-        if(layoutMeasurement.height + contentOffset.y >=
-        contentSize.height){
+        if((layoutMeasurement.height + contentOffset.y  + 20>=
+        contentSize.height) && (!loading) && (count > links.length)){
+            setLoading(true);
             setPage(page + 1);
-            
         }
     }
     //console.log('type');
     function setNewOrder(e){
-        setPage(0);
-        setLinks([]);
-        setPageSize(nLinks * (page + 1))
-        setOrder(e);
+        if(e !== order){
+            setPage(0);
+            setLinks([]);
+            setPageSize(nLinks * (page + 1))
+            setOrder(e);
+        }
     }
     function setNewType(e){
-        setPage(0);
-        setLinks([]);
-        setPageSize(nLinks * (page + 1));
-        setType(e);
+        if(e !== type){
+            setPage(0);
+            setLinks([]);
+            setPageSize(nLinks * (page + 1));
+            setType(e);
+        }
     }
 
     function onSearch(){
@@ -108,11 +119,20 @@ export default function Search(){
         setLinks([]);
         searchLinks(true);
     }
-    async function getRandomImage(){
-        const response = await api.get('https://api.thecatapi.com/v1/images/search');
-            if(response.data[0].url){
-                return response.data[0].url;   
-            }
+
+    function listLinks(){
+        if(links){ 
+            return(links.map((link)=>(
+                <Link 
+                key={link._id}
+                image={link.mini}
+                id={link._id}
+                vw = {vw}
+                average={link.average} 
+                title={link.name}
+                />
+            )))
+        }
     }
     return(<>
         {loading ? <Loading/> : null}
@@ -124,69 +144,30 @@ export default function Search(){
             setText={(t)=>setFieldSearch(t)} 
             onSubmit={(e)=>onSearch()}
             />
-            <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between',paddingHorizontal:'6%'}}>
+            <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between',paddingHorizontal:'6%',paddingBottom:10}}>
                 <Select
                 setValue={(v)=>setNewType(v)}
                 value={type}
                 placeholder="Tipo"
+                valueDefault={null}
                 items={(typeList) || []}/>
 
                 <Select
                 setValue={(v)=>setNewOrder(v)}
                 value={order}
                 label
+                valueDefault={3}
                 placeholder="Ordenar"
                 items={ [['Aa-Zz',1],['Zz-Aa',2],['Mais recentes',3],['Menos recente',4],['Maior avaliação',5],['Menor avaliação',6]]}/>
                 
             </View>
             <ScrollView 
-            onScrollEndDrag = {(e)=>testEndScroll(e.nativeEvent)}
+            //onScrollEndDrag = {(e)=>testEndScroll(e.nativeEvent)}
             contentContainerStyle={{paddingBottom: 20}}
-            //onScroll={(e)=>testEndScroll(e.nativeEvent)}
+            onScroll={(e)=>testEndScroll(e.nativeEvent)}
             >
                 <View style={styles.containerLinks}>
-                    {links ? links.map((link)=>(
-                        <Link 
-                        key={link._id}
-                        image={link.photograph}
-                        id={link._id}
-                        //image={getRandomImage()}
-                        average={link.average} 
-                        title={link.name}
-                        />
-                    )):null}
-                    {links ? links.map((link)=>(
-                        <Link 
-                        key={link._id}
-                        image={link.photograph}
-                        id={link._id}
-                        //image={getRandomImage()}
-                        average={link.average} 
-                        title={link.name}
-                        />
-                    )):null}
-                    {links ? links.map((link)=>(
-                        <Link 
-                        key={link._id}
-                        image={link.photograph}
-                        id={link._id}
-                        //image={getRandomImage()}
-                        average={link.average} 
-                        title={link.name}
-                        />
-                    )):null}
-                    {links ? links.map((link)=>(
-                        <Link 
-                        key={link._id}
-                        image={link.photograph}
-                        id={link._id}
-                        //image={getRandomImage()}
-                        average={link.average} 
-                        title={link.name}
-                        />
-                    )):null}
-
-
+                    {listLinks()}
                 </View>
             </ScrollView>
         </View>

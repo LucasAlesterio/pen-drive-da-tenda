@@ -97,7 +97,12 @@ export default function Select(props){
                 snapToAlignment='center'
                 style={styles.scroll}
                 >
-                    {props.items ? (props.label ? 
+                    <View key={'initial'} style={styles.item}>
+                        <TouchableOpacity style={styles.itemButton} onPress={()=>onSelect(props.valueDefault)}>
+                            <Text style={styles.itemText}> {props.placeholder} </Text>
+                        </TouchableOpacity>
+                    </View>
+                    {props.items ? (props.label ?
                     props.items.map((item)=>{
                         return (
                         <View key={item[1]} style={styles.item}>
