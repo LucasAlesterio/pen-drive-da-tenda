@@ -19,7 +19,7 @@ export default function EditLink(){
     const [foto,setFoto] = useState('');
     const [loading,setLoading] = useState(false);
     const [arrayTag,setArrayTag] = useState([]);
-    const [id,setId] = useState('');
+    const [_id,setId] = useState('');
     let history = useHistory();
     let {id} = useParams();
     const styleErro = {
@@ -177,7 +177,7 @@ export default function EditLink(){
         <Cabecalho/>
         {loading ? <Loading/>:null}
         <div id="addLink">
-            {id ?<>
+            {_id ?<>
             <h1>Edição de link</h1>
             <section>
                 <div className="foto">
