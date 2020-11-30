@@ -91,13 +91,17 @@
     margin: 3rem 0;
     background-color: rgba(var(--cinza-claro-opacity),0.05);
     width:90% ;
+    border-radius: 5px;
 }
 #profile .containerLinks .containerListagem{
     display: flex;    
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-
+}
+#profile .containerLinks .containerListagem h3{
+    padding:3rem 0;
+    width: auto;
 }
 #profile .containerLinks form{
     flex-direction: row;

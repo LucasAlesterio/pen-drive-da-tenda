@@ -125,6 +125,10 @@ export default function Profile(){
             setListagem(listLinks.data.links.map((link)=>(
                 <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
                 )));
+            if(oldCount.length >= 1){
+                oldCount = [];
+                console.log('Clear');
+            }
             oldCount.push(listLinks.data.count);
             if(response.data.me){
                 const listMyFavorites = await api.post('/listMyFavorites',{pageSize:pageSize,page:0},{headers:{Authorization:localStorage.getItem('token')}});
@@ -373,7 +377,7 @@ export default function Profile(){
                 </form> : null}
                 <div className="containerListagem">
                     {listagem}
-                    {listagem.length <= 0 ?<div style={{width:'80vw'}}><h3>Ainda não há links :(</h3></div>:null}
+                    {listagem.length <= 0 ?<h3>Ainda não há links :(</h3>:null}
                 </div>
             </div>
                 {aba ?

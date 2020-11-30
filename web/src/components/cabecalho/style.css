@@ -22,11 +22,18 @@
     padding-right: 1rem;
     
 }
-.cabecalho>a>img{
+.cabecalho>a>div>img{
+    display: inline;
+    margin: 0 auto;
+    height:auto;
+    min-height: 3.5rem;
+    width: 100%;
+}
+.cabecalho>a>div{
     border-radius: 50%;
+    overflow: hidden; 
     height: 3.5rem;
     width: 3.5rem;
-    object-fit: cover;
 }
 .cabecalho>a .fotoN{
     border-radius: 50%;

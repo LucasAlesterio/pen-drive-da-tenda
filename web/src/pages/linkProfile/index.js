@@ -175,19 +175,19 @@ export default function LinkProfile(){
                     </Link>
                 </div>
             </div>
-            <div className="descricao">{link.description}</div>
-            {tags.length !== 0? 
+            {link.description && <div className="descricao">{link.description}</div>}
                 <div className="tagsContainer">
                     <div style={{backgroundColor:'var(--cinza-escuro)',color:'var(--amarelo)'}}>
                         <p>{link.type.name}</p>
                     </div>
-                    {tags.map((t)=>(
+            {tags.length > 0? 
+                    (tags.map((t)=>(
                         <div key={t}>
                             <p>{t}</p>
                         </div>
-                        )) }
+                        )) )
+                        :null}
                 </div>
-            :null}
             </>:null}
         </div>
         <Rodape/>
