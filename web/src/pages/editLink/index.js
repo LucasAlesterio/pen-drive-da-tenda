@@ -19,6 +19,7 @@ export default function EditLink(){
     const [foto,setFoto] = useState('');
     const [loading,setLoading] = useState(false);
     const [arrayTag,setArrayTag] = useState([]);
+    const [id,setId] = useState('');
     let history = useHistory();
     let {id} = useParams();
     const styleErro = {
@@ -113,6 +114,7 @@ export default function EditLink(){
                     setLink({valor:_link.link,erro:false,textoErro:''});
                     setTipoSelecionado({valor:_link.type.name,erro:false,textoErro:''});
                     setDescricao(_link.description);
+                    setId(_link._id);
                     //setUser(response.data.user);
                 }catch{
                     alert('Erro no servidor');
@@ -175,7 +177,7 @@ export default function EditLink(){
         <Cabecalho/>
         {loading ? <Loading/>:null}
         <div id="addLink">
-            {link.valor ?<>
+            {id ?<>
             <h1>Edição de link</h1>
             <section>
                 <div className="foto">

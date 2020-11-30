@@ -18,7 +18,7 @@ export default function Search(){
     const [page,setPage] = useState(0);
     const [links,setLinks] = useState([]);
     const [typeList,setTypeList] = useState([]);
-    const [pageSize,setPageSize] = useState(102);
+    const [pageSize,setPageSize] = useState(119);
     const nLinks = 12;
     //navigate('Tabs',{screen:'Search'});
     const { navigate } = useNavigation();
@@ -155,6 +155,38 @@ export default function Search(){
                         title={link.name}
                         />
                     )):null}
+                    {links ? links.map((link)=>(
+                        <Link 
+                        key={link._id}
+                        image={link.photograph}
+                        id={link._id}
+                        //image={getRandomImage()}
+                        average={link.average} 
+                        title={link.name}
+                        />
+                    )):null}
+                    {links ? links.map((link)=>(
+                        <Link 
+                        key={link._id}
+                        image={link.photograph}
+                        id={link._id}
+                        //image={getRandomImage()}
+                        average={link.average} 
+                        title={link.name}
+                        />
+                    )):null}
+                    {links ? links.map((link)=>(
+                        <Link 
+                        key={link._id}
+                        image={link.photograph}
+                        id={link._id}
+                        //image={getRandomImage()}
+                        average={link.average} 
+                        title={link.name}
+                        />
+                    )):null}
+
+
                 </View>
             </ScrollView>
         </View>

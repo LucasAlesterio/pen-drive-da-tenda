@@ -1,10 +1,25 @@
 const User = require('../models/users');
 const Link = require('../models/links');
-const {verifyToken,decodeBase64Image,deleteFile,uploadImage, deleteImage} = require('../functions');
+const {verifyToken, uploadImage, deleteImage, resizeFromURL} = require('../functions');
 const { v4: uuidv4 } = require('uuid');
 const mongoose  = require('mongoose');
 
+
 module.exports = {
+    async resizeImageFromURL(request,response){
+        try{
+            const {link} = request.body;
+            const imageResized = await resizeFromURL(200,link);
+            if(imageResized){
+                return response.send(imageResized);
+            }else{
+                return response.send('Error!');
+            }
+
+        }catch(error){
+            console.log(error);
+        }
+    },
     async addLink(request,response){
         try{
             var {name,link,description,photograph,type,tag} = request.body;

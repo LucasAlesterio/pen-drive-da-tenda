@@ -13,11 +13,11 @@ export default function Link(props){
     const { navigate } = useNavigation();
 
     async function getRandomImage(){
-        const response = await api.get('https://api.thecatapi.com/v1/images/search');
-        if(response.data[0].url){
-            console.log(response.data[0].url);
-            setImage(response.data[0].url);
-            return response.data[0].url;   
+        const response = await api.get('https://picsum.photos/200/300');
+        if(response.request.responseURL){
+            //console.log(response.request.responseURL);
+            setImage(response.request.responseURL);
+            return response.request.responseURL;   
         }
     }
 
@@ -50,7 +50,7 @@ export default function Link(props){
         },   
         image:{
             width:'95%',
-            height:(heightImage|| '50%'),
+            height:(heightImage|| vw*0.7),
         },
         imageNone:{
             backgroundColor:colors.rosa,

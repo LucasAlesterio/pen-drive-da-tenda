@@ -3,6 +3,11 @@ var fs = require("fs");
 const jwt = require('jsonwebtoken');
 const gc = require('./cloud');
 const bucket = gc.bucket('twm-images');
+const resizeImg = require('resize-image-buffer');
+var sizeOf = require('buffer-image-size');
+//var request = require('request').defaults({ encoding: null });
+const axios = require('axios');
+
 
 module.exports = {
     createToken(id){
@@ -71,5 +76,38 @@ module.exports = {
             return true
         });
         return false;
+    },
+    async resizeImage(max,img){
+        const image = await resizeImg(img, {
+            width: max,
+            height: (max * this.getProportion(img)),
+        });
+        return image;
+    },
+    getProportion(img){
+        var dimensions = sizeOf(img);
+        return(dimensions.height/dimensions.width);
+    },
+    async bufferFromURL(url){
+        const response = await axios.get(url,  { responseType: 'arraybuffer' })
+        const buffer = Buffer.from(response.data, "utf-8")
+        return buffer;
+    },
+    async resizeFromURL(max,url){
+
+        const response = await axios.get(url,  { responseType: 'arraybuffer' })
+        const buffer = Buffer.from(response.data, "utf-8")
+        //console.log(buffer);
+        var dimensions = sizeOf(buffer);
+        var proportion = (dimensions.height/dimensions.width);
+        const image = await resizeImg(buffer, {
+            width: max,
+            height: (max * proportion),
+        });
+        //fs.writeFile(`src/temp/teste.png`, image, {encoding: 'binary'}, function(err) {
+            //return true;
+        //});
+        return image;
     }
+
 }

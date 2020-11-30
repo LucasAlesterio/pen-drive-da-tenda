@@ -17,6 +17,7 @@ routes.post('/listMyLinks',userController.listMyLinks);
 routes.post('/listMyFavorites',userController.listMyFavorites);
 routes.get('/deleteUser',userController.deleteUser);
 
+routes.post('/resize',linkController.resizeImageFromURL);
 routes.post('/addLink',linkController.addLink);
 routes.post('/deleteLink',linkController.deleteLink);
 routes.post('/dataLink',linkController.dataLink);
