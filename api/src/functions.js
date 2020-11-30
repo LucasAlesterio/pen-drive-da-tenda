@@ -27,6 +27,7 @@ module.exports = {
     );
     return id;
     },
+    /*
     decodeBase64Image(image,name) {
         let base64Image = image.split(';base64,').pop();
             fs.writeFile(`src/temp/${name}.png`, base64Image, {encoding: 'base64'}, function(err) {
@@ -44,6 +45,7 @@ module.exports = {
         }
         
     },
+    */
     async uploadImage(name,data){
         function base64MimeType(encoded){
             var result = null;
@@ -68,8 +70,8 @@ module.exports = {
         /*
         const res = await gc.bucket('twm-images').upload(`./src/temp/${name}.png`);
         const url = res[0].metadata.mediaLink;
-        
-        */return url;
+        */
+        return url;
     },
     async deleteImage(id){
         await bucket.file(id).delete().then(()=>{
@@ -77,24 +79,7 @@ module.exports = {
         });
         return false;
     },
-    async resizeImage(max,img){
-        const image = await resizeImg(img, {
-            width: max,
-            height: (max * this.getProportion(img)),
-        });
-        return image;
-    },
-    getProportion(img){
-        var dimensions = sizeOf(img);
-        return(dimensions.height/dimensions.width);
-    },
-    async bufferFromURL(url){
-        const response = await axios.get(url,  { responseType: 'arraybuffer' })
-        const buffer = Buffer.from(response.data, "utf-8")
-        return buffer;
-    },
-    async resizeFromURL(max,url){
-
+    async resizeFromURL(max,url,name){
         const response = await axios.get(url,  { responseType: 'arraybuffer' })
         const buffer = Buffer.from(response.data, "utf-8")
         //console.log(buffer);
@@ -104,10 +89,11 @@ module.exports = {
             width: max,
             height: (max * proportion),
         });
+        const cloudUrl = await bucket.file(name).save(image);
         //fs.writeFile(`src/temp/teste.png`, image, {encoding: 'binary'}, function(err) {
             //return true;
         //});
-        return image;
+        return cloudUrl;
     }
 
 }

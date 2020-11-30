@@ -134,7 +134,7 @@ async listMyLinks(request,response){
         }
         const {links} = _user;
         count = links.length;
-        var _links = await Link.find().select(['name','photograph','average']).where('_id').in(links).skip(page*pageSize).limit(pageSize).sort('name').exec();
+        var _links = await Link.find().select(['name','mini','average']).where('_id').in(links).skip(page*pageSize).limit(pageSize).sort('name').exec();
         return response.json({links:_links,count:count});
     }catch(error){
         console.log(error);
@@ -157,7 +157,7 @@ async listMyLinks(request,response){
         }
         //console.log(_user);
         const {favorites} = _user;
-        var _favorites = await Link.find().select(['name','photograph','average']).where('_id').in(favorites).skip(page*pageSize).limit(pageSize).exec();
+        var _favorites = await Link.find().select(['name','mini','average']).where('_id').in(favorites).skip(page*pageSize).limit(pageSize).exec();
         count = favorites.length;
         //console.log(count);
         return response.json({links:_favorites,count:count});

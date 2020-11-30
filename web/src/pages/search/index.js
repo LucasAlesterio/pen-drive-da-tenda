@@ -55,6 +55,7 @@ export default function Search(){
                 }
             }else{
                 setLinks(response.data.links);
+                //console.log(response.data.links);
                 setCount(response.data.count);
             }
             setLoading(false);
@@ -90,7 +91,7 @@ export default function Search(){
     }
     function listLinks(){
         const retorno  = links.map((link)=>(
-            <LinkList key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+            <LinkList key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
         ))
         return retorno;
     }

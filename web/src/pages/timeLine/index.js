@@ -94,8 +94,8 @@ export default function TimeLine(){
         }
         const list = a.map((link)=>(
             <div className="link_time" key={link._id}>
-                <Link className="containerImagem" to={`linkProfile/${link._id}`} style={!link.photograph ?{backgroundColor:'var(--rosa)'}:null}>
-                    {link.photograph ? <img alt="imagem link" src={link.photograph}/> : null}
+                <Link className="containerImagem" to={`linkProfile/${link._id}`} style={!link.mini ?{backgroundColor:'var(--rosa)'}:null}>
+                    {link.mini ? <img alt="imagem link" src={link.mini}/> : null}
                 </Link>
                 <div className="infoLink">
                     <div className="containerInfo">

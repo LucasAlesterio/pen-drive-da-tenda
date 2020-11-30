@@ -60,7 +60,7 @@ export default function Profile(){
                 {idUser:user,pageSize:pageSize,page:thisPage},{headers:{Authorization:localStorage.getItem('token')}})
                 .then(function(response){
                     setListagem(response.data.links.map((link)=>(
-                        <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                        <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                     )));
                     setCountF(oldCount[1]);
                 }).catch(function(error){
@@ -71,7 +71,7 @@ export default function Profile(){
             await api.post('/searchInMyLinks',{user:user,pageSize:pageSize,page:thisPage,text:busca,myLinks:false},
             {headers:{Authorization:localStorage.getItem('token')}}).then( function(response){
                 setListagem(response.data.links.map((link)=>(
-                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                 )));
                 setCountF(response.data.count);
             }).catch(function(error){
@@ -84,7 +84,7 @@ export default function Profile(){
             if(!busca){
                 const listLinks = await api.post('/listMyLinks',{idUser:user,pageSize:pageSize,page:thisPage},{headers:{Authorization:localStorage.getItem('token')}});
                 setListagem(listLinks.data.links.map((link)=>(
-                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                 )));
                 setCountL(oldCount[0]);
                 return null
@@ -92,7 +92,7 @@ export default function Profile(){
             await api.post('/searchInMyLinks',{user:user,pageSize:pageSize,page:thisPage,text:busca,myLinks:true},
             {headers:{Authorization:localStorage.getItem('token')}}).then( function(response){
                 setListagem(response.data.links.map((link)=>(
-                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                 )));
                 setCountL(response.data.count);
             }).catch(function(error){
@@ -123,7 +123,7 @@ export default function Profile(){
             setLinks(listLinks.data.links);
             setCountL(listLinks.data.count);
             setListagem(listLinks.data.links.map((link)=>(
-                <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                 )));
             if(oldCount.length >= 1){
                 oldCount = [];
@@ -246,13 +246,13 @@ export default function Profile(){
             if(!a && links){
                 setCountL(oldCount[0]);
                 setListagem(links.map((link)=>(
-                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                 )));
             }
             if(a && favorites){
                 setCountF(oldCount[1]);
                 setListagem(favorites.map((link)=>(
-                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.photograph} name={link.name}/>
+                    <LinkList  key={link._id} id={link._id} average={link.average} photo={link.mini} name={link.name}/>
                 )));
             }
             setEstilo(true);

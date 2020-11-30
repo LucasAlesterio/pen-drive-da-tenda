@@ -13,6 +13,7 @@ const linksSchema = new mongoose.Schema({
     type:typesSchema,
     tag:[tagsSchema],
     idImg:String,
-    average:Number
+    average:Number,
+    mini:String
 });
 module.exports = mongoose.model('Links',linksSchema);

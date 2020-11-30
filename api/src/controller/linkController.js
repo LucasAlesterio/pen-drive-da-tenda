@@ -8,14 +8,33 @@ const mongoose  = require('mongoose');
 module.exports = {
     async resizeImageFromURL(request,response){
         try{
-            const {link} = request.body;
-            const imageResized = await resizeFromURL(200,link);
-            if(imageResized){
-                return response.send(imageResized);
-            }else{
-                return response.send('Error!');
+            //const {link} = request.body;
+            const links = await Link.find();
+            if(links){
+                //return response.send(await deleteImage(`mini${links[0].idImg}`));
+                async function teste(link,index){
+                    if(!link.mini){
+                        console.log('links atualizados: ',index);
+                        const urlResized = await resizeFromURL(200,link.photograph,`mini${link.idImg}.png`);
+                        console.log(urlResized);
+                        if(urlResized){
+                            //link.mini = `https://storage.googleapis.com/twm-images/mini${link.idImg}.png`;
+                            await Link.findOneAndUpdate({_id:link._id},
+                                {mini:`https://storage.googleapis.com/twm-images/mini${link.idImg}.png`}, 
+                                {upsert: true}, 
+                                function(err, doc) {
+                                    if (err) return response.json({error:true,message:err});
+                                });
+                            }
+                        }
+                }
+                
+                links.map((link,index)=>{
+                        teste(link,index);
+                    });
+                return response.send('Links atualizados!');
+                    
             }
-
         }catch(error){
             console.log(error);
         }
@@ -30,6 +49,8 @@ module.exports = {
         }
         var idGerado = null;
         var _user = await User.findOne({_id:_id});
+        var resized = '';
+        var urlMini = '';
         if(photograph){
             idGerado = uuidv4();
             /*
@@ -44,8 +65,12 @@ module.exports = {
                 err.photo = true;
             }
             photograph = `https://storage.googleapis.com/twm-images/${idGerado}`;
+            resized = await resizeFromURL(200,photograph,`mini${idGerado}.png`);
+            if(resized){
+                urlMini = `https://storage.googleapis.com/twm-images/mini${idGerado}.png`;
+            }
         }
-        var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id,idImg:idGerado});
+        var _link = await Link.create({name,link,description,photograph,type,tag,user:_user.id,idImg:idGerado,mini:urlMini});
         _user.links.push(_link._id);
         _user.save();
         return response.json({id:_link._id});
@@ -68,6 +93,7 @@ module.exports = {
                 const _link = await Link.findOne({_id:link});
                 if(_link.photograph){
                     await deleteImage(_link.idImg);
+                    await deleteImage(`mini${_link.idImg}.png`)
                 }
                 await Link.findByIdAndDelete({_id:link});
                 _user.links.map((f,index)=>{
@@ -130,10 +156,12 @@ module.exports = {
             return response.json({error:true,token:true});
         }
         var idGerado = null;
+        var resized = '';
         var _link = await Link.findOne({_id:data.id});
         if(data.photograph && data.photograph != _link.photograph){
             if(_link.photograph){
                 await deleteImage(_link.idImg);
+                await deleteImage(`mini${_link.idImg}.png`)
             }
             idGerado = uuidv4();
             const url = await uploadImage(String(idGerado),data.photograph);
@@ -142,6 +170,10 @@ module.exports = {
                 err.photo = true;
             }
             data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}`;
+            resized = await resizeFromURL(200,data.photograph,`mini${idGerado}.png`);
+            if(resized){
+                data.mini = `https://storage.googleapis.com/twm-images/mini${idGerado}.png`;
+            }
             data.idImg = idGerado;
         }
         var _user = await User.findOne({_id:_id});
@@ -279,7 +311,7 @@ module.exports = {
                         {
                             '$project': {
                             'name': 1, 
-                            'photograph': 1, 
+                            'mini': 1, 
                             '_id': 1, 
                             'average': 1
                         }
@@ -303,7 +335,7 @@ module.exports = {
                         {
                         '$project': {
                             'name': 1, 
-                            'photograph': 1, 
+                            'mini': 1, 
                             '_id': 1, 
                             'average': 1
                         }
@@ -322,16 +354,16 @@ module.exports = {
             return response.json({links:resp,count:0});
         }else{
             if(type){
-                var links = await Link.find().select(['name','photograph','average'])
+                var links = await Link.find().select(['name','mini','average'])
                 .skip(page*pageSize).limit(pageSize).where('type.name')
                 .equals(type).sort(sor).exec();
                 
-                count = await Link.find().select(['name','photograph','average'])
+                count = await Link.find().select(['name','mini','average'])
                 .where('type.name').equals(type).
                 countDocuments();
                 return response.json({links,count:count});
             }
-            var links = await Link.find().select(['name','photograph','average'])
+            var links = await Link.find().select(['name','mini','average'])
             .skip(page*pageSize).limit(pageSize).sort(sor).exec();
             count = await Link.countDocuments();
             return response.json({links,count:count});
@@ -382,7 +414,7 @@ module.exports = {
                     '$project': {
                         'name': 1, 
                         '_id':1,
-                        'photograph': 1,
+                        'mini': 1,
                         'average': 1,
                 }
             }
@@ -419,7 +451,7 @@ module.exports = {
             sk = ((count)-(pageSize*(page + 1)));
             lim = pageSize;
         }
-        var links = await Link.find().select(['name','photograph','average','user']).where('user').in(_user.friends).skip(sk).limit(lim).exec();
+        var links = await Link.find().select(['name','mini','average','user']).where('user').in(_user.friends).skip(sk).limit(lim).exec();
         links = JSON.parse(JSON.stringify(links));
         var idusers = links.map((link)=>{
             return link.user;

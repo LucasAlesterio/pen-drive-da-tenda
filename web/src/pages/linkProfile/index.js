@@ -79,8 +79,8 @@ export default function LinkProfile(){
         setLoading(true);
         try{
             await api.post('/deleteLink',{link:id},{headers:{Authorization:localStorage.getItem('token')}});
-            history.push(`/profile/${user.user}`);
             setLoading(false);
+            history.push(`/profile/${user.user}`);
         }catch{
             setLoading(false);
             alert('Erro no servidor');
