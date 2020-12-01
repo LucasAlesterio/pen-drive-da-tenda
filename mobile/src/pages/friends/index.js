@@ -4,12 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 //import api from '../../services/api';
 import styles from './styles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Friends(){
 
     return(
-        <View>
-            <Text>Friends</Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.text} >Friends</Text>
+        </SafeAreaView>
     );
 }

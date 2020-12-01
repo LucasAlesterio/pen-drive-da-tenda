@@ -121,6 +121,7 @@ export default function Login(){
                 setText={(text)=>setEmail({value:text,error:false,textError:''})}
                 error = {email.error}
                 textError={email.textError}
+                onSubmit={()=>logar()}
                 >
                     <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
                 </FieldText>
@@ -132,6 +133,7 @@ export default function Login(){
                 password
                 error = {password.error}
                 textError={password.textError}
+                onSubmit={()=>logar()}
                 >
                     <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
                 </FieldText>

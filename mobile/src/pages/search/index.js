@@ -7,7 +7,6 @@ import styles from './styles';
 import Link from '../../components/link';
 import Loading from '../../components/loading';
 import FieldSearch from '../../components/fieldSearch'; 
-//import colors from '../../global.json';
 import Select from '../../components/Select';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
