@@ -81,7 +81,7 @@ export default function Search(){
         }
     };
     useEffect(()=>{
-        console.log('count:',count,' ,links:',links.length, 'page: ',page);
+        //console.log('count:',count,' ,links:',links.length, 'page: ',page);
         searchLinks();
     },[page,type,order,pageSize])
 

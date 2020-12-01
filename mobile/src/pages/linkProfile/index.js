@@ -82,14 +82,18 @@ export default function LinkProfile({route}){
         {loading ? <Loading/> :null}
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.top}>
-                <GoBack/>
+
                 {!link.isMy ? <> 
-                    {(link.isFavorite && !link.isMy) ? <RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton>
-                    :<RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton>}
-                </> :<RectButton style={{marginTop:50}}><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>}
-                
-            </View>
+                    {(link.isFavorite && !link.isMy) ? 
+                    <View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton></View>
+                    :<View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton></View>}
+                </> : <>
+                    <GoBack/>
+                    <View style={[styles.top,{marginTop:15, paddingLeft:12}]}>
+                        <RectButton><Feather name='edit' size={40} color='#C2C2C2'/></RectButton>
+                        <RectButton><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>
+                    </View></>}
+
             <Text style={styles.title}>{link.name}</Text>
             <View style={styles.photo}>
                 <Image style={styles.image} source={{uri:link.photograph}}/>
