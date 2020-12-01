@@ -6,34 +6,34 @@ import Friends from '../pages/friends';
 import AddLink from '../pages/addLink';
 import Search from '../pages/search';
 import Profile from '../pages/profile';
+import colors from '../global.json'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export default function Tabs(){
-    return (
+    return (<SafeAreaView style={{flex:1, backgroundColor:colors.cinzaMedio}}>
         <Navigator
         tabBarOptions={{
         style: {
             elevation: 0,
             shadowOpacity: 0,
-            height: 64,
-            border:'none'
+            border:'none',
+            backgroundColor: colors.cinzaEscuro,
         },
         tabStyle: {
+            height: 65,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            border:'none'
+            border:'none',
+            height:'100%'
         },
         iconStyle: {
             flex: 0,
-            width: 20,
-            height: 20,
+            justifyContent:'center',
+            width:'100%'
         },
-        inactiveBackgroundColor: '#0A0A0A',
-        activeBackgroundColor: '#0A0A0A',
-        inactiveTintColor: '#C2C2C2',
-        activeTintColor: '#FFEB0A'
         }}
     >
         <Screen 
@@ -101,6 +101,7 @@ export default function Tabs(){
         }}
         />
     </Navigator>
+    </SafeAreaView>
     );
 }
 

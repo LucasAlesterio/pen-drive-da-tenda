@@ -1,11 +1,10 @@
 import { StyleSheet } from 'react-native';
-
+import colors from '../../global.json';
 const styles = StyleSheet.create({
 
     container:{
-        backgroundColor:'#151515',
+        backgroundColor:colors.cinzaMedio,
         flex:1,
-        paddingTop: 50,
     },
     containerSearch:{
         width:'100%',
@@ -18,7 +17,7 @@ const styles = StyleSheet.create({
         flexWrap:'wrap'
     },
     text:{
-        color:'#C2C2C2'
+        color:colors.cinzaClaro
     }
 })
 export default styles;
