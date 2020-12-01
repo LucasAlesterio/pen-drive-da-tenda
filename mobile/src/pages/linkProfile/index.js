@@ -4,6 +4,7 @@ import { AntDesign, Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../../service/api';
 import styles from './styles';
 import GoBack from '../../components/goBack';
@@ -80,13 +81,13 @@ export default function LinkProfile({route}){
 
     return(<>
         {loading ? <Loading/> :null}
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {!link.isMy ? <> 
                     {(link.isFavorite && !link.isMy) ? 
-                    <View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton></View>
-                    :<View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} style={{marginTop:50}}><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton></View>}
+                    <View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} ><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton></View>
+                    :<View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} ><AntDesign name='hearto' size={40} color='#C2C2C2'/></RectButton></View>}
                 </> : <>
                     <GoBack/>
                     <View style={[styles.top,{marginTop:15, paddingLeft:12}]}>
@@ -120,7 +121,7 @@ export default function LinkProfile({route}){
             <View style={styles.box}>
                 <Text style={styles.description}>{link.description}</Text>
             </View>
-            <View style={styles.box}>
+            <View style={[styles.box, {marginBottom:25}]}>
                 <View style={styles.type}>
                     <Text style={styles.typeName}>
                         Filme
@@ -139,6 +140,6 @@ export default function LinkProfile({route}){
                     
             </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     </>);
 }

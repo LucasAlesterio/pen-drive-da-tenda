@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor:colors.cinzaMedio,
         alignItems:'center',
-        height:1000,
         width: '100%',
     },
     top:{

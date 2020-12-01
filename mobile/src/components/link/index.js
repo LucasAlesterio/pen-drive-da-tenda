@@ -46,7 +46,8 @@ export default function Link(props){
         },  
         text:{
             color:'#C2C2C2',
-            textAlign:'center'
+            textAlign:'center',
+            padding:7
         }
     })
     return(

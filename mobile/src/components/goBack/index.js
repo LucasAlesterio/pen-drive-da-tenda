@@ -10,7 +10,6 @@ export default function GoBack(){
     const styles = StyleSheet.create({
     voltar:{
         backgroundColor:'#151515',
-        marginTop: 50,
         paddingLeft: 7,
         flexDirection: 'row',
         width: 83,

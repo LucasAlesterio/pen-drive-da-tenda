@@ -9,7 +9,7 @@ import Loading from '../../components/loading';
 import FieldSearch from '../../components/fieldSearch'; 
 //import colors from '../../global.json';
 import Select from '../../components/Select';
-saimport { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Search(){
     const [fieldSearch,setFieldSearch] = useState('');
