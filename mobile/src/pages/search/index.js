@@ -9,6 +9,7 @@ import Loading from '../../components/loading';
 import FieldSearch from '../../components/fieldSearch'; 
 //import colors from '../../global.json';
 import Select from '../../components/Select';
+saimport { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Search(){
     const [fieldSearch,setFieldSearch] = useState('');
@@ -136,7 +137,7 @@ export default function Search(){
     }
     return(<>
         {loading ? <Loading/> : null}
-        <View style={styles.container}
+        <SafeAreaView style={styles.container}
             >
             <FieldSearch 
             placeholder="Busca" 
@@ -170,7 +171,7 @@ export default function Search(){
                     {listLinks()}
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
         </>
     );
 }

@@ -7,12 +7,12 @@ import AddLink from '../pages/addLink';
 import Search from '../pages/search';
 import Profile from '../pages/profile';
 import colors from '../global.json'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export default function Tabs(){
-    return (<SafeAreaView style={{flex:1, backgroundColor:colors.cinzaMedio}}>
+    return (<SafeAreaProvider style={{flex:1, backgroundColor:colors.cinzaMedio}}>
         <Navigator
         tabBarOptions={{
         style: {
@@ -101,7 +101,7 @@ export default function Tabs(){
         }}
         />
     </Navigator>
-    </SafeAreaView>
+    </SafeAreaProvider>
     );
 }
 
