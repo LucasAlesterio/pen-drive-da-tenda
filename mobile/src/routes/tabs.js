@@ -1,6 +1,7 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
+import { Image } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather} from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import TimeLine from '../pages/timeLine';
 import Friends from '../pages/friends';
 import AddLink from '../pages/addLink';
@@ -8,12 +9,44 @@ import Search from '../pages/search';
 import Profile from '../pages/profile';
 import colors from '../global.json'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import api from '../service/api';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export default function Tabs(){
+    const { navigate } = useNavigation();
+    const [dataUser,setDataUser] = useState({});
+    useEffect(()=>{
+        async function testeToken(){
+        const token = await AsyncStorage.getItem('token');
+        if(token){
+            //testeToken();
+                var response = '';
+                try{
+                    response = await api.get('/refreshToken',{ headers:{Authorization:token}});
+                    setDataUser(response.data);
+                    AsyncStorage.setItem('token',response.data.token);
+                    if(response.data){
+                    if(response.data.error){
+                        navigate("Landing");
+                    }
+                }
+                }catch{
+                    alert('Error servidor');
+                }
+                
+            }else{
+                navigate("Landing");
+            }
+        }
+        testeToken()
+    },[]);
+
     return (<SafeAreaProvider style={{flex:1, backgroundColor:colors.cinzaMedio}}>
         <Navigator
+        initialRouteName="Search"
         tabBarOptions={{
         style: {
             elevation: 0,
@@ -90,12 +123,15 @@ export default function Tabs(){
 
         <Screen 
         name="Profile" 
-        component={Profile}
+        children={()=><Profile idUser={dataUser.user}/>}
+        idUser={dataUser.user}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {
             return (
-                <Feather name="user" size={size} color={focused ? '#FFEB0A' : color} />
+                //<Feather name="user" size={size} color={focused ? '#FFEB0A' : color} />
+                <Image source={{uri:dataUser.photograph}} 
+                style={[{width:27,height:27,borderRadius:50},focused && {borderWidth:1,borderColor:colors.amarelo}]}/>
             );
             }
         }}

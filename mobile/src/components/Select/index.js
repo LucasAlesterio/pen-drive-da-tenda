@@ -49,7 +49,7 @@ export default function Select(props){
             paddingVertical:8
         },
         buttonText2:{
-            color: colors.cinzaMedio,
+            color: `${colors.cinzaMedio}70`,
             fontSize: 20,
             paddingRight:10
         },
@@ -58,7 +58,8 @@ export default function Select(props){
         button2:{
             width:'auto',
             height:'auto',
-            padding:10,
+            paddingVertical:10,
+            paddingHorizontal:5,
             flexDirection:'row',
             alignItems:'center',
             justifyContent:'space-between',

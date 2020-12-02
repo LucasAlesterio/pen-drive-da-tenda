@@ -112,7 +112,7 @@ export default function LinkProfile({route}){
             </View>
 
             <View style={{alignItems:'center', marginBottom:20}}>
-                <RectButton style={styles.userInfo}>
+                <RectButton style={styles.userInfo} onPress={()=>navigate('Profile',{idUser:user.user})}>
                     <Image style={styles.userPhoto} source={{uri:user.photograph}}/>
                     <Text style={styles.user}>{user.user}</Text>
                 </RectButton>

@@ -7,6 +7,7 @@ import colors from '../../global.json';
 
 export default function Link(props){
     const { navigate } = useNavigation();
+    /*
     const [heightImage,setHeightImage] = useState(0);
 
     function getHeight(){
@@ -19,8 +20,23 @@ export default function Link(props){
         }
     }
     useEffect(()=>{
-        getHeight()
+        getHeight();
     },[])
+    
+    function getHeight(){
+        var sizeImage = 0;
+        if(props.image){
+            Image.getSize(props.image,(width, height) => {
+                sizeImage = ((height/width)*((0.95)*(0.4)*props.vw));
+                console.log(sizeImage);
+            });
+            if(sizeImage != 0){
+                return sizeImage;
+            }
+        }else{
+            return(props.vw*0.7);
+        }
+}*/
     const styles = StyleSheet.create({
         button:{
             width:'40%',
@@ -37,7 +53,7 @@ export default function Link(props){
         },   
         image:{
             width:'95%',
-            height:(heightImage),
+            height: props.vw*0.5//getHeight(),
         },
         imageNone:{
             backgroundColor:colors.rosa,
@@ -47,12 +63,13 @@ export default function Link(props){
         text:{
             color:'#C2C2C2',
             textAlign:'center',
-            padding:7
+            padding:7,
+            fontFamily:'Roboto_400Regular',
         }
     })
     return(
         <RectButton style={styles.button} onPress={()=>navigate('LinkProfile',{id:props.id})}>
-            <View style={{minHeight:(props.vw*0.3),width:'100%',justifyContent:'center',alignItems:'center'}}>
+            <View style={{minHeight:(props.vw*0.5),width:'100%',justifyContent:'center',alignItems:'center'}}>
                 {props.image ? <Image source={{uri:props.image||null}} style={styles.image}/>:
                 <View style={styles.imageNone}/>}
             </View>

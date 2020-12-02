@@ -3,10 +3,47 @@ import colors from '../../global.json';
 const styles = StyleSheet.create({
     container:{
         backgroundColor:colors.cinzaMedio,
-        flex:1
+        flex:1,
+        alignItems:'center',
+    },
+    logOut:{
+        width:'100%',
+        flexDirection:'row',
+        justifyContent:'flex-end'
+    },
+    buttonLogOut:{
+        flexDirection:'row',
+        alignItems:'center',
+        padding:5
     },
     text:{
-        color:colors.cinzaClaro
-    }
+        color:colors.cinzaClaro,
+        fontFamily:'Righteous_400Regular',
+        fontSize:20,
+        paddingRight:10
+    },
+    imageProfile:{
+        height:200,
+        width:200,
+        borderRadius:100,
+    },
+    textUser:{
+        lineHeight:30,
+        paddingTop:15,
+        color:colors.amarelo,
+        fontSize:30,
+    },
+    containerUser:{
+        flexDirection:'row',
+        alignItems:'center',
+        maxWidth:'85%',
+        justifyContent:'center'
+    },
+    containerLinks:{
+        flexDirection:'row',
+        width:'100%',
+        justifyContent:'space-around',
+        flexWrap:'wrap'
+    },
 })
 export default styles;
