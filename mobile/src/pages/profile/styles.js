@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
         paddingRight:10
     },
     imageProfile:{
-        height:200,
-        width:200,
+        height:150,
+        width:150,
         borderRadius:100,
     },
     textUser:{
@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         width:'100%',
         justifyContent:'space-around',
-        flexWrap:'wrap'
+        flexWrap:'wrap',
+        backgroundColor:colors.cinzaMedio,
     },
 })
 export default styles;

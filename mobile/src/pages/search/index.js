@@ -9,6 +9,7 @@ import Loading from '../../components/loading';
 import FieldSearch from '../../components/fieldSearch'; 
 import Select from '../../components/Select';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import MiniLoading from '../../components/miniLoading';
 
 export default function Search(){
     const [fieldSearch,setFieldSearch] = useState('');
@@ -22,6 +23,7 @@ export default function Search(){
     const nLinks = 12;
     const [count,setCount] = useState(0);
     const vw = Dimensions.get('window').width;
+    const vh = Dimensions.get('window').height;
     //navigate('Tabs',{screen:'Search'});
     const { navigate } = useNavigation();
 
@@ -135,7 +137,7 @@ export default function Search(){
         }
     }
     return(<>
-        {loading ? <Loading/> : null}
+        {!typeList ? <Loading/> : null}
         <SafeAreaView style={styles.container}
             >
             <FieldSearch 
@@ -168,6 +170,9 @@ export default function Search(){
             >
                 <View style={styles.containerLinks}>
                     {listLinks()}
+                    <View style={{width:'100%',alignItems:'center',paddingBottom:(vh*0.05)}}>
+                    {loading ? <MiniLoading/> : null}
+                </View>
                 </View>
             </ScrollView>
         </SafeAreaView>

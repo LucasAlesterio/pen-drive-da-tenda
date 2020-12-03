@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { View, Alert, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function MyLinks({user}){
+export default function MyFavorites({user}){
     const [field, setField] = useState('');
     const vh = Dimensions.get('window').height;
     const vw = Dimensions.get('window').width;
@@ -40,17 +40,15 @@ export default function MyLinks({user}){
     async function searchMyLinks(user,flag){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
-        console.log('Page: ',page);
         if(token){
             if(!field){
-                await api.post('/listMyLinks',
+                await api.post('/listMyFavorites',
                 {idUser:user,pageSize:pageSize,page:flag ? 0 : page},
                 {headers:{Authorization:token}})
                 .then((response)=>{
                     const links = response.data.links;
                     if(links){
                         if(myLinks && !flag){
-                            //toEnd();
                             setMyLinks(myLinks.concat(response.data.links));
                         }else{
                             setMyLinks(response.data.links);
@@ -67,12 +65,12 @@ export default function MyLinks({user}){
                 })
             }else{
                 await api.post('/searchInMyLinks',
-                {user:user,pageSize:pageSize,page:page,text:field,myLinks:true},
+                {user:user,pageSize:pageSize,page:page,text:field,myLinks:false},
                 {headers:{Authorization:token}})
                 .then((response)=>{
                     const links = response.data.links;
                     if(links){
-                        if(myLinks && !flag){
+                        if(myLinks  && !flag){
                             setMyLinks(myLinks.concat(response.data.links));
                         }else{
                             setMyLinks(response.data.links);
@@ -96,8 +94,7 @@ export default function MyLinks({user}){
     return(
         <ScrollView
         nestedScrollEnabled={true}
-        style={{backgroundColor:colors.cinzaMedio}}
-        contentContainerStyle={{backgroundColor:colors.cinzaMedio}}
+        contentContainerStyle={{backgroundColor:colors.cinzaMedio,height:'auto',backgroundColor:colors.cinzaMedio}}
         onScroll={(e)=>testEndScroll(e.nativeEvent)}
         style={{maxHeight:(vh - insets.bottom - insets.top - 20),backgroundColor:colors.cinzaMedio}}>
             <View style={{paddingVertical:10}}>
@@ -122,13 +119,11 @@ export default function MyLinks({user}){
                     title={link.name}
                     />
                 ))
-                :
-                null
+                :null
                 }
                 <View style={{width:'100%',alignItems:'center',paddingBottom:(vh*0.05)}}>
                     {loading ? <MiniLoading/> : null}
                 </View>
-                
             </View>
         </ScrollView>
     );
