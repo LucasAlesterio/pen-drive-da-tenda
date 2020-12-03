@@ -74,9 +74,6 @@ export default function Profile({idUser}){
         
     }
     */
-    function ScreenLinks(){
-        return(<MyLinks user={user.user}/>)
-    }
     return(<>
             {loading || !user.user ? <Loading/> : null }
         <SafeAreaView style={styles.container} >
@@ -101,6 +98,7 @@ export default function Profile({idUser}){
                 </View>
                 <Text style={[styles.text,{fontSize:25}]}>{user.name}</Text>
                 <View style={{width:vw,paddingTop:20,backgroundColor:colors.cinzaMedio}}>
+                    {user.user ?
                     <Tab.Navigator
                         style={{backgroundColor:colors.cinzaMedio}}
                         tabBarOptions={{
@@ -111,9 +109,10 @@ export default function Profile({idUser}){
                         }}
                         
                     >
-                        <Tab.Screen name="MyLinks" options={{ tabBarLabel: 'Meus Links' }} component={ScreenLinks}/>
+                        <Tab.Screen name="MyLinks" options={{ tabBarLabel: 'Meus Links' }} initialParams={{user:(user.user)}} component={MyLinks}/>
                         <Tab.Screen name="MyFavorites" options={{ tabBarLabel: 'Meus Favoritos' }} component={MyFavorites}/>
                     </Tab.Navigator>
+                    :null}
                 </View>
             </ScrollView>
         </SafeAreaView>
