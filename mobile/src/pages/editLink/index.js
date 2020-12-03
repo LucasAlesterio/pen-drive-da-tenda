@@ -5,6 +5,7 @@ import colors from '../../global.json';
 import Select from '../../components/Select';
 import { Feather } from '@expo/vector-icons'; 
 import Button from '../../components/button';
+import GoBack from '../../components/goBack';
 import FieldText from '../../components/fieldText';
 import { useNavigation } from '@react-navigation/native';
 import { View, Image, Text, TextInput } from 'react-native';
@@ -13,7 +14,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 
 
-export default function AddLink(){
+export default function EditLink(){
     const [name,setName] = useState({value:'',error:false,textError:''});
     const [link,setLink] = useState({value:'',error:false,textError:''});
     const [type,setType] = useState('');
@@ -52,7 +53,8 @@ export default function AddLink(){
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={{alignItems:'center'}}>
-                <Text style={styles.text}>Cadastro de Link</Text>
+                <View style={{width:'100%',alignItems:'flex-start'}}><GoBack/></View>
+                <Text style={styles.text}>Edição de Link</Text>
                 <RectButton style={styles.photo}>
                     <Feather name="camera" size={30} color="#FFEB0A"/>
                 </RectButton>
@@ -101,7 +103,7 @@ export default function AddLink(){
 
                     </ScrollView>
                 </View>
-                <Button style={{marginVertical: 20}} title="Cadastrar"/>
+                <Button style={{marginVertical: 20}} title="Atualizar"/>
             </ScrollView>
         </SafeAreaView>
     );

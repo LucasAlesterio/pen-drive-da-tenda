@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
     logOut:{
         width:'100%',
         flexDirection:'row',
-        justifyContent:'flex-end'
+        justifyContent:'flex-end',
+        paddingBottom:10
     },
     buttonLogOut:{
         flexDirection:'row',

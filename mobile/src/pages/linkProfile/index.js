@@ -91,7 +91,7 @@ export default function LinkProfile({route}){
                 </> : <>
                     <GoBack/>
                     <View style={[styles.top,{marginTop:15, paddingLeft:12}]}>
-                        <RectButton><Feather name='edit' size={40} color='#C2C2C2'/></RectButton>
+                        <RectButton onPress={()=>navigate('EditLink')}><Feather name='edit' size={40} color='#C2C2C2'/></RectButton>
                         <RectButton><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>
                     </View></>}
 
