@@ -81,7 +81,7 @@ export default function LinkProfile({route}){
 
     return(<>
         {loading ? <Loading/> :null}
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {!link.isMy ? <> 

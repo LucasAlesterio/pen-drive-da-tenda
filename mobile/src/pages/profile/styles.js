@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     containerLinks:{
+        paddingBottom:70,
         flexDirection:'row',
         width:'100%',
         justifyContent:'space-around',

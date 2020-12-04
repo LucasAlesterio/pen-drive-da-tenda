@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Friends(){
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['right','left','top']}>
             <Text style={styles.text} >Friends</Text>
         </SafeAreaView>
     );

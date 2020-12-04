@@ -50,7 +50,7 @@ export default function AddLink(){
     },[]);
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['right','left','top']}>
             <ScrollView contentContainerStyle={{alignItems:'center'}}>
                 <Text style={styles.text}>Cadastro de Link</Text>
                 <RectButton style={styles.photo}>

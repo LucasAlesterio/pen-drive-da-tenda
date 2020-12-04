@@ -84,8 +84,9 @@ export default function Profile({idUser}){
     */
     return(<>
         {!user.user ? <Loading/> : null }
-        <SafeAreaView style={styles.container} >
+        <SafeAreaView style={[styles.container, {paddingBottom:-30}]}>
             <ScrollView
+            stickyHeaderIndices={[4]}
             contentContainerStyle={{alignItems:'center',backgroundColor:colors.cinzaMedio}}
             style={{backgroundColor:colors.cinzaMedio}}
             //onScroll={(e)=>testScrollPosition(e.nativeEvent)}

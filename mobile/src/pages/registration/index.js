@@ -11,6 +11,7 @@ import { Feather} from '@expo/vector-icons';
 import colors from '../../global.json';
 import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Registration(){
     const [photo,setPhoto] = useState('');
@@ -99,7 +100,8 @@ export default function Registration(){
     }
     return(<>
         {loading ? <Loading/> : null }
-        <GoBack/>
+        <SafeAreaView style={styles.container}>
+        <View style={{width:'100%'}}><GoBack/></View>
         <View style={styles.container}>
             <InputImageUser setImg={setPhoto}/>
             <View style={styles.form}>
@@ -157,6 +159,7 @@ export default function Registration(){
                 <Button style={styles.button}title="Cadastrar" onPress={()=>cadastrar()}/>
             </View>
         </View>
+        </SafeAreaView>
         </>
     );
 }

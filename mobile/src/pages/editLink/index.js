@@ -51,7 +51,7 @@ export default function EditLink(){
     },[]);
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['right','left','top']}>
             <ScrollView contentContainerStyle={{alignItems:'center'}}>
                 <View style={{width:'100%',alignItems:'flex-start'}}><GoBack/></View>
                 <Text style={styles.text}>Edição de Link</Text>
@@ -103,7 +103,7 @@ export default function EditLink(){
 
                     </ScrollView>
                 </View>
-                <Button style={{marginVertical: 20}} title="Atualizar"/>
+                <Button style={{marginTop: 20,marginBottom:40}} title="Atualizar"/>
             </ScrollView>
         </SafeAreaView>
     );

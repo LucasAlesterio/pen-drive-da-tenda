@@ -96,10 +96,11 @@ export default function MyLinks({route}){
 
     return(
         <ScrollView
+        bounces={false}
         nestedScrollEnabled={true}
-        style={{backgroundColor:colors.cinzaMedio}}
         contentContainerStyle={{backgroundColor:colors.cinzaMedio}}
         onScroll={(e)=>testEndScroll(e.nativeEvent)}
+        scrollEventThrottle={16}
         style={{maxHeight:(vh - insets.bottom - insets.top - 20),backgroundColor:colors.cinzaMedio}}>
             <View style={{paddingVertical:10}}>
                 <FieldSearch

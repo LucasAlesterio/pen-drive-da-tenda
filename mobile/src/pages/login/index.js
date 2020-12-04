@@ -10,6 +10,7 @@ import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
 import { Feather} from '@expo/vector-icons';
 import colors from '../../global.json';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Login(){
     const [email,setEmail] = useState({value:'',error:false,textError:''});
@@ -112,7 +113,8 @@ export default function Login(){
     return(
     <>
         {loading ? <Loading/> : null}
-        <GoBack/>
+        <SafeAreaView style={styles.container}>
+        <View style={{width:'100%'}}><GoBack/></View>
         <View style={styles.container}>
             <View style={styles.form}>
                 <FieldText
@@ -139,11 +141,13 @@ export default function Login(){
                 </FieldText>
 
                 <Button
+                style={{width:150}}
                 onPress={()=>logar()}
                 title='Logar'
                 />
             </View>
         </View>
+        </SafeAreaView>
         </>
     );
 }

@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import Button from '../../components/button';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function Landing(){
     const { navigate } = useNavigation();
@@ -14,7 +16,7 @@ export default function Landing(){
         navigate('Registration');
     }
     return(
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['right','left','top']}>
             <View style={styles.containerButton}>
                 <Button
                 onPress={navigateToSearch}
@@ -23,6 +25,6 @@ export default function Landing(){
                 onPress={navigateToRegistration}
                 title='Cadastrar'/>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

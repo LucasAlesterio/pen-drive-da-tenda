@@ -58,6 +58,7 @@ export default function Tabs(){
             shadowOpacity: 0,
             border:'none',
             backgroundColor: colors.cinzaEscuro,
+            borderTopWidth:0,
         },
         tabStyle: {
             height: 65,

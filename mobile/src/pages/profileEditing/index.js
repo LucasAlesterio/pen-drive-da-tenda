@@ -109,7 +109,7 @@ export default function ProfileEditing({route}){
     return(<>
         <SafeAreaView style={styles.container} >
         {loading ? <Loading/> : null }
-        <View style={{width:'100%'}}><GoBack/></View>
+        <View style={{width:'100%', paddingBottom:40}}><GoBack/></View>
         
             <InputImageUser setImg={setPhoto} value={photo}/>
             <View style={styles.form}>

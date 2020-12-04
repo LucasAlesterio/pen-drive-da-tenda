@@ -138,8 +138,7 @@ export default function Search(){
     }
     return(<>
         {!typeList ? <Loading/> : null}
-        <SafeAreaView style={styles.container}
-            >
+        <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>
             <FieldSearch 
             placeholder="Busca" 
             value={fieldSearch} 

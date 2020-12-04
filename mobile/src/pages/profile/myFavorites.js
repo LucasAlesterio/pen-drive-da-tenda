@@ -93,8 +93,10 @@ export default function MyFavorites({user}){
 
     return(
         <ScrollView
+        bounces={false}
         nestedScrollEnabled={true}
         contentContainerStyle={{backgroundColor:colors.cinzaMedio,height:'auto',backgroundColor:colors.cinzaMedio}}
+        scrollEventThrottle={16}
         onScroll={(e)=>testEndScroll(e.nativeEvent)}
         style={{maxHeight:(vh - insets.bottom - insets.top - 20),backgroundColor:colors.cinzaMedio}}>
             <View style={{paddingVertical:10}}>
