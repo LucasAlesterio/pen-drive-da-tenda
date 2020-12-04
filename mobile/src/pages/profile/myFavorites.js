@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import styles from './styles';
 import api from '../../service/api';
 import colors from '../../global.json';
 import Link from '../../components/link';
 import MiniLoading from '../../components/miniLoading';
 import FieldSearch from '../../components/fieldSearch'; 
+import { useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { View, Alert, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -87,9 +88,15 @@ export default function MyFavorites({user}){
             setField('');
         }
     }
+    /*
     useEffect(()=>{
         searchMyLinks(user);
     },[page,pageSize])
+    */
+    useFocusEffect( useCallback(()=>{
+        searchMyLinks(user);
+    },[page,pageSize]));
+
 
     return(
         <ScrollView

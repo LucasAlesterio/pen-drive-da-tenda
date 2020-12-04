@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import styles from './styles';
 import MyLinks from './myLinks';
 import api from '../../service/api';
@@ -9,7 +9,7 @@ import Loading from '../../components/loading';
 import { RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
-import { useNavigation, NavigationEvents, addListener } from '@react-navigation/native';
+import { useNavigation, useFocusEffect} from '@react-navigation/native';
 import { View, Image, Text, Alert, ScrollView, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -19,16 +19,11 @@ export default function Profile({idUser}){
     const [user,setUser] = useState({});
     const { navigate, goBack } = useNavigation();
 
-    /*
-    useEffect(() => {
-        const unsubscribe = addListener('focus', () => {
-          // do something
-            Alert.alert('focus');
-            
-        });
-        return unsubscribe;
-    }, []);
-    */
+
+    useFocusEffect( useCallback(()=>{
+        loadDataUser();
+    },[]));
+
     async function loadDataUser(){
         const token = await AsyncStorage.getItem('token');
         if(token){
@@ -55,9 +50,11 @@ export default function Profile({idUser}){
             navigate('Landing');
         }
     }
+    /*
     useEffect(()=>{
         loadDataUser();
     },[]);
+    */
 
     async function logOut(){
         await AsyncStorage.setItem('token','').then(()=>{
@@ -84,7 +81,7 @@ export default function Profile({idUser}){
     */
     return(<>
         {!user.user ? <Loading/> : null }
-        <SafeAreaView style={[styles.container, {paddingBottom:-30}]}>
+        <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>
             <ScrollView
             stickyHeaderIndices={[4]}
             contentContainerStyle={{alignItems:'center',backgroundColor:colors.cinzaMedio}}
