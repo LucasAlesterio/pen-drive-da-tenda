@@ -53,6 +53,11 @@ export default function Select(props){
             fontSize: 20,
             paddingRight:10
         },
+        buttonTextSected:{
+            color: colors.cinzaMedio,
+            fontSize: 20,
+            paddingRight:10
+        },
         containerButton2:{
         },
         button2:{
@@ -83,7 +88,7 @@ export default function Select(props){
         <>
             {props.type ?
             <RectButton  style={styles.button2} onPress={()=>setOpen(true)}> 
-                <Text style={styles.buttonText2}>{selected || props.placeholder}</Text>
+                <Text style={selected ? styles.buttonTextSected :styles.buttonText2}>{selected || props.placeholder}</Text>
                 <AntDesign name="down" size={15} color={colors.cinzaMedio}/>
             </RectButton>
             :<View style={styles.containerButton}>

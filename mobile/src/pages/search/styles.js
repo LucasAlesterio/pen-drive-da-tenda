@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     container:{
         backgroundColor:colors.cinzaMedio,
         flex:1,
+        paddingTop:10
     },
     containerSearch:{
         width:'100%',

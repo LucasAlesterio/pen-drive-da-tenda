@@ -35,7 +35,6 @@ export default function Tabs(){
                 }catch{
                     alert('Error servidor');
                 }
-                
             }else{
                 navigate("Landing");
             }

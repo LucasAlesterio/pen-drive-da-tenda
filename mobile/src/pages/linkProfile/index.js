@@ -10,6 +10,7 @@ import styles from './styles';
 import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
 import Stars from '../../components/stars';
+import PopUpBox from '../../components/popUpBox';
 
 export default function LinkProfile({route}){
     const [link,setLink] = useState('');
@@ -17,6 +18,7 @@ export default function LinkProfile({route}){
     //const [id,setId] = useState([]);
     const [tags,setTags] = useState([]);
     const [loading,setLoading] = useState(false);
+    const [open,setOpen] = useState(false);
     const { navigate } = useNavigation();
     const { id } = route.params;
 
@@ -82,6 +84,9 @@ export default function LinkProfile({route}){
     return(<>
         {loading ? <Loading/> :null}
         <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>
+            <PopUpBox open={open} onClose={(state)=>setOpen(state)} title="Deletar">
+                <Text>Ola</Text>
+            </PopUpBox>
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {!link.isMy ? <> 
@@ -92,7 +97,7 @@ export default function LinkProfile({route}){
                     <GoBack/>
                     <View style={[styles.top,{marginTop:15, paddingLeft:12}]}>
                         <RectButton onPress={()=>navigate('EditLink')}><Feather name='edit' size={40} color='#C2C2C2'/></RectButton>
-                        <RectButton><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>
+                        <RectButton onPress={()=>setOpen(true)}><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>
                     </View></>}
 
             <Text style={styles.title}>{link.name}</Text>

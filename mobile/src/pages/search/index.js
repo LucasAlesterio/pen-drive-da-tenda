@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, ScrollView, Alert, Dimensions} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useScrollToTop  } from '@react-navigation/native';
 import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import styles from './styles';
@@ -25,8 +25,10 @@ export default function Search(){
     const vw = Dimensions.get('window').width;
     const vh = Dimensions.get('window').height;
     //navigate('Tabs',{screen:'Search'});
+    const ref = useRef(null);
     const { navigate } = useNavigation();
-
+    useScrollToTop(ref);
+    
     async function loadTypes(){
         try{
             const token = await AsyncStorage.getItem('token');
@@ -166,6 +168,7 @@ export default function Search(){
             //onScrollEndDrag = {(e)=>testEndScroll(e.nativeEvent)}
             contentContainerStyle={{paddingBottom: 20}}
             onScroll={(e)=>testEndScroll(e.nativeEvent)}
+            ref={ref}
             >
                 <View style={styles.containerLinks}>
                     {listLinks()}
