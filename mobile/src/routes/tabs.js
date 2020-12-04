@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import { Image } from 'react-native'
+import { Image, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import TimeLine from '../pages/timeLine';
@@ -22,7 +22,6 @@ export default function Tabs(){
         async function testeToken(){
         const token = await AsyncStorage.getItem('token');
         if(token){
-            //testeToken();
                 var response = '';
                 try{
                     response = await api.get('/refreshToken',{ headers:{Authorization:token}});
@@ -43,12 +42,6 @@ export default function Tabs(){
         }
         testeToken();
     },[]);
-    function screenProfile(){
-        return(
-            <Profile idUser={dataUser.user}/>
-        );
-    }
-
     return (<SafeAreaProvider style={{flex:1, backgroundColor:colors.cinzaMedio}}>
         <Navigator
         initialRouteName="Search"
@@ -130,22 +123,18 @@ export default function Tabs(){
         <Screen 
         name="Profile" 
         children={()=><Profile idUser={dataUser.user}/>}
-        //idUser={dataUser.user}
-        //component={screenProfile}
-        //component={(props)=><Profile  {...props}  idUser={dataUser.user}/>}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {
             return (
-                //<Feather name="user" size={size} color={focused ? '#FFEB0A' : color} />
+                dataUser.photograph ? 
                 <Image source={{uri:dataUser.photograph}} 
                 style={[{width:27,height:27,borderRadius:50},focused && {borderWidth:1,borderColor:colors.amarelo}]}/>
+                :<View style={[{width:27,height:27,borderRadius:50,backgroundColor:colors.rosa},focused && {borderWidth:1,borderColor:colors.amarelo}]}/>
             );
             }
         }}
         >
-            {//(props)=><Profile  {...props}  idUser={dataUser.user}/>
-            }
         </Screen>
     </Navigator>
     </SafeAreaProvider>
