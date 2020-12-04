@@ -41,8 +41,13 @@ export default function Tabs(){
                 navigate("Landing");
             }
         }
-        testeToken()
+        testeToken();
     },[]);
+    function screenProfile(){
+        return(
+            <Profile idUser={dataUser.user}/>
+        );
+    }
 
     return (<SafeAreaProvider style={{flex:1, backgroundColor:colors.cinzaMedio}}>
         <Navigator
@@ -124,7 +129,9 @@ export default function Tabs(){
         <Screen 
         name="Profile" 
         children={()=><Profile idUser={dataUser.user}/>}
-        idUser={dataUser.user}
+        //idUser={dataUser.user}
+        //component={screenProfile}
+        //component={(props)=><Profile  {...props}  idUser={dataUser.user}/>}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {
@@ -135,7 +142,10 @@ export default function Tabs(){
             );
             }
         }}
-        />
+        >
+            {//(props)=><Profile  {...props}  idUser={dataUser.user}/>
+            }
+        </Screen>
     </Navigator>
     </SafeAreaProvider>
     );

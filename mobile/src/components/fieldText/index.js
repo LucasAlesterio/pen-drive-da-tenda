@@ -4,11 +4,11 @@ import styles from './styles';
 
 export default function FieldText(props){
     return(
-        <View style={styles.container}>
+        <View style={[styles.container,(props.style || null )]}>
             <View style={styles.containerField}>
                 {props.children && <View style={styles.icon}>{props.children}</View>}
                 <TextInput
-                    style={[styles.input,props.error && styles.error,props.children ? {paddingLeft:30}: {paddingLeft:5}]}
+                    style={[styles.input,(props.error && styles.error,props.children ? {paddingLeft:30}: {paddingLeft:5})]}
                     value={props.value}
                     placeholder={props.placeholder}
                     onChangeText={(t)=>props.setText(t)}

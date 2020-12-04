@@ -6,21 +6,29 @@ import colors from '../../global.json';
 import MyFavorites from './myFavorites';
 import { Feather } from '@expo/vector-icons';
 import Loading from '../../components/loading';
-import { useNavigation } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-community/async-storage';
-import { View, Image, Text, Alert, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation, NavigationEvents, addListener } from '@react-navigation/native';
+import { View, Image, Text, Alert, ScrollView, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 export default function Profile({idUser}){
     const Tab = createMaterialTopTabNavigator();
     const vw = Dimensions.get('window').width;
     const [user,setUser] = useState({});
-    const [loading,setLoading] = useState(false);
     const { navigate, goBack } = useNavigation();
 
-
+    /*
+    useEffect(() => {
+        const unsubscribe = addListener('focus', () => {
+          // do something
+            Alert.alert('focus');
+            
+        });
+        return unsubscribe;
+    }, []);
+    */
     async function loadDataUser(){
         const token = await AsyncStorage.getItem('token');
         if(token){
@@ -75,7 +83,7 @@ export default function Profile({idUser}){
     }
     */
     return(<>
-            {loading || !user.user ? <Loading/> : null }
+        {!user.user ? <Loading/> : null }
         <SafeAreaView style={styles.container} >
             <ScrollView
             contentContainerStyle={{alignItems:'center',backgroundColor:colors.cinzaMedio}}
@@ -92,7 +100,7 @@ export default function Profile({idUser}){
                 <Image source={{uri:user.photograph}} style={styles.imageProfile}/>
                 <View style={styles.containerUser}>
                     <Text style={[styles.text,styles.textUser]}>@{user.user}</Text>
-                    <RectButton>
+                    <RectButton onPress={()=>navigate('ProfileEditing',{user:user})}>
                         <Feather name='edit' size={25} color={colors.cinzaClaro}/>
                     </RectButton>
                 </View>

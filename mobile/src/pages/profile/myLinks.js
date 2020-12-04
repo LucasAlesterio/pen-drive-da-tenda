@@ -26,7 +26,7 @@ export default function MyLinks({route}){
         contentSize.height) && (!loading) && (count > myLinks.length)){
             setLoading(true);
             setPage(page + 1);
-        }   
+        }
     }
 
     function onSearchLink(){
@@ -41,7 +41,7 @@ export default function MyLinks({route}){
     async function searchMyLinks(user,flag){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
-        console.log('Page: ',page);
+        //console.log('Page: ',page);
         if(token){
             if(!field){
                 await api.post('/listMyLinks',

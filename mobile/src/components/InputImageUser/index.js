@@ -51,9 +51,15 @@ export default function InputImageUser(props){
                 style={{width:200,height:200,borderRadius:100,borderWidth:2,borderColor:colors.amarelo}}
                 />
                 :
-                <View style={styles.icon}>
+                (props.value && !image ? 
+                <Image
+                source={{uri: props.value}}
+                style={{width:200,height:200,borderRadius:100,borderWidth:2,borderColor:colors.amarelo}}
+                />
+                :<View style={styles.icon}>
                     <Feather name="camera" size={50} color={colors.amarelo}/>
                 </View>
+                )
             }
             </TouchableHighlight>
         </View>
