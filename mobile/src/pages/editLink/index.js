@@ -12,12 +12,14 @@ import { View, Image, Text, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
+import InputImageLink from '../../components/inputImageLink';
 
 
 export default function EditLink(){
     const [name,setName] = useState({value:'',error:false,textError:''});
     const [link,setLink] = useState({value:'',error:false,textError:''});
     const [type,setType] = useState('');
+    const [photo, setPhoto] = useState('');
     const [typeList,setTypeList] = useState([]);
     //const [links,setLinks] = useState([]);
 
@@ -55,9 +57,7 @@ export default function EditLink(){
             <ScrollView contentContainerStyle={{alignItems:'center'}}>
                 <View style={{width:'100%',alignItems:'flex-start'}}><GoBack/></View>
                 <Text style={styles.text}>Edição de Link</Text>
-                <RectButton style={styles.photo}>
-                    <Feather name="camera" size={30} color="#FFEB0A"/>
-                </RectButton>
+                <InputImageLink setImg={(img)=>setPhoto(img)} value={photo} />
                 <View style={styles.infos}>
                     <FieldText
                     value={name.value}

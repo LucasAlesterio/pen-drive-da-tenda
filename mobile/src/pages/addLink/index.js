@@ -7,15 +7,16 @@ import { Feather } from '@expo/vector-icons';
 import Button from '../../components/button';
 import FieldText from '../../components/fieldText';
 import { useNavigation } from '@react-navigation/native';
-import { View, Image, Text, TextInput } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
-
+import InputImageLink from '../../components/inputImageLink';
 
 export default function AddLink(){
     const [name,setName] = useState({value:'',error:false,textError:''});
     const [link,setLink] = useState({value:'',error:false,textError:''});
+    const [photo, setPhoto] = useState('');
     const [type,setType] = useState('');
     const [typeList,setTypeList] = useState([]);
     //const [links,setLinks] = useState([]);
@@ -53,9 +54,7 @@ export default function AddLink(){
         <SafeAreaView style={styles.container} edges={['right','left','top']}>
             <ScrollView contentContainerStyle={{alignItems:'center'}}>
                 <Text style={styles.text}>Cadastro de Link</Text>
-                <RectButton style={styles.photo}>
-                    <Feather name="camera" size={30} color="#FFEB0A"/>
-                </RectButton>
+                <InputImageLink setImg={(img)=>setPhoto(img)}/>
                 <View style={styles.infos}>
                     <FieldText
                     value={name.value}

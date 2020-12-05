@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import colors from '../../global.json';
 import { Feather} from '@expo/vector-icons';
 
-export default function InputImageUser(props){
+export default function InputImageLink(props){
     const [image,setImage] = useState('');
     useEffect(() => {
         (async () => {
@@ -42,13 +42,13 @@ export default function InputImageUser(props){
                 {image ? 
                 <Image
                 source={{uri: image.uri}}
-                style={{width:200,height:200,borderRadius:100,borderWidth:2,borderColor:colors.amarelo}}
+                style={styles.image}
                 />
                 :
                 (props.value && !image ? 
                 <Image
                 source={{uri: props.value}}
-                style={{width:200,height:200,borderRadius:100,borderWidth:2,borderColor:colors.amarelo}}
+                style={styles.image}
                 />
                 :<View style={styles.icon}>
                     <Feather name="camera" size={50} color={colors.amarelo}/>
