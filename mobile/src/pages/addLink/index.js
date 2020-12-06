@@ -19,7 +19,6 @@ export default function AddLink(){
     const [photo, setPhoto] = useState('');
     const [type,setType] = useState('');
     const [typeList,setTypeList] = useState([]);
-    //const [links,setLinks] = useState([]);
 
     async function loadTypes(){
         try{
