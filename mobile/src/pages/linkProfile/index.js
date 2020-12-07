@@ -21,7 +21,6 @@ export default function LinkProfile({route}){
     const [open,setOpen] = useState(false);
     const { navigate } = useNavigation();
     const { id,idUser } = route.params;
-    console.log(user.user,idUser);
     async function getLink(){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');

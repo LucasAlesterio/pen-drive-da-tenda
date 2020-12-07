@@ -15,7 +15,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RectButton } from 'react-native-gesture-handler';
 
 export default function ProfileEditing({route}){
-    //console.log(route);
     const dataUser = route.params.user;
     const [photo,setPhoto] = useState(dataUser.photograph);
     const [name,setName] = useState({value:dataUser.name,error:false,textError:''});

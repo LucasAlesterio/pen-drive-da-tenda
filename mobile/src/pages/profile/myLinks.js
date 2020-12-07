@@ -44,7 +44,6 @@ export default function MyLinks({route}){
     async function searchMyLinks(user,flag){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
-        //console.log('Page: ',page);
         if(token){
             if(!field){
                 await api.post('/listMyLinks',
