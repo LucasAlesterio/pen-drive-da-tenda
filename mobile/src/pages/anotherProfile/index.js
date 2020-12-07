@@ -55,8 +55,7 @@ export default function AnotherProfile({route}){
                     }
                 }
                 setUser(response.data);
-                console.log(response.data);
-                //searchMyLinks(response.data.user)
+
             }).catch((error)=>{
                 console.log(error);
                 Alert.alert("Erro no servidor!")
