@@ -9,6 +9,7 @@ import EditLink from '../pages/editLink';
 import LinkProfile from '../pages/linkProfile';
 import Registration from '../pages/registration'
 import ProfileEditing from '../pages/profileEditing';
+import AnotherProfile from '../pages/anotherProfile';
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -23,6 +24,7 @@ function AppStack(props) {
                 <Screen name="Tabs" component={Tabs} />
                 <Screen name="EditLink" component={EditLink} />
                 <Screen name="ProfileEditing" component={ProfileEditing} />
+                <Screen name="AnotherProfile" component={AnotherProfile} />
             </Navigator>
         </NavigationContainer>
     );

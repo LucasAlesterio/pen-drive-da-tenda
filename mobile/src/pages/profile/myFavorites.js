@@ -128,6 +128,7 @@ export default function MyFavorites({user}){
                     vw = {vw}
                     average={link.average} 
                     title={link.name}
+                    idUser={user}
                     />
                 ))
                 :null

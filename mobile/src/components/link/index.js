@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React from 'react';
 import { View, Text,Image, StyleSheet } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
@@ -7,36 +7,6 @@ import colors from '../../global.json';
 
 export default function Link(props){
     const { navigate } = useNavigation();
-    /*
-    const [heightImage,setHeightImage] = useState(0);
-
-    function getHeight(){
-        if(props.image){
-            Image.getSize(props.image,(width, height) => {
-                setHeightImage((height/width)*((0.95)*(0.4)*props.vw));
-            });
-        }else{
-            setHeightImage(props.vw*0.7);
-        }
-    }
-    useEffect(()=>{
-        getHeight();
-    },[])
-    
-    function getHeight(){
-        var sizeImage = 0;
-        if(props.image){
-            Image.getSize(props.image,(width, height) => {
-                sizeImage = ((height/width)*((0.95)*(0.4)*props.vw));
-                console.log(sizeImage);
-            });
-            if(sizeImage != 0){
-                return sizeImage;
-            }
-        }else{
-            return(props.vw*0.7);
-        }
-}*/
     const styles = StyleSheet.create({
         button:{
             width:'40%',
@@ -53,7 +23,7 @@ export default function Link(props){
         },   
         image:{
             width:'95%',
-            height: props.vw*0.5//getHeight(),
+            height: props.vw*0.5
         },
         imageNone:{
             backgroundColor:colors.rosa,
@@ -68,7 +38,7 @@ export default function Link(props){
         }
     })
     return(
-        <RectButton style={styles.button} onPress={()=>navigate('LinkProfile',{id:props.id})}>
+        <RectButton style={styles.button} onPress={()=>navigate('LinkProfile',{id:props.id,idUser:props.idUser})}>
             <View style={{minHeight:(props.vw*0.5),width:'100%',justifyContent:'center',alignItems:'center'}}>
                 {props.image ? <Image source={{uri:props.image||null}} style={styles.image}/>:
                 <View style={styles.imageNone}/>}

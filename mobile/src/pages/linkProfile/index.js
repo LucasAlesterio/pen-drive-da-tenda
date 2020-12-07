@@ -20,8 +20,8 @@ export default function LinkProfile({route}){
     const [loading,setLoading] = useState(false);
     const [open,setOpen] = useState(false);
     const { navigate } = useNavigation();
-    const { id } = route.params;
-
+    const { id,idUser } = route.params;
+    console.log(user.user,idUser);
     async function getLink(){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
@@ -117,7 +117,10 @@ export default function LinkProfile({route}){
             </View>
 
             <View style={{alignItems:'center', marginBottom:20}}>
-                <RectButton style={styles.userInfo} onPress={()=>navigate('Profile',{idUser:user.user})}>
+                <RectButton style={styles.userInfo} onPress={()=>
+                    ( user.user == idUser ? 
+                    navigate('Profile',{idUser:user.user}): 
+                    navigate('AnotherProfile',{idUser:user.user}))}>
                     <Image style={styles.userPhoto} source={{uri:user.photograph}}/>
                     <Text style={styles.user}>{user.user}</Text>
                 </RectButton>

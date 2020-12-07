@@ -11,7 +11,7 @@ import Select from '../../components/Select';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MiniLoading from '../../components/miniLoading';
 
-export default function Search(){
+export default function Search({idUser}){
     const [fieldSearch,setFieldSearch] = useState('');
     const [loading,setLoading] = useState(false);
     const [order,setOrder] = useState(3);
@@ -134,6 +134,7 @@ export default function Search(){
                 vw = {vw}
                 average={link.average} 
                 title={link.name}
+                idUser={idUser}
                 />
             )))
         }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import styles from './styles';
 import MyLinks from './myLinks';
 import api from '../../service/api';

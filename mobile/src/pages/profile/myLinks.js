@@ -11,7 +11,7 @@ import { View, Alert, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MyLinks({route}){
-    const user = route.params.user;
+    const {user} = route.params;
     const [field, setField] = useState('');
     const vh = Dimensions.get('window').height;
     const vw = Dimensions.get('window').width;
@@ -132,6 +132,7 @@ export default function MyLinks({route}){
                     vw = {vw}
                     average={link.average} 
                     title={link.name}
+                    idUser={user}
                     />
                 ))
                 :

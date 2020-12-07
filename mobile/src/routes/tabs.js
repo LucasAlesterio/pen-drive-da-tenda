@@ -108,7 +108,8 @@ export default function Tabs(){
 
         <Screen 
         name="Search" 
-        component={Search}
+        children={()=><Search idUser={dataUser.user}/>}
+        //initialParams={{idUser:dataUser.user}}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {
