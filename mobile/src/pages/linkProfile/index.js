@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, ScrollView, Alert } from 'react-native';
+import { View, Image, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +11,7 @@ import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
 import Stars from '../../components/stars';
 import PopUpBox from '../../components/popUpBox';
+import colors from '../../global.json';
 
 export default function LinkProfile({route}){
     const [link,setLink] = useState('');
@@ -20,7 +21,8 @@ export default function LinkProfile({route}){
     const [loading,setLoading] = useState(false);
     const [open,setOpen] = useState(false);
     const { navigate } = useNavigation();
-    const { id,idUser } = route.params;
+    const { id, idUser } = route.params;
+
     async function getLink(){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
@@ -68,26 +70,37 @@ export default function LinkProfile({route}){
     };
 
     async function deleteLink(){
+        console.log('alou');
+        const token = await AsyncStorage.getItem('token');
         setLoading(true);
-        try{
-            await api.post('/deleteLink',{link:id},{headers:{Authorization:token}});
-            navigate(`/profile/${user.user}`);
-            setLoading(false);
-        }catch{
-            setLoading(false);
+        await api.post('/deleteLink',{link:id},{headers:{Authorization:token}}).then(()=>{
+            navigate('Profile');
+        }).catch((error)=>{
+            console.log(error);
             Alert.alert('Erro no servidor');
-        }
+        });
+        setLoading(false);
     };
+
 
 
     return(<>
         {loading ? <Loading/> :null}
         <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>
-            <PopUpBox open={open} onClose={(state)=>setOpen(state)} title="Deletar">
-                <Text>Ola</Text>
-            </PopUpBox>
-            <ScrollView showsVerticalScrollIndicator={false}>
 
+            <PopUpBox open={open} onClose={(state)=>setOpen(state)} title="Excluir Link">
+                <Text style={styles.popText}>Você deseja mesmo excluir este link?</Text>
+                <View style={styles.pop}>
+                    <TouchableOpacity style={styles.popButton} onPress={()=>deleteLink()}>
+                        <Text style={[styles.popText,{color:colors.cinzaEscuro,fontSize:17}]}>Sim</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.popButton} onPress={()=>setOpen(false)}>
+                        <Text style={[styles.popText,{color:colors.cinzaEscuro,fontSize:17}]}>Não</Text>
+                    </TouchableOpacity>
+                </View>
+            </PopUpBox>
+
+            <ScrollView showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
                 {!link.isMy ? <> 
                     {(link.isFavorite && !link.isMy) ? 
                     <View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} ><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton></View>
@@ -99,53 +112,63 @@ export default function LinkProfile({route}){
                         <RectButton onPress={()=>setOpen(true)}><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>
                     </View></>}
 
-            <Text style={styles.title}>{link.name}</Text>
-            <View style={styles.photo}>
-                <Image style={styles.image} source={{uri:link.photograph}}/>
-                <Stars size={30} average={4}/>
-            </View>
-            <View style={styles.buttons}>
-                <RectButton style={styles.button}>
-                    <Text style={styles.bTitle}>Copiar</Text>
-                    <Feather name="copy" size={30} color="#151515" />
-                </RectButton>
-                <RectButton style={styles.button}>
-                    <Text style={styles.bTitle}>Abrir</Text>
-                    <Feather name='external-link' size={30} color='#151515'/>
-                </RectButton>
-            </View>
+                <Text style={styles.title}>{link.name}</Text>
+                <View style={styles.photo}>
+                    {link.photograph ? 
+                        <Image style={styles.image} source={{uri:link.photograph}}/>
+                    :<View style={styles.imageNone}/>}
+                    <Stars size={30} average={link.average}/>
+                </View>
+                <View style={styles.buttons}>
+                    <RectButton style={styles.button}>
+                        <Text style={styles.bTitle}>Copiar</Text>
+                        <Feather name="copy" size={30} color="#151515" />
+                    </RectButton>
+                    <RectButton style={styles.button}>
+                        <Text style={styles.bTitle}>Abrir</Text>
+                        <Feather name='external-link' size={30} color='#151515'/>
+                    </RectButton>
+                </View>
+                
 
-            <View style={{alignItems:'center', marginBottom:20}}>
-                <RectButton style={styles.userInfo} onPress={()=>
-                    ( user.user == idUser ? 
-                    navigate('Profile',{idUser:user.user}): 
-                    navigate('AnotherProfile',{idUser:user.user}))}>
-                    <Image style={styles.userPhoto} source={{uri:user.photograph}}/>
-                    <Text style={styles.user}>{user.user}</Text>
-                </RectButton>
-            </View>
+                <View style={{alignItems:'center', marginBottom:20}}>
+                    <RectButton style={styles.userInfo} onPress={()=>
+                        ( user.user == idUser ? 
+                        navigate('Profile',{idUser:user.user}): 
+                        navigate('AnotherProfile',{idUser:user.user}))}>
+                        <Image style={styles.userPhoto} source={{uri:user.photograph}}/>
+                        <Text style={styles.user}>{user.user}</Text>
+                    </RectButton>
+                </View>
 
-            <View style={styles.box}>
-                <Text style={styles.description}>{link.description}</Text>
-            </View>
-            <View style={[styles.box, {marginBottom:25}]}>
-                <View style={styles.type}>
-                    <Text style={styles.typeName}>
-                        Filme
-                    </Text>
+                <View style={styles.box}>
+                    <Text style={styles.description}>{link.description}</Text>
                 </View>
-                <View style={styles.tag}>
-                    <Text style={styles.tagName}>
-                        dois cachorros no egito
-                    </Text>
-                </View>
-                <View style={styles.tag}>
-                    <Text style={styles.tagName}>
-                        au au pras esfinges
-                    </Text>
-                </View>
+                <View style={styles.box}>
+                    <View style={styles.type}>
+                        <Text style={styles.typeName}>
+                            Filme
+                        </Text>
+                    </View>
+                    <View style={styles.tag}>
+                        <Text style={styles.tagName}>
+                            dois cachorros no egito
+                        </Text>
+                    </View>
+                    <View style={styles.tag}>
+                        <Text style={styles.tagName}>
+                            au au pras esfinges
+                        </Text>
+                    </View>
                     
-            </View>
+                </View>
+
+                <View style={styles.buttons}>
+                    <RectButton style={styles.share}>
+                        <Text style={styles.bTitle}>Compartilhar</Text>
+                        <Feather name='share-2' size={30} color='#151515' />
+                    </RectButton>
+                </View>
             </ScrollView>
         </SafeAreaView>
     </>);

@@ -22,12 +22,18 @@ const styles = StyleSheet.create({
     },
     photo:{
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     image:{
         height: 320,
         width: 300,
         resizeMode: 'contain',
+        marginBottom: 10,
+    },
+    imageNone:{
+        height: 320,
+        width: 240,
+        backgroundColor:colors.rosa,
         marginBottom: 10,
     },
     buttons:{
@@ -38,15 +44,16 @@ const styles = StyleSheet.create({
     button:{
         backgroundColor:colors.amarelo,
         borderRadius:5,
-        width:'45%',
+        padding:5,
+        width:'43%',
         height:70,
         flexDirection: 'row',
         alignItems:'center',
-        justifyContent:'space-around'
+        justifyContent:'space-around',
     },
     bTitle:{
         color:colors.cinzaEscuro,
-        fontSize:27,
+        fontSize:26,
         fontFamily:'Righteous_400Regular'
     },
     userInfo:{
@@ -112,5 +119,37 @@ const styles = StyleSheet.create({
         color: colors.cinzaMedio,
         fontSize: 15,
     },
+    share:{
+        backgroundColor:colors.amarelo,
+        borderRadius:5,
+        padding:5,
+        width:'68%',
+        height:70,
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent:'space-around',
+        marginBottom:30
+    },
+    popText:{
+        color:colors.cinzaClaro,
+        fontFamily:'Roboto_400Regular',
+        fontSize:15,
+        padding: 11,
+        textAlign:'center',
+    },
+    pop:{
+        flexDirection:'row',
+        marginTop:15,
+        width:'85%',
+        justifyContent:'space-around',
+    },
+    popButton:{
+        justifyContent:'center',
+        fontFamily:'Roboto_400Regular',
+        fontSize:20,
+        backgroundColor:colors.amarelo,
+        borderRadius:5,
+        width:'27%',
+    }
 })
 export default styles;

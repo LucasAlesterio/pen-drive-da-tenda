@@ -1,30 +1,36 @@
 import React from 'react';
-import { StyleSheet, Modal, TouchableOpacity} from 'react-native';
+import { StyleSheet, Modal, TouchableOpacity, View, Dimensions} from 'react-native';
+
 
 export default function PopUp(props){
+    const vh = Dimensions.get('window').height;
     const styles = StyleSheet.create({
         buttonClose:{
+            position:'absolute',
             backgroundColor:'#000000CC',
             alignItems:'center',
             justifyContent:'center',
-            flex:1,
-            zIndex:1
+            height:'100%',
+            width:'100%'
         }
     })
-    return(
+    return(<>
         <Modal
         animationType="fade"
         transparent={true}
         visible={props.open}
         onRequestClose={() => {
-        props.onClose(!props.open);
+        props.onClose(false);
         }}
         >
-            <TouchableOpacity 
-            style={styles.buttonClose} 
-            onPress={()=>props.onClose(!props.open)}>
+            <View  style={{width:'100%',height:'100%',alignItems:'center',justifyContent:'center' }}>
+            <TouchableOpacity
+            style={styles.buttonClose}
+            onPress={()=>props.onClose(false)}
+            />
                 {props.children}
-            </TouchableOpacity>
+            </View>
         </Modal>
+        </>
     );
 }

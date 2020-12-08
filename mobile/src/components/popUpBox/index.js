@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import React, { useState } from 'react';
+import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import PopUp from '../popUp';
 import {Feather} from '@expo/vector-icons';
@@ -26,12 +26,12 @@ export default function PopUpBox({open,onClose,title,children}){
         title:{
             color:colors.amarelo,
             fontFamily:'Righteous_400Regular',
-            fontSize:30
+            fontSize:22
         },
         buttonClose:{
             position:'absolute',
             right:0,
-            paddingRight:5
+            paddingRight:5,
         },
         body:{
             backgroundColor:colors.cinzaMedio,
@@ -41,14 +41,15 @@ export default function PopUpBox({open,onClose,title,children}){
         }
     });
 
+    console.log(open)
     return(
-        <PopUp open={open} onClose={()=>onClose(!open)}>
+        <PopUp open={open} onClose={()=>onClose(false)}>
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.title}>{title}</Text>
-                    <RectButton style={styles.buttonClose} onPress={()=>onClose(!open)}>
+                    <TouchableOpacity style={styles.buttonClose} onPress={()=>onClose(false)} title="">
                         <Feather name="x" size={30} color={colors.cinzaClaro}/>
-                    </RectButton>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.body}>
                     {children}

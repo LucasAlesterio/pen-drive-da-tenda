@@ -6,13 +6,11 @@ import Link from '../../components/link';
 import { Feather } from '@expo/vector-icons';
 import Loading from '../../components/loading';
 import MiniLoading from '../../components/miniLoading';
-import FieldSearch from '../../components/fieldSearch'; 
 import { RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation, useFocusEffect, useScrollToTop} from '@react-navigation/native';
 import { View, Image, Text, Alert, ScrollView, Dimensions } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import GoBack from '../../components/goBack';
 
 export default function AnotherProfile({route}){
@@ -64,11 +62,6 @@ export default function AnotherProfile({route}){
             navigate('Landing');
         }
     }
-    /*
-    useEffect(()=>{
-        loadDataUser();
-    },[]);
-    */
 
     function testEndScroll({layoutMeasurement, contentOffset, contentSize}){
         if((layoutMeasurement.height + contentOffset.y  + 10>=
@@ -89,13 +82,11 @@ async function searchMyLinks(user,flag){
             const links = response.data.links;
             if(links){
                 if(myLinks && !flag){
-                    //toEnd();
                     setMyLinks(myLinks.concat(response.data.links));
                 }else{
                     setMyLinks(response.data.links);
                 }
             }
-            //setMyLinks(response.data.links);
             setCount(response.data.count);
             setLoading(false);
             return null;
