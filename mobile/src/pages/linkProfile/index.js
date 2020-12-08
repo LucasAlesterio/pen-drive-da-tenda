@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Image, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../../service/api';
@@ -54,7 +54,9 @@ export default function LinkProfile({route}){
         }
     };
     
-    useEffect(()=>{getLink()},[]);
+    useFocusEffect( useCallback(()=>{
+        getLink();
+    },[route]));
 
     async function favoriteLink(){
         const token = await AsyncStorage.getItem('token');
