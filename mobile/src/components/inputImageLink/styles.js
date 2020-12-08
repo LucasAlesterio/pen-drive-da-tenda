@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
         width:210,
         height:280,
         borderWidth:2,
-        borderColor:colors.amarelo
+        borderColor:colors.amarelo,
+        resizeMode:'contain',
     },
     icon:{
         alignItems:'center',
