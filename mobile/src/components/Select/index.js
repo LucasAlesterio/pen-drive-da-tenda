@@ -72,6 +72,11 @@ export default function Select(props){
             borderRadius:5,
             width:'100%'
         },
+        textError:{
+            color:colors.vermelho,
+            fontSize:15,
+
+        }
     })
     function onSelect(value){
 
@@ -84,13 +89,23 @@ export default function Select(props){
         }
         setOpen(false);
     }
+    useEffect(()=>{
+        if(props.value && !selected){
+            onSelect(props.value);
+        }
+    },[])
     return(
         <>
             {props.type ?
+            <>
+            <View style={(props.error ? {borderWidth:1,borderColor:colors.vermelho,borderRadius:5}:null)}>
             <RectButton  style={styles.button2} onPress={()=>setOpen(true)}> 
                 <Text style={selected ? styles.buttonTextSected :styles.buttonText2}>{selected || props.placeholder}</Text>
                 <AntDesign name="down" size={15} color={colors.cinzaMedio}/>
             </RectButton>
+            </View>
+            {props.error ? <Text style={styles.textError}>{props.textError}</Text> : null}
+            </>
             :<View style={styles.containerButton}>
                 <RectButton  style={styles.button} onPress={()=>setOpen(true)}> 
                     <Text style={styles.buttonText}>{selected || props.placeholder}</Text>

@@ -7,18 +7,26 @@ import { Feather } from '@expo/vector-icons';
 import Button from '../../components/button';
 import FieldText from '../../components/fieldText';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 import InputImageLink from '../../components/inputImageLink';
+import Tags from '../../components/tags';
+import Loading from '../../components/loading';
 
 export default function AddLink(){
     const [name,setName] = useState({value:'',error:false,textError:''});
     const [link,setLink] = useState({value:'',error:false,textError:''});
     const [photo, setPhoto] = useState('');
-    const [type,setType] = useState('');
+    const [description,setDescription] = useState('');
+    const [type,setType] = useState({value:'',error:false,textError:''});
     const [typeList,setTypeList] = useState([]);
+    const [tags,setTags] = useState([]);
+    const [fieldTag,setFieldTag] = useState('');
+    const [loading,setLoading] = useState(false);
+    const [list,setList] = useState();
+    const { navigate } = useNavigation();
 
     async function loadTypes(){
         try{
@@ -41,7 +49,7 @@ export default function AddLink(){
     
     function setNewType(e){
         if(e !== type){
-            setType(e);
+            setType({value:e,error:false,textError:''});
         }
     }
 
@@ -49,8 +57,82 @@ export default function AddLink(){
         loadTypes();
     },[]);
 
+    function addTag(){
+        if(tags.indexOf(fieldTag) === -1 && fieldTag !== ""){
+            setTags(tags.concat(fieldTag));
+            setList(<Tags edit tags={tags.concat(fieldTag)} onDelete={(tag)=>deleteTag(tag)}/>);
+        }
+        setFieldTag('');
+    }
+
+    function deleteTag(tag){
+        let listTags = tags;
+        listTags.forEach((t,i)=>{
+            if(t === tag){
+                listTags.splice(i,1);
+                return null;
+            }
+        });
+        setTags(listTags);
+        setList(<Tags edit tags={tags} onDelete={(tag)=>deleteTag(tag)}/>);
+    }
+
+    function jsonTags(){
+        return(
+            tags.map((a)=>{
+                return({name:a})
+            })
+        );
+    }
+    async function add(){
+        const token = await AsyncStorage.getItem('token');
+        if(!name.value){
+            setName({value:'',error:true,textError:'Campo obrigatório!'});
+            return null;
+        }
+        if(!link.value){
+            setLink({value:'',error:true,textError:'Campo obrigatório!'});
+            return null;
+        }
+        if(!type.value){
+            setType({value:'',error:true,textError:'Campo obrigatório!'})
+        }
+        if(token){
+            setLoading(true);
+            await api.post('/addLink',
+            {
+                name:name.value,
+                type:{
+                    name:type.value
+                },
+                description:description,
+                link:link.value,
+                tag:jsonTags(),
+                photograph:photo
+            },
+            {headers:{Authorization:token}})
+            .then((response)=>{
+                if(response.data.erro){
+                    if(response.data.token){
+                        navigate('Landing');
+                    }
+                }else{
+                    navigate('LinkProfile',{id:response.data.id});
+                }
+                setLoading(false);
+            })
+            .catch((error)=>{
+                console.log(error);
+                setLoading(false);
+                Alert.alert('Erro no servidor!');
+            })
+        }
+
+    }
+
     return(
         <SafeAreaView style={styles.container} edges={['right','left','top']}>
+            {loading ? <Loading/> :null}
             <ScrollView contentContainerStyle={{alignItems:'center'}}>
                 <Text style={styles.text}>Cadastro de Link</Text>
                 <InputImageLink setImg={(img)=>setPhoto(img)}/>
@@ -73,10 +155,13 @@ export default function AddLink(){
                         <Select
                         type
                         setValue={(v)=>setNewType(v)}
-                        value={type}
+                        value={type.value}
                         placeholder="Tipo"
                         valueDefault={null}
-                        items={(typeList) || []}/>
+                        items={(typeList) || []}
+                        error={type.error}
+                        textError={type.textError}
+                        />
                     </View>
                 </View>
                 <View style={styles.box}>
@@ -85,21 +170,27 @@ export default function AddLink(){
                     placeholder="Descrição"
                     placeholderTextColor = {colors.cinzaClaro+60}
                     multiline={true}
+                    value={description}
+                    onChangeText={(text)=>setDescription(text)}
                     numberOfLines={6}/>
                 </View>
-                <View style={styles.box}>
+                <View style={[styles.box,{height:'auto'}]}>
                     <View style={styles.tag}>
-                        <TextInput 
-                        style={styles.tagText} 
+                        <TextInput
+                        style={styles.tagText}
                         placeholder="Tags"
-                        placeholderTextColor={colors.cinzaClaro+60}/>
-                        <RectButton><Feather name="plus-circle" size={30} color="#C2C2C2" /></RectButton>
+                        placeholderTextColor={colors.cinzaClaro+60}
+                        onSubmitEditing={()=>addTag()}
+                        onChangeText={(text)=>setFieldTag(text)}
+                        value={fieldTag}
+                        />
+                        <RectButton onPress={()=>addTag()}>
+                            <Feather name="plus-circle" size={30} color="#C2C2C2" />
+                        </RectButton>
                     </View>
-                    <ScrollView>
-
-                    </ScrollView>
+                    {list}
                 </View>
-                <Button style={{marginVertical: 20}} title="Cadastrar"/>
+                <Button onPress={()=>add()} style={{marginVertical: 20}} title="Cadastrar"/>
             </ScrollView>
         </SafeAreaView>
     );

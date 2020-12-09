@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, Alert } from 'react-native';
+import {Alert, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RectButton } from 'react-native-gesture-handler';
-//import api from '../../services/api';
 import styles from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../service/api';
+import LinkTimeLine from '../../components/linkTimeLine';
 
 export default function TimeLine(){
     const { navigate } = useNavigation();
@@ -16,7 +15,7 @@ export default function TimeLine(){
     const pageSize = 12;
 
     async function getData(){
-        const token = AsyncStorage.getItem('token');
+        const token = await AsyncStorage.getItem('token');
         if(token){
             await api.post('/timeLine',{pageSize:pageSize,page:page},{headers:{Authorization:token}})
             .then((response)=>{
@@ -36,10 +35,22 @@ export default function TimeLine(){
             navigate('Landing');
         }
     }
+    useEffect(()=>{
+        getData();
+    },[])
 
     return(
         <SafeAreaView style={styles.container}>
-            <Text style={styles.text} >Time Line</Text>
+        {links[0] ? 
+            <LinkTimeLine 
+            title={links[0].name} 
+            average={links[0].average} 
+            imageLink={links[0].mini} 
+            imageUser={links[0].user.photograph} 
+            user={links[0].user.user} 
+            id={links[0]._id}
+            />
+            :null}
         </SafeAreaView>
     );
 }

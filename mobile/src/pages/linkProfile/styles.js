@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
 import colors from '../../global.json';
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:colors.cinzaMedio,
         alignItems:'center',
-        width: '100%',
     },
     top:{
         flexDirection: 'row',
@@ -73,13 +73,13 @@ const styles = StyleSheet.create({
         maxWidth: '85%'
     },
     box:{
+        minWidth:'95%',
+        alignSelf:'center',
         flexDirection: 'row',
         backgroundColor: colors.cinzaClaro+'10',
         margin: 10,
         marginTop: 0,
         borderRadius: 10,
-        justifyContent: 'flex-start',
-        flexWrap: 'wrap',
         paddingTop: 12,
     },
     description:{
@@ -88,36 +88,6 @@ const styles = StyleSheet.create({
         color: colors.cinzaClaro,
         padding: 12,
         paddingTop: 0,
-    },
-    type:{
-        backgroundColor: colors.cinzaMedio,
-        height: 45,
-        paddingHorizontal: 20,
-        justifyContent: 'center',
-        borderRadius: 50,
-        borderColor: colors.amarelo,
-        borderWidth: 1.5,
-        marginBottom: 12,
-        marginLeft: 12,
-    },
-    typeName:{
-        fontFamily: 'Roboto_400Regular',
-        color: colors.amarelo,
-        fontSize: 15,
-    },
-    tag:{
-        backgroundColor: colors.amarelo,
-        height: 45,
-        paddingHorizontal: 20,
-        justifyContent: 'center',
-        borderRadius: 50,
-        marginBottom: 12,
-        marginLeft: 12,
-    },
-    tagName:{
-        fontFamily: 'Roboto_400Regular',
-        color: colors.cinzaMedio,
-        fontSize: 15,
     },
     share:{
         backgroundColor:colors.amarelo,

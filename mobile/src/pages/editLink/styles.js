@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
     container:{
         backgroundColor:colors.cinzaMedio,
         flex:1,
-        paddingBottom:0,
     },
     text:{
         fontFamily: 'Righteous_400Regular',

@@ -9,14 +9,15 @@ import api from '../../service/api';
 import styles from './styles';
 import GoBack from '../../components/goBack';
 import Loading from '../../components/loading';
+import MiniLoading from '../../components/miniLoading';
 import Stars from '../../components/stars';
 import PopUpBox from '../../components/popUpBox';
 import colors from '../../global.json';
+import Tags from '../../components/tags';
 
 export default function LinkProfile({route}){
     const [link,setLink] = useState('');
     const [user,setUser] = useState('');
-    //const [id,setId] = useState([]);
     const [tags,setTags] = useState([]);
     const [loading,setLoading] = useState(false);
     const [open,setOpen] = useState(false);
@@ -41,6 +42,7 @@ export default function LinkProfile({route}){
                 const tag =  response.data.link.tag;
                 setTags(tag.map((a)=>{
                 return(a.name)}));
+                console.log(response.data.link);
                 setLink(response.data.link);
                 setUser(response.data.user);
                 setLoading(false);
@@ -72,9 +74,8 @@ export default function LinkProfile({route}){
     };
 
     async function deleteLink(){
-        console.log('alou');
-        const token = await AsyncStorage.getItem('token');
         setLoading(true);
+        const token = await AsyncStorage.getItem('token');
         await api.post('/deleteLink',{link:id},{headers:{Authorization:token}}).then(()=>{
             navigate('Profile');
         }).catch((error)=>{
@@ -87,10 +88,10 @@ export default function LinkProfile({route}){
 
 
     return(<>
-        {loading ? <Loading/> :null}
         <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>
-
+        {link._id ?<>
             <PopUpBox open={open} onClose={(state)=>setOpen(state)} title="Excluir Link">
+                {!loading ? <>
                 <Text style={styles.popText}>Você deseja mesmo excluir este link?</Text>
                 <View style={styles.pop}>
                     <TouchableOpacity style={styles.popButton} onPress={()=>deleteLink()}>
@@ -100,9 +101,13 @@ export default function LinkProfile({route}){
                         <Text style={[styles.popText,{color:colors.cinzaEscuro,fontSize:17}]}>Não</Text>
                     </TouchableOpacity>
                 </View>
+                </>:<MiniLoading/>}
             </PopUpBox>
 
-            <ScrollView showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
+            <ScrollView 
+            contentContainerStyle={{width:'100%'}}
+            showsVerticalScrollIndicator={false} 
+            scrollEventThrottle={16}>
                 {!link.isMy ? <> 
                     {(link.isFavorite && !link.isMy) ? 
                     <View style={styles.top}><GoBack/><RectButton onPress={()=>favoriteLink()} ><AntDesign name='heart' size={40} color='#C2C2C2'/></RectButton></View>
@@ -110,7 +115,16 @@ export default function LinkProfile({route}){
                 </> : <>
                     <GoBack/>
                     <View style={[styles.top,{marginTop:15, paddingLeft:12}]}>
-                        <RectButton onPress={()=>navigate('EditLink')}><Feather name='edit' size={40} color='#C2C2C2'/></RectButton>
+                        <RectButton onPress={()=>
+                            navigate('EditLink',{
+                                name: link.name,
+                                type: link.type.name,
+                                link: link.link,
+                                photo: link.photograph,
+                                tags: tags,
+                                description: link.description,
+                                id:link._id
+                            })}><Feather name='edit' size={40} color='#C2C2C2'/></RectButton>
                         <RectButton onPress={()=>setOpen(true)}><Feather name='trash' size={40} color='#C2C2C2'/></RectButton>
                     </View></>}
 
@@ -147,22 +161,7 @@ export default function LinkProfile({route}){
                     <Text style={styles.description}>{link.description}</Text>
                 </View>
                 <View style={styles.box}>
-                    <View style={styles.type}>
-                        <Text style={styles.typeName}>
-                            Filme
-                        </Text>
-                    </View>
-                    <View style={styles.tag}>
-                        <Text style={styles.tagName}>
-                            dois cachorros no egito
-                        </Text>
-                    </View>
-                    <View style={styles.tag}>
-                        <Text style={styles.tagName}>
-                            au au pras esfinges
-                        </Text>
-                    </View>
-                    
+                    <Tags type={link.type.name} tags={link.tag}/>
                 </View>
 
                 <View style={styles.buttons}>
@@ -172,6 +171,8 @@ export default function LinkProfile({route}){
                     </RectButton>
                 </View>
             </ScrollView>
+            </>
+        :<Loading/>}
         </SafeAreaView>
     </>);
 }
