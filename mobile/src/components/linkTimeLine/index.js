@@ -6,7 +6,6 @@ import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 import Stars from '../stars';
 
 export default function LinkTimeLine({mini,_id,average,user,name}){
-    console.log(user);
     const { navigate } = useNavigation();
     const vw = Dimensions.get('window').width;
     const styles = StyleSheet.create({
@@ -15,7 +14,7 @@ export default function LinkTimeLine({mini,_id,average,user,name}){
             borderColor:colors.amarelo,
             width:0.9*vw,
             backgroundColor:colors.cinzaClaro+10,
-            height:0.65*vw,
+            minHeight:0.65*vw,
             marginTop:20
         },
         buttonContainer:{

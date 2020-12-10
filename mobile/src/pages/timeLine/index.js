@@ -30,7 +30,7 @@ export default function TimeLine(){
                         navigate('Landing');
                     }
                 }
-                if(links.length>0 && !flag){
+                if(links.length > 0 && !flag){
                     setLinks(links.concat(response.data.link));
                 }else{
                     setLinks(response.data.link);

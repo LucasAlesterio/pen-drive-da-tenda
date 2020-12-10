@@ -14,14 +14,15 @@ export default function Friends({idUser}){
     const [page,setPage] = useState(0);
     const [count,setCount] = useState(0);
     const [friends,setFriends] = useState([]);
-    const [loading,setLoading] = useState(false);
     const {navigate} = useNavigation();
     const ref = useRef(null);
     const [refreshing,setRefreshing] = useState(false);
     const pageSize = 12;
+    const [loading,setLoading] = useState(false);
     useScrollToTop(ref);
 
     async function searchFriend(flag){
+        setLoading(true);
         const token = await AsyncStorage.getItem('token');
         if(token){
             await api.post('/findUser',
@@ -33,18 +34,22 @@ export default function Friends({idUser}){
                         navigate('Landing');
                     }
                 }
-                if(friends && !flag){
+                if(friends.length > 0 && !flag){
                     setFriends(friends.concat(response.data.friends));
                 }else{
                     setFriends(response.data.friends);
                 }
                 setCount(response.data.count);
-    
+                setLoading(false);
             }).catch((error)=>{
                 console.log(error);
+                setLoading(false);
+
                 Alert.alert('Erro no servidor!Tente novamente.')
             })
         }else{
+            setLoading(false);
+
             navigate('Landing');
         }
     }
@@ -54,7 +59,6 @@ export default function Friends({idUser}){
     }
     function nextPage(){
         if(friends.length < count && !loading){
-            setLoading(true);
             setPage(page + 1);
         }
     }
@@ -65,9 +69,10 @@ export default function Friends({idUser}){
         searchFriend(true);
         setRefreshing(false);
     }
+
     useEffect(()=>{
-        searchFriend(true);
-    },[]);
+        searchFriend();
+    },[page]);
 
     return(
         <SafeAreaView style={styles.container} edges={['right','left','top']}>

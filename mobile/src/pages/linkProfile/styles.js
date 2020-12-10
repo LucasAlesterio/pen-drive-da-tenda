@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         color: colors.amarelo,
         fontSize: 20,
         paddingLeft: 10,
-        maxWidth: '85%'
+        maxWidth: '85%',
     },
     box:{
         minWidth:'95%',
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems:'center',
         justifyContent:'space-around',
-        marginBottom:30
+        marginBottom:30,
     },
     popText:{
         color:colors.cinzaClaro,
