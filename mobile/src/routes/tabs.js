@@ -82,7 +82,8 @@ export default function Tabs(){
 
         <Screen 
         name="Friends" 
-        component={Friends}
+        //component={Friends}
+        children={()=><Friends idUser={dataUser.user}/>}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {

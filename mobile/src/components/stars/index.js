@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Alert,Image} from 'react-native';
+import { View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import colors from '../../global.json';
 import { StyleSheet } from 'react-native';
@@ -14,7 +14,7 @@ export default function Stars(props){
     //<FontAwesome name="star" size={props.size} color={colors.amarelo}/>
     //<FontAwesome name="star-o" size={props.size} color={colors.amarelo}/> fill
     //<FontAwesome name="star-half-o" size={props.size} color={colors.amarelo}/> half
-    if(n === null){
+    if(n === null || n === undefined){
         return(
             <View style={styles.container}>
                 <FontAwesome name="star-o" size={props.size} color={colors.cinzaClaro}/> 

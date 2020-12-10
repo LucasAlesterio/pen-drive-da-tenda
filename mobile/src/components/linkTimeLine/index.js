@@ -5,7 +5,8 @@ import colors from '../../global.json';
 import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 import Stars from '../stars';
 
-export default function LinkTimeLine({imageLink,imageUser,id,average,user,title}){
+export default function LinkTimeLine({mini,_id,average,user,name}){
+    console.log(user);
     const { navigate } = useNavigation();
     const vw = Dimensions.get('window').width;
     const styles = StyleSheet.create({
@@ -15,6 +16,7 @@ export default function LinkTimeLine({imageLink,imageUser,id,average,user,title}
             width:0.9*vw,
             backgroundColor:colors.cinzaClaro+10,
             height:0.65*vw,
+            marginTop:20
         },
         buttonContainer:{
             flex:1,
@@ -49,16 +51,16 @@ export default function LinkTimeLine({imageLink,imageUser,id,average,user,title}
 
     return(
         <View style={styles.container}>
-            <RectButton style={styles.buttonContainer} onPress={()=>navigate('LinkProfile',{id:id})}>
-                <Image source={{uri:imageLink}} style={styles.imageLink}/>
+            <RectButton style={styles.buttonContainer} onPress={()=>navigate('LinkProfile',{id:_id})}>
+                <Image source={{uri:mini}} style={styles.imageLink}/>
                 <View style={styles.infos}>
                     <View style={styles.name}>
-                        <Text style={styles.text}>{title}</Text>
+                        <Text style={styles.text}>{name}</Text>
                         <Stars average={average} size={25}/>
                     </View>
                     <TouchableOpacity style={styles.buttonUser} 
-                    onPress={()=>navigate('AnotherProfile',{idUser:user})}>
-                        <Image source={{uri:imageUser}} style={styles.imageUser}/>
+                    onPress={()=>navigate('AnotherProfile',{idUser:user.user})}>
+                        <Image source={{uri:user.photograph}} style={styles.imageUser}/>
                     </TouchableOpacity>
                 </View>
             </RectButton>

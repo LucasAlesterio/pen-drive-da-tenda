@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, Alert, Dimensions} from 'react-native';
+import { View, Alert, Dimensions, FlatList} from 'react-native';
 import { useNavigation, useScrollToTop  } from '@react-navigation/native';
 import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -24,6 +24,7 @@ export default function Search({idUser}){
     const [count,setCount] = useState(0);
     const vw = Dimensions.get('window').width;
     const vh = Dimensions.get('window').height;
+    const [refreshing,setRefreshing] = useState(false);
     //navigate('Tabs',{screen:'Search'});
     const ref = useRef(null);
     const { navigate } = useNavigation();
@@ -85,7 +86,6 @@ export default function Search({idUser}){
         }
     };
     useEffect(()=>{
-        //console.log('count:',count,' ,links:',links.length, 'page: ',page);
         searchLinks();
     },[page,type,order,pageSize])
 
@@ -93,19 +93,11 @@ export default function Search({idUser}){
         loadTypes();
     },[]);
 
-    function testEndScroll({layoutMeasurement, contentOffset, contentSize}){
-        if((layoutMeasurement.height + contentOffset.y  + 20>=
-        contentSize.height) && (!loading) && (count > links.length)){
-            setLoading(true);
-            setPage(page + 1);
-        }
-    }
-    //console.log('type');
     function setNewOrder(e){
         if(e !== order){
             setPage(0);
             setLinks([]);
-            setPageSize(nLinks * (page + 1))
+            //setPageSize(nLinks * (page + 1))
             setOrder(e);
         }
     }
@@ -113,7 +105,7 @@ export default function Search({idUser}){
         if(e !== type){
             setPage(0);
             setLinks([]);
-            setPageSize(nLinks * (page + 1));
+            //setPageSize(nLinks * (page + 1));
             setType(e);
         }
     }
@@ -124,20 +116,18 @@ export default function Search({idUser}){
         searchLinks(true);
     }
 
-    function listLinks(){
-        if(links){ 
-            return(links.map((link)=>(
-                <Link 
-                key={link._id}
-                image={link.mini}
-                id={link._id}
-                vw = {vw}
-                average={link.average} 
-                title={link.name}
-                idUser={idUser}
-                />
-            )))
+    function nextPage(){
+        if(links.length < count && !loading){
+            setLoading(true);
+            setPage(page + 1);
         }
+    }
+    function onRefresh(){
+        setRefreshing(true);
+        setPage(0);
+        setLinks([]);
+        searchLinks(true);
+        setRefreshing(false)
     }
     return(<>
         {!typeList ? <Loading/> : null}
@@ -165,19 +155,31 @@ export default function Search({idUser}){
                 items={ [['Aa-Zz',1],['Zz-Aa',2],['Mais recentes',3],['Menos recente',4],['Maior avaliação',5],['Menor avaliação',6]]}/>
                 
             </View>
-            <ScrollView 
-            //onScrollEndDrag = {(e)=>testEndScroll(e.nativeEvent)}
-            contentContainerStyle={{paddingBottom: 20}}
-            onScroll={(e)=>testEndScroll(e.nativeEvent)}
+            <FlatList 
             ref={ref}
-            >
-                <View style={styles.containerLinks}>
-                    {listLinks()}
-                    <View style={{width:'100%',alignItems:'center',paddingBottom:(vh*0.05)}}>
-                    {loading ? <MiniLoading/> : null}
-                </View>
-                </View>
-            </ScrollView>
+            columnWrapperStyle={{justifyContent: 'space-around'}}
+            numColumns={2}
+            refreshing={refreshing}
+            onRefresh={()=>onRefresh()}
+            data={links}
+            renderItem={({item})=>(
+                <Link
+                image={item.mini}
+                id={item._id}
+                vw = {vw}
+                average={item.average} 
+                title={item.name}
+                idUser={idUser}
+                />
+            )}
+            keyExtractor={item=>item._id}
+            onEndReached={()=>nextPage()}
+            ListFooterComponent={
+                loading ? 
+                <View style={{alignSelf:'center'}}><MiniLoading/></View>
+                :null
+            }
+            />
         </SafeAreaView>
         </>
     );

@@ -10,6 +10,7 @@ export default function Link(props){
     const styles = StyleSheet.create({
         button:{
             width:'40%',
+            minWidth:'40%',
             paddingVertical:5,
             backgroundColor:`${colors.cinzaClaro}20`,
             alignItems:'center',
