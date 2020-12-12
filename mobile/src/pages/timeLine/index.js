@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Alert, FlatList, View } from 'react-native';
-import { useNavigation, useScrollToTop } from '@react-navigation/native';
+import { useNavigation, useScrollToTop, useFocusEffect } from '@react-navigation/native';
 import styles from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,6 +18,10 @@ export default function TimeLine(){
     const ref = useRef(null);
     const [refreshing,setRefreshing] = useState(false);
     useScrollToTop(ref);
+
+    useFocusEffect( useCallback(()=>{
+        getData(true);
+    },[]));
 
     async function getData(flag){
         const token = await AsyncStorage.getItem('token');

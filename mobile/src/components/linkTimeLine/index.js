@@ -59,7 +59,9 @@ export default function LinkTimeLine({mini,_id,average,user,name}){
                     </View>
                     <TouchableOpacity style={styles.buttonUser} 
                     onPress={()=>navigate('AnotherProfile',{idUser:user.user})}>
-                        <Image source={{uri:user.photograph}} style={styles.imageUser}/>
+                        {user.mini ?
+                        <Image source={{uri:user.mini}} style={styles.imageUser}/>
+                        :<View style={[styles.imageUser,{backgroundColor:colors.rosa}]}/>}
                     </TouchableOpacity>
                 </View>
             </RectButton>

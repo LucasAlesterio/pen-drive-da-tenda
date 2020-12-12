@@ -1,6 +1,6 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Alert, FlatList } from 'react-native';
-import { useNavigation ,useScrollToTop} from '@react-navigation/native';
+import { useNavigation ,useScrollToTop, useFocusEffect} from '@react-navigation/native';
 import styles from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FieldSearch from '../../components/fieldSearch';
@@ -21,6 +21,10 @@ export default function Friends(){
     const [loading,setLoading] = useState(false);
     const [idUser,setIdUser] = useState('');
     useScrollToTop(ref);
+
+    useFocusEffect( useCallback(()=>{
+        searchFriend(true);
+    },[]));
 
     async function searchFriend(flag){
         console.log('search')

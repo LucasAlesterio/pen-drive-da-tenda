@@ -224,7 +224,7 @@ async listMyLinks(request,response){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
-
+        /*
         let testeUser = '';
         _user.friends.map(async (f,index)=>{
             testeUser = await User.findOne({_id:f});
@@ -234,6 +234,7 @@ async listMyLinks(request,response){
             }
         })
         await _user.save();
+        */
         if(_user.friends.indexOf(friend) !== -1){
             _user.friends.map((f,index)=>{
                 if(f === friend){
@@ -375,6 +376,15 @@ async listMyLinks(request,response){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
+        let testeUser = '';
+        _user.friends.map(async (f,index)=>{
+            testeUser = await User.findOne({_id:f});
+            if(!testeUser){
+                console.log('Não existe')
+                _user.friends.splice(index,1);
+            }
+        })
+        await _user.save();
         if(search){
             let query = [
                 {
