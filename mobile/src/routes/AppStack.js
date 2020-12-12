@@ -23,6 +23,7 @@ function AppStack(props) {
             await api.get('/refreshToken',{ headers:{Authorization:token}})
             .then(async (response)=>{
                 await AsyncStorage.setItem('token',response.data.token);
+                await AsyncStorage.setItem('user',response.data.user);
             });
             }
         }

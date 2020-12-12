@@ -82,11 +82,21 @@ export default function Login(){
             await api.post('login',{
                 email:text,
                 password:password.value
-            }).then(function(response){
+            }).then(async(response)=>{
                 if(testError(response)){
                     return null;
                 }
-                redirect(response);
+                await api.get('/refreshToken',{ headers:{Authorization:response.data.token}})
+                .then(async (response)=>{
+                    await AsyncStorage.setItem('token',response.data.token);
+                    await AsyncStorage.setItem('user',response.data.user);
+                    await AsyncStorage.setItem('mini',response.data.mini);
+                    redirect(response);
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
+                //redirect(response);
             }).catch(function(error){
                 console.log(error);
                 Alert.alert('Erro no servidor!');
@@ -96,11 +106,20 @@ export default function Login(){
             await api.post('login',{
                 user:text,
                 password:password.value
-            }).then((response)=>{
+            }).then(async (response)=>{
                 if(testError(response)){
                     return null;
                 }
-                redirect(response);
+                await api.get('/refreshToken',{ headers:{Authorization:response.data.token}})
+                .then(async (response)=>{
+                    await AsyncStorage.setItem('token',response.data.token);
+                    await AsyncStorage.setItem('user',response.data.user);
+                    redirect(response);
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
+                //redirect(response);
             }).catch((error)=>{
                 console.log(error);
                 Alert.alert('Server error');

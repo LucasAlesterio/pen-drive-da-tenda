@@ -20,29 +20,31 @@ export default function Tabs({navigation}){
     const [dataUser,setDataUser] = useState({});
 
     useEffect(()=>{
-        async function testeToken(){
-        const token = await AsyncStorage.getItem('token');
-        if(token){
-                var response = '';
-                try{
-                    response = await api.get('/refreshToken',{ headers:{Authorization:token}});
-                    setDataUser(response.data);
-                    await AsyncStorage.setItem('token',response.data.token);
-                    await AsyncStorage.setItem('user',response.data.user);
-                    if(response.data){
+        navigation.addListener('focus',()=>testeToken());
+    },[navigation])
+
+    async function testeToken(){
+    const token = await AsyncStorage.getItem('token');
+    if(token){
+            var response = '';
+            try{
+                response = await api.get('/refreshToken',{ headers:{Authorization:token}});
+                setDataUser(response.data);
+                await AsyncStorage.setItem('token',response.data.token);
+                await AsyncStorage.setItem('user',response.data.user);
+                if(response.data){
                     if(response.data.error){
                         navigate("Landing");
                     }
-                }
-                }catch{
-                    alert('Error servidor');
-                }
-            }else{
-                navigate("Landing");
             }
+            }catch{
+                alert('Error servidor');
+            }
+        }else{
+            navigate("Landing");
         }
-        testeToken();
-    },[]);
+    }
+
     return (<SafeAreaProvider style={{flex:1, backgroundColor:colors.cinzaMedio}}>
         <Navigator
         initialRouteName="Search"
@@ -84,8 +86,8 @@ export default function Tabs({navigation}){
 
         <Screen 
         name="Friends" 
-        //component={Friends}
-        children={()=><Friends idUser={dataUser.user}/>}
+        component={Friends}
+        //children={()=><Friends idUser={dataUser.user}/>}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {
@@ -132,8 +134,8 @@ export default function Tabs({navigation}){
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {
             return (
-                dataUser.photograph ? 
-                <Image source={{uri:dataUser.photograph}} 
+                dataUser.mini ? 
+                <Image source={{uri:dataUser.mini}} 
                 style={[{width:27,height:27,borderRadius:50},focused && {borderWidth:1,borderColor:colors.amarelo}]}/>
                 :<View style={[{width:27,height:27,borderRadius:50,backgroundColor:colors.rosa},focused && {borderWidth:1,borderColor:colors.amarelo}]}/>
             );

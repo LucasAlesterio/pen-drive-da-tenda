@@ -96,7 +96,7 @@ export default function Profile(){
                         }}
                         
                     >
-                        <Tab.Screen name="MyLinks" options={{ tabBarLabel: 'Meus Links' }} initialParams={{user:(user.user)}} component={MyLinks}/>
+                        <Tab.Screen name="MyLinks" options={{ tabBarLabel: 'Meus Links' }} component={MyLinks}/>
                         <Tab.Screen name="MyFavorites" options={{ tabBarLabel: 'Meus Favoritos' }} component={MyFavorites}/>
                     </Tab.Navigator>
                     :null}

@@ -10,8 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { View, Alert, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function MyLinks({route}){
-    const {user} = route.params;
+export default function MyLinks(){
     const [field, setField] = useState('');
     const vh = Dimensions.get('window').height;
     const vw = Dimensions.get('window').width;
@@ -22,6 +21,7 @@ export default function MyLinks({route}){
     const [loading,setLoading] = useState(false);
     const [count,setCount] = useState(0);
     const ref = useRef(null);
+    const [user,setUser] = useState('');
     useScrollToTop(ref);
 
     function testEndScroll({layoutMeasurement, contentOffset, contentSize}){
@@ -37,13 +37,15 @@ export default function MyLinks({route}){
         setMyLinks([]);
         setPage(0);
         if(page === 0){
-            searchMyLinks(user,true);
+            searchMyLinks(true);
         }
     }
 
-    async function searchMyLinks(user,flag){
+    async function searchMyLinks(flag){
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
+        const user = await AsyncStorage.getItem('user');
+        setUser(user);
         if(token){
             if(!field){
                 await api.post('/listMyLinks',
@@ -99,7 +101,7 @@ export default function MyLinks({route}){
     */
 
     useFocusEffect( useCallback(()=>{
-        searchMyLinks(user);
+        searchMyLinks();
     },[page,pageSize]));
 
     return(

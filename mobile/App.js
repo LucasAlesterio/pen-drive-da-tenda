@@ -43,7 +43,9 @@ async function testeToken(){
   } else {
     return (
       <>
-        <AppStack initial={initial}/>
+        <AppStack initial={
+          
+        }/>
         <StatusBar style="light"/>
       </>
     );

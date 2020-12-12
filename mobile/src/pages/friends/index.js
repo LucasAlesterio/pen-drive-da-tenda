@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import MiniLoading from '../../components/miniLoading';
 import User from '../../components/user';
 
-export default function Friends({idUser}){
+export default function Friends(){
     const [fieldSearch,setFieldSearch] = useState('');
     const [page,setPage] = useState(0);
     const [count,setCount] = useState(0);
@@ -19,12 +19,15 @@ export default function Friends({idUser}){
     const [refreshing,setRefreshing] = useState(false);
     const pageSize = 12;
     const [loading,setLoading] = useState(false);
+    const [idUser,setIdUser] = useState('');
     useScrollToTop(ref);
 
     async function searchFriend(flag){
         console.log('search')
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
+        const id = await AsyncStorage.getItem('user');
+        setIdUser(id);
         if(token){
             await api.post('/findUser',
             {search:fieldSearch,pageSize:pageSize,page:(flag ? 0 : page)},
@@ -75,7 +78,7 @@ export default function Friends({idUser}){
     }
 
     useEffect(()=>{
-        //searchFriend();
+        searchFriend();
     },[page]);
 
     return(
@@ -95,7 +98,7 @@ export default function Friends({idUser}){
             renderItem={({item})=>(
                 <User
                 user={item.user}
-                photo={item.photograph}
+                photo={item.mini}
                 isFriend={item.isFriend}
                 id={item._id}
                 idUser={idUser}
