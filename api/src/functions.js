@@ -80,7 +80,8 @@ module.exports = {
         return false;
     },
     async resizeFromURL(max,url,name){
-        const response = await axios.get(url,  { responseType: 'arraybuffer' })
+        try{
+            const response = await axios.get(url,  { responseType: 'arraybuffer' })
         const buffer = Buffer.from(response.data, "utf-8")
         //console.log(buffer);
         var dimensions = sizeOf(buffer);
@@ -94,6 +95,10 @@ module.exports = {
             //return true;
         //});
         return cloudUrl;
+        }catch(error){
+            console.log("error");
+        }
     }
+        
 
 }

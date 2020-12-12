@@ -13,7 +13,7 @@ import { useNavigation, useFocusEffect} from '@react-navigation/native';
 import { View, Image, Text, Alert, ScrollView, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-export default function Profile({idUser}){
+export default function Profile(){
     const Tab = createMaterialTopTabNavigator();
     const vw = Dimensions.get('window').width;
     const [user,setUser] = useState({});
@@ -26,6 +26,7 @@ export default function Profile({idUser}){
 
     async function loadDataUser(){
         const token = await AsyncStorage.getItem('token');
+        const idUser = await AsyncStorage.getItem('user');
         if(token){
             await api.post('/dataUser',{idUser:idUser},{headers:{Authorization:token}})
             .then((response)=>{
@@ -50,35 +51,15 @@ export default function Profile({idUser}){
             navigate('Landing');
         }
     }
-    /*
-    useEffect(()=>{
-        loadDataUser();
-    },[]);
-    */
 
     async function logOut(){
-        await AsyncStorage.setItem('token','').then(()=>{
+        await AsyncStorage.clear().then(()=>{
             navigate('Landing');
         }).catch(() => {
             Alert.alert("Erro ao deslogar! Tente novamente.")
         });
     }
 
-    /*
-    function testScrollPosition(e){
-        if((e.layoutMeasurement.height + e.contentOffset.y) >=( e.contentSize.height)){
-            //Final
-            setScrollFlag(true);
-            return true;
-        }
-        if(e.contentOffset.y == 0){
-            //Começo
-            setScrollFlag(false);
-            return false;
-        }
-        
-    }
-    */
     return(<>
         {!user.user ? <Loading/> : null }
         <SafeAreaView style={styles.container} edges={['right', 'top', 'left']}>

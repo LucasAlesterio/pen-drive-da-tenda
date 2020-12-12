@@ -15,9 +15,10 @@ import api from '../service/api';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-export default function Tabs(){
+export default function Tabs({navigation}){
     const { navigate } = useNavigation();
     const [dataUser,setDataUser] = useState({});
+
     useEffect(()=>{
         async function testeToken(){
         const token = await AsyncStorage.getItem('token');
@@ -26,7 +27,8 @@ export default function Tabs(){
                 try{
                     response = await api.get('/refreshToken',{ headers:{Authorization:token}});
                     setDataUser(response.data);
-                    AsyncStorage.setItem('token',response.data.token);
+                    await AsyncStorage.setItem('token',response.data.token);
+                    await AsyncStorage.setItem('user',response.data.user);
                     if(response.data){
                     if(response.data.error){
                         navigate("Landing");
@@ -109,7 +111,8 @@ export default function Tabs(){
 
         <Screen 
         name="Search" 
-        children={()=><Search idUser={dataUser.user}/>}
+        //children={()=><Search idUser={dataUser.user}/>}
+        component={Search}
         //initialParams={{idUser:dataUser.user}}
         options={{
             tabBarLabel: '',
@@ -123,7 +126,8 @@ export default function Tabs(){
 
         <Screen 
         name="Profile" 
-        children={()=><Profile idUser={dataUser.user}/>}
+        //children={()=><Profile idUser={dataUser.user}/>}
+        component={Profile}
         options={{
             tabBarLabel: '',
             tabBarIcon: ({ color, size, focused }) => {

@@ -22,6 +22,7 @@ export default function Friends({idUser}){
     useScrollToTop(ref);
 
     async function searchFriend(flag){
+        console.log('search')
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
         if(token){
@@ -58,11 +59,14 @@ export default function Friends({idUser}){
         searchFriend(true);
     }
     function nextPage(){
+        console.log('nextPage')
+        console.log(count)
         if(friends.length < count && !loading){
             setPage(page + 1);
         }
     }
     function onRefresh(){
+        console.log('onRefresh')
         setRefreshing(true);
         setPage(0);
         setFriends([]);
@@ -71,7 +75,7 @@ export default function Friends({idUser}){
     }
 
     useEffect(()=>{
-        searchFriend();
+        //searchFriend();
     },[page]);
 
     return(

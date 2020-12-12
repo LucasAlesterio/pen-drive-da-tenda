@@ -27,10 +27,11 @@ export default function Friends(){
             const response = await api.post('/findUser',
             {search:text,pageSize:pageSize,page:page},
             {headers:{Authorization:localStorage.getItem('token')}});
+            console.log(response.data.count)
             setCount(response.data.count);
             setListagem(response.data.friends.map((amigo)=>(
                 <Usuario key={amigo.user} user={amigo.user} 
-                photo={amigo.photograph} button={true} isFriend={amigo.isFriend} 
+                photo={amigo.mini} button={true} isFriend={amigo.isFriend} 
                 id={amigo._id} refresh={()=>buscarAmigos()}/>
             )));
             setLoading(false);

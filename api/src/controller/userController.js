@@ -1,12 +1,54 @@
 const User = require('../models/users');
-const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage,deleteImage,deleteOldImage} = require('../functions');
+const {createToken, verifyToken,decodeBase64Image,deleteFile,uploadImage,deleteImage,deleteOldImage,resizeFromURL} = require('../functions');
 const Link = require('../models/links');
 const { v4: uuidv4 } = require('uuid');
 var fs = require("fs");
 
 module.exports = {
-    async default(request,response){
-        return response.send('Ola');
+    async resizeImageFromURL(request,response){
+        try{
+            let urlResized = '';
+            const users = await User.find();
+            if(users[0].name){
+                async function teste(user,index){
+                    if(!user.mini && user.photograph){
+                        console.log('users atualizados: ',index);
+                        //console.log(user.photograph);
+                        if(user.idImg){
+                            urlResized = await resizeFromURL(200,user.photograph,`mini${user.idImg}.png`);
+                        }else{
+                            urlResized = await resizeFromURL(200,user.photograph,`mini${user.user}.png`);
+                        }
+                        console.log(urlResized);
+                        if(urlResized){
+                            if(user.idImg){
+                                await User.findOneAndUpdate({_id:user._id},
+                                    {mini:`https://storage.googleapis.com/twm-images/mini${user.idImg}.png`}, 
+                                    {upsert: true},
+                                    function(err, doc) {
+                                        if (err) return response.json({error:true,message:err});
+                                    });
+                            }else{
+                                await User.findOneAndUpdate({_id:user._id},
+                                    {mini:`https://storage.googleapis.com/twm-images/mini${user.user}.png`}, 
+                                    {upsert: true},
+                                    function(err, doc) {
+                                        if (err) return response.json({error:true,message:err});
+                                    });
+                            }
+                            }
+                        }
+                }
+                
+                users.map((user,index)=>{
+                        teste(user,index);
+                    });
+                return response.send('users atualizados!');
+                    
+            }
+        }catch(error){
+            console.log(error);
+        }
     },
     async addUser(request,response){
         try{
@@ -22,6 +64,8 @@ module.exports = {
             err.error = true;
             err.email = true;
         }
+        var resized = '';
+        var mini = '';
         if(!_user && !_email){
             if(photograph){
                 const url = await uploadImage(user,photograph);
@@ -32,8 +76,12 @@ module.exports = {
                     return response.json(err);
                 }
                 photograph = `https://storage.googleapis.com/twm-images/${user}`;
+                resized = await resizeFromURL(200,photograph,`mini${user}.png`);
+                if(resized){
+                    mini = `https://storage.googleapis.com/twm-images/mini${user}.png`;
+                }
             }
-            _user = await User.create({name,email,password,user,photograph});
+            _user = await User.create({name,email,password,user,photograph,mini});
             var token = createToken(_user.id);
             return response.json({token:token});
         }else{
@@ -99,11 +147,11 @@ module.exports = {
         if(!_user){
             return response.json({error:true,empty:true});
         }
-        const {id,name,email,user,photograph,friends,favorites,links} = _user;
+        const {id,name,email,user,photograph,friends,favorites,links,mini} = _user;
         const myProfile = await User.findOne({_id:_id});
         if(idUser == myProfile.user){
 
-            return response.json({id,name,email,user,photograph,friends,me:true});
+            return response.json({mini,id,name,email,user,photograph,friends,me:true});
     }else{
         var flag = false;
         const _userLink = await User.findOne({user:idUser});
@@ -112,7 +160,7 @@ module.exports = {
         }else{
             flag = false;
         }
-        return response.json({id,name,email,user,photograph,friends,me:false,isFriend:flag});
+        return response.json({mini,id,name,email,user,photograph,friends,me:false,isFriend:flag});
     }
 }catch(error){
     console.log(error);
@@ -176,6 +224,16 @@ async listMyLinks(request,response){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:_id});
+
+        let testeUser = '';
+        _user.friends.map(async (f,index)=>{
+            testeUser = await User.findOne({_id:f});
+            if(!testeUser){
+                console.log('Não existe')
+                _user.friends.splice(index,1);
+            }
+        })
+        await _user.save();
         if(_user.friends.indexOf(friend) !== -1){
             _user.friends.map((f,index)=>{
                 if(f === friend){
@@ -227,7 +285,6 @@ async listMyLinks(request,response){
                 return response.json({error:true,token:true});
             }
             const myData = await User.findOne({_id:_id});
-            console.log(myData)
             if(data.user){
                 if(data.user != myData.user){
                     const testeUser = await User.findOne({user:data.user});
@@ -239,26 +296,38 @@ async listMyLinks(request,response){
                 }
             }
             if(data.photograph){
-                
+                var resized = '';
                 if(data.photograph != myData.photograph){
-                    console.log('Tem foto')
                     var idGerado = uuidv4();
                 
                     if(myData.photograph == `https://storage.googleapis.com/twm-images/${myData.user}`){
-                        
-                    await deleteImage(myData.user);
-                    }else{console.log('Tem foto')
+                        await deleteImage(myData.user);
+                        if(myData.mini){
+                            await deleteImage(`mini${myData.user}.png`);
+                        }
+                    }else{
                         if(myData.photograph){
-                            deleteImage(myData.idImg);
+                            if(myData.photograph == `https://storage.googleapis.com/twm-images/${myData.idImg}.png`){
+                                await deleteImage(`${myData.idImg}.png`);
+                            }else{
+                                await deleteImage(myData.idImg);
+                            }
+                            if(myData.mini){
+                                await deleteImage(`mini${myData.idImg}.png`)
+                            }
                         }
                     }
-                
+                    
                 const url = await uploadImage(String(idGerado),data.photograph);
                 if(!url){
                     err.error = true;
                     err.photo = true;
                 }
                 data.photograph = `https://storage.googleapis.com/twm-images/${idGerado}`;
+                resized = await resizeFromURL(200,data.photograph,`mini${idGerado}.png`);
+                if(resized){
+                    data.mini = `https://storage.googleapis.com/twm-images/mini${idGerado}.png`;
+                }
                 data.idImg = idGerado;
             }}
         await User.findOneAndUpdate({_id:_id},data, {upsert: true}, function(err, doc) {
@@ -282,7 +351,7 @@ async listMyLinks(request,response){
             return response.json({error:true,token:true});
         }
         const _user = await User.findOne({_id:id});
-        const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).skip(page*pageSize).limit(pageSize).exec();
+        const list = await User.find().select(['user','name','mini']).where('_id').in(_user.friends).skip(page*pageSize).limit(pageSize).exec();
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
         count = _user.friends.length;
@@ -319,7 +388,7 @@ async listMyLinks(request,response){
                     }
                 }, {
                     '$project': { 
-                        'photograph': 1, 
+                        'mini': 1, 
                         '_id': 1, 
                         'user': 1,
                         'friends':1
@@ -342,7 +411,7 @@ async listMyLinks(request,response){
             }
             return response.json({friends:b,count:0});
         }
-        const list = await User.find().select(['user','name','photograph']).where('_id').in(_user.friends).skip(page*pageSize).limit(pageSize).exec();
+        const list = await User.find().select(['user','name','mini']).where('_id').in(_user.friends).skip(page*pageSize).limit(pageSize).exec();
         const a = JSON.stringify(list);
         var b = JSON.parse(a);
         count = _user.friends.length;
@@ -364,7 +433,7 @@ async listMyLinks(request,response){
         }
         const token = createToken(id);
         const _user = await User.findOne({_id:id});
-        return response.json({user:_user.user,photograph:_user.photograph,id:_user._id,token});
+        return response.json({user:_user.user,mini:_user.mini,id:_user._id,token});
         }catch(error){
             console.log(error);
             return response.status(500).send('Server error');
@@ -380,9 +449,15 @@ async listMyLinks(request,response){
         const _user = await User.findOne({_id:id});
         if(_user.photograph === `https://storage.googleapis.com/twm-images/${_user.user}`){
             deleteImage(_user.user);
+            if(_user.mini){
+                deleteImage(`mini${_user.user}.png`);
+            }
         }else{
             if(_user.photograph){
                 deleteImage(_user.idImg);
+                if(_user.mini){
+                    deleteImage(`mini${_user.idImg}.png`);
+                }
             }
         }
         await User.findByIdAndDelete({_id:id});

@@ -170,7 +170,7 @@ export default function LinkProfile(){
                     </div>
                     
                     <Link to={`/profile/${user.user}`} className="usuario">
-                            {user.photograph ? <img className="fotoUser" src={user.photograph} alt="foto usuario"/>:<div className="fotoNull"/>}
+                            {user.mini ? <img className="fotoUser" src={user.mini} alt="foto usuario"/>:<div className="fotoNull"/>}
                             <h3>{user.user}</h3>
                     </Link>
                 </div>

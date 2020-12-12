@@ -11,7 +11,7 @@ import Select from '../../components/Select';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MiniLoading from '../../components/miniLoading';
 
-export default function Search({idUser}){
+export default function Search(){
     const [fieldSearch,setFieldSearch] = useState('');
     const [loading,setLoading] = useState(false);
     const [order,setOrder] = useState(3);
@@ -25,6 +25,7 @@ export default function Search({idUser}){
     const vw = Dimensions.get('window').width;
     const vh = Dimensions.get('window').height;
     const [refreshing,setRefreshing] = useState(false);
+    const [idUser,setIdUser] = useState('');
     //navigate('Tabs',{screen:'Search'});
     const ref = useRef(null);
     const { navigate } = useNavigation();
@@ -32,6 +33,8 @@ export default function Search({idUser}){
     
     async function loadTypes(){
         try{
+            const id = await AsyncStorage.getItem('user');
+            setIdUser(id);
             const token = await AsyncStorage.getItem('token');
             const response = await api.get('/types',{headers:{Authorization:token}});
             if(response.data){

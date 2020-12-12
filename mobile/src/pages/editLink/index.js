@@ -49,7 +49,6 @@ export default function EditLink({route}){
     }
     
     function setNewType(e){
-        console.log('Tipo:',e);
         if(e !== type){
             setType({value:e,error:false,textError:''});
         }
@@ -130,7 +129,6 @@ export default function EditLink({route}){
             });
         }
     }
-    console.log('Tipo selecionado: ',type.value);
     return(
         <SafeAreaView style={styles.container} edges={['right','left','top']}>
             {name ?

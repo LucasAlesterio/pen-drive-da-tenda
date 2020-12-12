@@ -78,7 +78,6 @@ export default function Login(){
             }
             text += letra;
         })
-        //console.log(a);
         if(isEmail){
             await api.post('login',{
                 email:text,

@@ -9,6 +9,7 @@ const usersSchema = new mongoose.Schema({
     friends:[String],
     favorites:[String],
     links:[String],
-    idImg:String
+    idImg:String,
+    mini:String
 });
 module.exports = mongoose.model('User',usersSchema);

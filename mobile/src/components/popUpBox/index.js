@@ -40,8 +40,6 @@ export default function PopUpBox({open,onClose,title,children}){
             justifyContent:'center',
         }
     });
-
-    console.log(open)
     return(
         <PopUp open={open} onClose={()=>onClose(false)}>
             <View style={styles.container}>

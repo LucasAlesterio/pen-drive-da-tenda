@@ -140,7 +140,7 @@ module.exports = {
             b['isFavorite'] = false;
         }
         const userLink = await User.findOne({_id:link.user});
-        return response.json({link:b,user:{id:userLink._id,photograph:userLink.photograph,user:userLink.user}});
+        return response.json({link:b,user:{id:userLink._id,mini:userLink.mini,user:userLink.user}});
     }catch(error){
         console.log(error);
         return response.status(500).send('Server error');
@@ -456,7 +456,7 @@ module.exports = {
         var idusers = links.map((link)=>{
             return link.user;
         });
-        var usuario = await User.find().select(['user','photograph','name']).where('_id').in(idusers);
+        var usuario = await User.find().select(['user','mini','name']).where('_id').in(idusers);
         const resp = links.map((link)=>{
             usuario.map((us)=>{
                 if(link.user == us._id){

@@ -31,7 +31,6 @@ export default function InputImageUser(props){
         if (!data.uri) {
             return;
         }
-        //console.log(data);
         setImage(data);
         props.setImg(`data:image/jpeg;base64,${data.base64}`);
     }

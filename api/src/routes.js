@@ -3,7 +3,6 @@ const userController = require('./controller/userController');
 const linkController = require('./controller/linkController');
 
 const routes = express.Router();
-routes.get('/',userController.default);
 routes.post('/addUser',userController.addUser);
 routes.post('/login',userController.login);
 routes.post('/dataUser',userController.dataUser);
@@ -16,8 +15,8 @@ routes.get('/refreshToken',userController.refreshToken);
 routes.post('/listMyLinks',userController.listMyLinks);
 routes.post('/listMyFavorites',userController.listMyFavorites);
 routes.get('/deleteUser',userController.deleteUser);
+routes.get('/resize',userController.resizeImageFromURL);
 
-//routes.get('/resize',linkController.resizeImageFromURL);
 routes.post('/addLink',linkController.addLink);
 routes.post('/deleteLink',linkController.deleteLink);
 routes.post('/dataLink',linkController.dataLink);

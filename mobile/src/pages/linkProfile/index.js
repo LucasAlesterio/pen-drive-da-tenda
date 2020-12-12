@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Image, Text, ScrollView, Alert, TouchableOpacity, Clipboard, Linking, Share} from 'react-native';
+import { View, Image, Text, ScrollView, Alert, TouchableOpacity, Clipboard, Linking, Share, Dimensions} from 'react-native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation, useFocusEffect} from '@react-navigation/native';
@@ -17,6 +17,7 @@ import Tags from '../../components/tags';
 import PopRating from '../../components/popRating';
 
 export default function LinkProfile({route}){
+    const vw = Dimensions.get('window').width;
     const [link,setLink] = useState('');
     const [user,setUser] = useState('');
     const [tags,setTags] = useState([]);
@@ -149,7 +150,7 @@ export default function LinkProfile({route}){
             />
             
             <ScrollView 
-            contentContainerStyle={{width:'100%'}}
+            contentContainerStyle={{width:vw}}
             showsVerticalScrollIndicator={false} 
             scrollEventThrottle={16}>
                 {!link.isMy ? <> 
