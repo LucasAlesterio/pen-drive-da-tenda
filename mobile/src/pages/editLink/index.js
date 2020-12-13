@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './styles';
 import api from '../../service/api';
 import colors from '../../global.json';
@@ -25,7 +25,6 @@ export default function EditLink({route}){
     const [description,setDescription] = useState(route.params.description);
     const [type,setType] = useState({value:route.params.type,error:false,textError:''});
     const [tags,setTags] = useState(route.params.tags);
-    const [list,setList] = useState();
     const [loading,setLoading] = useState(false);
     const [fieldTag,setFieldTag] = useState('');
     const { navigate } = useNavigation();
@@ -58,24 +57,22 @@ export default function EditLink({route}){
         loadTypes();
     },[]);
     
-    function addTag(){
+
+    async function addTag(){
         if(tags.indexOf(fieldTag) === -1 && fieldTag !== ""){
             setTags(tags.concat(fieldTag));
-            setList(<Tags edit tags={tags.concat(fieldTag)} onDelete={(tag)=>deleteTag(tag)}/>);
+            setFieldTag('');
         }
-        setFieldTag('');
-    }
+    };
 
     function deleteTag(tag){
-        let listTags = tags;
-        listTags.forEach((t,i)=>{
-            if(t === tag){
-                listTags.splice(i,1);
-                return null;
+        let bufferTag = [];
+        tags.forEach((t,i)=>{
+            if(t !== tag){
+                bufferTag.push(tags[i]);
             }
-        });
-        setTags(listTags);
-        setList(<Tags edit tags={tags} onDelete={(tag)=>deleteTag(tag)}/>);
+        })
+        setTags(bufferTag);
     }
 
     function jsonTags(){
@@ -183,12 +180,12 @@ export default function EditLink({route}){
                             style={styles.tagText} 
                             placeholder="Tags"
                             placeholderTextColor={colors.cinzaClaro+60}
-                            onSubmitEditing={()=>addTag()}
+                            onSubmitEditing={addTag}
                             onChangeText={(text)=>setFieldTag(text)}
                             value={fieldTag}/>
                             <RectButton onPress={()=>addTag()}><Feather name="plus-circle" size={30} color="#C2C2C2" /></RectButton>
                         </View>
-                        {list ||<Tags tags={tags} edit onDelete={(tag)=>deleteTag(tag)}/>}
+                        {<Tags tags={tags} edit onDelete={(tag)=>deleteTag(tag)}/>}
 
                     </View>
                     <Button onPress={()=>update()} style={{marginTop: 20,marginBottom:40}} title="Atualizar"/>

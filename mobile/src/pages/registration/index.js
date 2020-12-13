@@ -104,8 +104,8 @@ export default function Registration(){
         {loading ? <Loading/> : null }
         <SafeAreaView style={styles.container}>
         <View style={{width:'100%'}}><GoBack/></View>
-        <KeyboardAvoidingView style={{width:vw, height:vh}} behavior="padding" >
-            <ScrollView contentContainerStyle={styles.container} bounces={false}>
+        <KeyboardAvoidingView behavior="padding" >
+            <ScrollView contentContainerStyle={[styles.container,{width:vw}]} bounces={false}>
                 <InputImageUser setImg={setPhoto}/>
                 <View style={styles.form}>
                     <FieldText
