@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { View, Alert} from 'react-native';
+import { View, Alert, KeyboardAvoidingView, Dimensions } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import FieldText from '../../components/fieldText';
@@ -17,6 +17,8 @@ export default function Login(){
     const [password,setPassword] = useState({value:'',error:false,textError:''});
     const [loading, setLoading] = useState(false);
     const { navigate} = useNavigation();
+    const vw = Dimensions.get('window').width;
+    const vh = Dimensions.get('window').height;
 
     async function saveToken(token){
         try{
@@ -132,39 +134,41 @@ export default function Login(){
     <>
         {loading ? <Loading/> : null}
         <SafeAreaView style={styles.container}>
-        <View style={{width:'100%'}}><GoBack/></View>
-        <View style={styles.container}>
-            <View style={styles.form}>
-                <FieldText
-                value={email.value}
-                placeholder="Email ou usuário"
-                setText={(text)=>setEmail({value:text,error:false,textError:''})}
-                error = {email.error}
-                textError={email.textError}
-                onSubmit={()=>logar()}
-                >
-                    <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
+            <View style={{width:'100%', marginTop:40, position:'absolute', top:0}}><GoBack/></View>
+            <KeyboardAvoidingView style={{width:vw}} behavior="position">
+                <View>
+                    <View style={styles.form}>
+                        <FieldText
+                        value={email.value}
+                        placeholder="Email ou usuário"
+                        setText={(text)=>setEmail({value:text,error:false,textError:''})}
+                        error = {email.error}
+                        textError={email.textError}
+                        onSubmit={()=>logar()}
+                        >
+                            <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
 
-                <FieldText
-                value={password.value}
-                placeholder="Senha"
-                setText={(text)=>setPassword({value:text,error:false,textError:''})}
-                password
-                error = {password.error}
-                textError={password.textError}
-                onSubmit={()=>logar()}
-                >
-                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
+                        <FieldText
+                        value={password.value}
+                        placeholder="Senha"
+                        setText={(text)=>setPassword({value:text,error:false,textError:''})}
+                        password
+                        error = {password.error}
+                        textError={password.textError}
+                        onSubmit={()=>logar()}
+                        >
+                            <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
 
-                <Button
-                style={{width:150}}
-                onPress={()=>logar()}
-                title='Logar'
-                />
-            </View>
-        </View>
+                        <Button
+                        style={{width:150}}
+                        onPress={()=>logar()}
+                        title='Logar'
+                        />
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
         </SafeAreaView>
         </>
     );

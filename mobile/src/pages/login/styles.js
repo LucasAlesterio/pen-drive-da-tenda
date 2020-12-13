@@ -4,10 +4,10 @@ const styles = StyleSheet.create({
         backgroundColor:'#151515',
         flex:1,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
     },
     form:{
-        height:'30%',
+        height:225,
         width:'100%',
         justifyContent:'space-around',
         alignItems:'center'

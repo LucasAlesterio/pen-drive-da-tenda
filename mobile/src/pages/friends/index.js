@@ -27,7 +27,6 @@ export default function Friends(){
     },[]));
 
     async function searchFriend(flag){
-        console.log('search')
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
         const id = await AsyncStorage.getItem('user');
@@ -66,14 +65,11 @@ export default function Friends(){
         searchFriend(true);
     }
     function nextPage(){
-        console.log('nextPage')
-        console.log(count)
         if(friends.length < count && !loading){
             setPage(page + 1);
         }
     }
     function onRefresh(){
-        console.log('onRefresh')
         setRefreshing(true);
         setPage(0);
         setFriends([]);

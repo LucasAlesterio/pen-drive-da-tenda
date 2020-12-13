@@ -5,8 +5,6 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor:colors.cinzaMedio,
         alignItems:'center',
-        paddingTop:'10%',
-        height:1000
     },
     form:{
         marginTop:30,
@@ -17,7 +15,7 @@ const styles = StyleSheet.create({
         paddingVertical:10
     },
     button:{
-        marginTop:20,
+        marginVertical:20,
         width:180
     },
     text:{

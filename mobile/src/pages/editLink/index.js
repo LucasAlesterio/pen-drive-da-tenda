@@ -8,7 +8,7 @@ import Button from '../../components/button';
 import GoBack from '../../components/goBack';
 import FieldText from '../../components/fieldText';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
@@ -134,64 +134,66 @@ export default function EditLink({route}){
             {name ?
             <>
             {loading ? <Loading/>:null}
-            <ScrollView contentContainerStyle={{alignItems:'center'}}>
-                <View style={{width:'100%',alignItems:'flex-start'}}><GoBack/></View>
-                <Text style={styles.text}>Edição de Link</Text>
-                <InputImageLink setImg={(img)=>setPhoto(img)} value={photo} />
-                <View style={styles.infos}>
-                    <FieldText
-                    value={name.value}
-                    placeholder="Nome"
-                    setText={(text)=>setName({value:text,error:false,textError:''})}
-                    error = {name.error}
-                    textError={name.textError}
-                    />
-                    <FieldText
-                    value={link.value}
-                    placeholder="Link"
-                    setText={(text)=>setLink({value:text,error:false,textError:''})}
-                    error = {link.error}
-                    textError={link.textError}
-                    />
-                    <View style={{width:'90%'}}>
-                        <Select
-                        type
-                        setValue={(v)=>setNewType(v)}
-                        value={type.value}
-                        placeholder="Tipo"
-                        error={type.error}
-                        textError={type.textError}
-                        valueDefault={null}
-                        items={(typeList) || []}/>
+            <KeyboardAvoidingView behavior="padding">
+                <ScrollView contentContainerStyle={{alignItems:'center'}}>
+                    <View style={{width:'100%',alignItems:'flex-start'}}><GoBack/></View>
+                    <Text style={styles.text}>Edição de Link</Text>
+                    <InputImageLink setImg={(img)=>setPhoto(img)} value={photo} />
+                    <View style={styles.infos}>
+                        <FieldText
+                        value={name.value}
+                        placeholder="Nome"
+                        setText={(text)=>setName({value:text,error:false,textError:''})}
+                        error = {name.error}
+                        textError={name.textError}
+                        />
+                        <FieldText
+                        value={link.value}
+                        placeholder="Link"
+                        setText={(text)=>setLink({value:text,error:false,textError:''})}
+                        error = {link.error}
+                        textError={link.textError}
+                        />
+                        <View style={{width:'90%'}}>
+                            <Select
+                            type
+                            setValue={(v)=>setNewType(v)}
+                            value={type.value}
+                            placeholder="Tipo"
+                            error={type.error}
+                            textError={type.textError}
+                            valueDefault={null}
+                            items={(typeList) || []}/>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.box}>
-                    <TextInput
-                    style={styles.description}
-                    placeholder="Descrição"
-                    placeholderTextColor = {colors.cinzaClaro+60}
-                    multiline={true}
-                    numberOfLines={6}
-                    onChangeText={(text)=>setDescription(text)}
-                    value={description}
-                    />
-                </View>
-                <View style={[styles.box,{height:'auto'}]}>
-                    <View style={styles.tag}>
-                        <TextInput 
-                        style={styles.tagText} 
-                        placeholder="Tags"
-                        placeholderTextColor={colors.cinzaClaro+60}
-                        onSubmitEditing={()=>addTag()}
-                        onChangeText={(text)=>setFieldTag(text)}
-                        value={fieldTag}/>
-                        <RectButton onPress={()=>addTag()}><Feather name="plus-circle" size={30} color="#C2C2C2" /></RectButton>
+                    <View style={styles.box}>
+                        <TextInput
+                        style={styles.description}
+                        placeholder="Descrição"
+                        placeholderTextColor = {colors.cinzaClaro+60}
+                        multiline={true}
+                        numberOfLines={6}
+                        onChangeText={(text)=>setDescription(text)}
+                        value={description}
+                        />
                     </View>
-                    {list ||<Tags tags={tags} edit onDelete={(tag)=>deleteTag(tag)}/>}
+                    <View style={[styles.box,{height:'auto'}]}>
+                        <View style={styles.tag}>
+                            <TextInput 
+                            style={styles.tagText} 
+                            placeholder="Tags"
+                            placeholderTextColor={colors.cinzaClaro+60}
+                            onSubmitEditing={()=>addTag()}
+                            onChangeText={(text)=>setFieldTag(text)}
+                            value={fieldTag}/>
+                            <RectButton onPress={()=>addTag()}><Feather name="plus-circle" size={30} color="#C2C2C2" /></RectButton>
+                        </View>
+                        {list ||<Tags tags={tags} edit onDelete={(tag)=>deleteTag(tag)}/>}
 
-                </View>
-                <Button onPress={()=>update()} style={{marginTop: 20,marginBottom:40}} title="Atualizar"/>
-            </ScrollView>
+                    </View>
+                    <Button onPress={()=>update()} style={{marginTop: 20,marginBottom:40}} title="Atualizar"/>
+                </ScrollView>
+            </KeyboardAvoidingView>
             </>
             :<Loading/>}
         </SafeAreaView>

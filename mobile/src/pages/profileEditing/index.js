@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import {View, Alert, Text} from 'react-native';
+import {View, Alert, Text, KeyboardAvoidingView, Dimensions, ScrollView} from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import FieldText from '../../components/fieldText';
@@ -25,6 +25,8 @@ export default function ProfileEditing({route}){
     const [loading,setLoading] = useState(false);
     const [open,setOpen] = useState(false);
     const { goBack, navigate } = useNavigation();
+    const vw = Dimensions.get('window').width
+    const vh = Dimensions.get('window').height
 
     async function updateData(){
         const token = await AsyncStorage.getItem('token');
@@ -106,77 +108,80 @@ export default function ProfileEditing({route}){
         
     }
     return(<>
-        <SafeAreaView style={styles.container} >
-        {loading ? <Loading/> : null }
-        <View style={{width:'100%', paddingBottom:40}}><GoBack/></View>
-        
-            <InputImageUser setImg={setPhoto} value={photo}/>
-            <View style={styles.form}>
-                <FieldText
-                style={styles.input}
-                value={name.value}
-                placeholder="Nome"
-                setText={(text)=>setName({value:text,error:false,textError:''})}
-                error = {name.error}
-                textError={name.textError}
-                >
-                    <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
+        <SafeAreaView contentContainerStyle={{alignItems:'center'}} style={styles.container} >
+            {loading ? <Loading/> : null }
+            <View style={{width:'100%', position:'relative',top:0,paddingBottom:30}}><GoBack/></View>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
+                <ScrollView contentContainerStyle={{alignItems:'center'}} style={{width:vw}} bounces={false}>
+                    <InputImageUser setImg={setPhoto} value={photo}/>
+                    <View style={styles.form}>
+                        <FieldText
+                        style={styles.input}
+                        value={name.value}
+                        placeholder="Nome"
+                        setText={(text)=>setName({value:text,error:false,textError:''})}
+                        error = {name.error}
+                        textError={name.textError}
+                        >
+                            <Feather name="user" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
 
-                <FieldText
-                style={styles.input}
-                value={user.value}
-                placeholder="Usuário"
-                setText={(text)=>setUser({value:text,error:false,textError:''})}
-                error = {user.error}
-                textError={user.textError}
-                >
-                    <Feather name="at-sign" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
+                        <FieldText
+                        style={styles.input}
+                        value={user.value}
+                        placeholder="Usuário"
+                        setText={(text)=>setUser({value:text,error:false,textError:''})}
+                        error = {user.error}
+                        textError={user.textError}
+                        >
+                            <Feather name="at-sign" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
 
-                <RectButton onPress={()=>setOpen(!open)}><Text style={styles.text}>Alterar minha senha</Text></RectButton>
+                        <RectButton onPress={()=>setOpen(!open)}><Text style={styles.text}>Alterar minha senha</Text></RectButton>
 
-                {open ?
-                <>
-                <FieldText
-                style={styles.input}
-                value={oldPassword.value}
-                placeholder="Senha"
-                setText={(text)=>setPassword({value:text,error:false,textError:''})}
-                password
-                error = {oldPassword.error}
-                textError={oldPassword.textError}
-                >
-                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
+                        {open ?
+                        <>
+                        <FieldText
+                        style={styles.input}
+                        value={oldPassword.value}
+                        placeholder="Senha"
+                        setText={(text)=>setPassword({value:text,error:false,textError:''})}
+                        password
+                        error = {oldPassword.error}
+                        textError={oldPassword.textError}
+                        >
+                            <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
 
-                <FieldText
-                style={styles.input}
-                value={password.value}
-                placeholder="Nova senha"
-                setText={(text)=>setPassword({value:text,error:false,textError:''})}
-                password
-                error = {password.error}
-                textError={password.textError}
-                >
-                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
+                        <FieldText
+                        style={styles.input}
+                        value={password.value}
+                        placeholder="Nova senha"
+                        setText={(text)=>setPassword({value:text,error:false,textError:''})}
+                        password
+                        error = {password.error}
+                        textError={password.textError}
+                        >
+                            <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
 
-                <FieldText
-                style={styles.input}
-                value={confirmPass.value}
-                placeholder="Confirme sua senha"
-                setText={(text)=>setConfirmPass({value:text,error:false,textError:''})}
-                password
-                error = {confirmPass.error}
-                textError={confirmPass.textError}
-                >
-                    <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
-                </FieldText>
-                </>
-                :null}
-                </View>
-                <Button style={styles.button}title="Concluir" onPress={()=>updateData()}/>
+                        <FieldText
+                        style={styles.input}
+                        value={confirmPass.value}
+                        placeholder="Confirme sua senha"
+                        setText={(text)=>setConfirmPass({value:text,error:false,textError:''})}
+                        password
+                        error = {confirmPass.error}
+                        textError={confirmPass.textError}
+                        >
+                            <Feather name="key" size={20} color={`${colors.cinzaMedio}70`}/>
+                        </FieldText>
+                        </>
+                        :null}
+                    </View>
+                    <Button style={styles.button}title="Concluir" onPress={()=>updateData()}/>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
         </>
     );

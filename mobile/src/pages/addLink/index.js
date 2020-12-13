@@ -7,7 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import Button from '../../components/button';
 import FieldText from '../../components/fieldText';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
@@ -133,65 +133,67 @@ export default function AddLink(){
     return(
         <SafeAreaView style={styles.container} edges={['right','left','top']}>
             {loading ? <Loading/> :null}
-            <ScrollView contentContainerStyle={{alignItems:'center'}}>
-                <Text style={styles.text}>Cadastro de Link</Text>
-                <InputImageLink setImg={(img)=>setPhoto(img)}/>
-                <View style={styles.infos}>
-                    <FieldText
-                    value={name.value}
-                    placeholder="Nome"
-                    setText={(text)=>setName({value:text,error:false,textError:''})}
-                    error = {name.error}
-                    textError={name.textError}
-                    />
-                    <FieldText
-                    value={link.value}
-                    placeholder="Link"
-                    setText={(text)=>setLink({value:text,error:false,textError:''})}
-                    error = {link.error}
-                    textError={link.textError}
-                    />
-                    <View style={{width:'90%'}}>
-                        <Select
-                        type
-                        setValue={(v)=>setNewType(v)}
-                        value={type.value}
-                        placeholder="Tipo"
-                        valueDefault={null}
-                        items={(typeList) || []}
-                        error={type.error}
-                        textError={type.textError}
+            <KeyboardAvoidingView behavior="padding">
+                <ScrollView contentContainerStyle={{alignItems:'center'}}>
+                    <Text style={styles.text}>Cadastro de Link</Text>
+                    <InputImageLink setImg={(img)=>setPhoto(img)}/>
+                    <View style={styles.infos}>
+                        <FieldText
+                        value={name.value}
+                        placeholder="Nome"
+                        setText={(text)=>setName({value:text,error:false,textError:''})}
+                        error = {name.error}
+                        textError={name.textError}
                         />
+                        <FieldText
+                        value={link.value}
+                        placeholder="Link"
+                        setText={(text)=>setLink({value:text,error:false,textError:''})}
+                        error = {link.error}
+                        textError={link.textError}
+                        />
+                        <View style={{width:'90%'}}>
+                            <Select
+                            type
+                            setValue={(v)=>setNewType(v)}
+                            value={type.value}
+                            placeholder="Tipo"
+                            valueDefault={null}
+                            items={(typeList) || []}
+                            error={type.error}
+                            textError={type.textError}
+                            />
+                        </View>
                     </View>
-                </View>
-                <View style={styles.box}>
-                    <TextInput
-                    style={styles.description}
-                    placeholder="Descrição"
-                    placeholderTextColor = {colors.cinzaClaro+60}
-                    multiline={true}
-                    value={description}
-                    onChangeText={(text)=>setDescription(text)}
-                    numberOfLines={6}/>
-                </View>
-                <View style={[styles.box,{height:'auto'}]}>
-                    <View style={styles.tag}>
+                    <View style={styles.box}>
                         <TextInput
-                        style={styles.tagText}
-                        placeholder="Tags"
-                        placeholderTextColor={colors.cinzaClaro+60}
-                        onSubmitEditing={()=>addTag()}
-                        onChangeText={(text)=>setFieldTag(text)}
-                        value={fieldTag}
-                        />
-                        <RectButton onPress={()=>addTag()}>
-                            <Feather name="plus-circle" size={30} color="#C2C2C2" />
-                        </RectButton>
+                        style={styles.description}
+                        placeholder="Descrição"
+                        placeholderTextColor = {colors.cinzaClaro+60}
+                        multiline={true}
+                        value={description}
+                        onChangeText={(text)=>setDescription(text)}
+                        numberOfLines={6}/>
                     </View>
-                    {list}
-                </View>
-                <Button onPress={()=>add()} style={{marginVertical: 20}} title="Cadastrar"/>
-            </ScrollView>
+                    <View style={[styles.box,{height:'auto'}]}>
+                        <View style={styles.tag}>
+                            <TextInput
+                            style={styles.tagText}
+                            placeholder="Tags"
+                            placeholderTextColor={colors.cinzaClaro+60}
+                            onSubmitEditing={()=>addTag()}
+                            onChangeText={(text)=>setFieldTag(text)}
+                            value={fieldTag}
+                            />
+                            <RectButton onPress={()=>addTag()}>
+                                <Feather name="plus-circle" size={30} color="#C2C2C2" />
+                            </RectButton>
+                        </View>
+                        {list}
+                    </View>
+                    <Button onPress={()=>add()} style={{marginVertical: 20}} title="Cadastrar"/>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }

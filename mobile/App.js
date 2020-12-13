@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {AppLoading} from 'expo';
 import AppStack from './src/routes/AppStack';
@@ -17,26 +17,32 @@ export default function App() {
 
 async function testeToken(){
       const token = await AsyncStorage.getItem('token');
-      var response = '';
-        try{
-            response = await api.get('/refreshToken',{ headers:{Authorization:token}});
-            if(response.data){
-              if(response.data.error){
-                setInitial('Landing');
-                return null;
-              }
-              if(response.data.token){
-                await AsyncStorage.setItem('token',response.data.token);
-                setInitial('Tabs');
-                return null;
-              }
+      if(token){
+        await api.get('/refreshToken',{ headers:{Authorization:token}})
+        .then(async (response)=>{
+          if(response.data){
+            if(response.data.error){
+              setInitial('Landing');
+              return null;
             }
-        }catch(error){
-            console.log(error);
-            Alert.alert('Erro ao obter Token');
-        }
+            if(response.data.token){
+              await AsyncStorage.setItem('token',response.data.token);
+              setInitial('Tabs');
+              return null;
+            }
+          }
+        })
+        .catch((error)=>{
+          console.log(error);
+              Alert.alert('Erro ao obter Token');
+        });
+      }else{
+        setInitial('Landing');
+      }
   }
-  testeToken();
+  useEffect(()=>{
+    testeToken();
+  },[])
   
   if (!fontsLoaded || initial === '') {
     return <AppLoading />;

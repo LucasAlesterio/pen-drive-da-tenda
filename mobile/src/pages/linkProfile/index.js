@@ -199,7 +199,7 @@ export default function LinkProfile({route}){
                         ( user.user == idUser ? 
                         navigate('Profile',{idUser:user.user}): 
                         navigate('AnotherProfile',{idUser:user.user}))}>
-                        <Image style={styles.userPhoto} source={{uri:user.photograph}}/>
+                        <Image style={styles.userPhoto} source={{uri:user.mini}}/>
                         <Text style={styles.user}>{user.user}</Text>
                     </RectButton>
                 </View>

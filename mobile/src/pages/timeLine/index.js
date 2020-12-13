@@ -56,7 +56,7 @@ export default function TimeLine(){
     },[page])
     
     function nextPage(){
-        if(links.length < count && !loading){
+        if(links.length < count && !loading && !refreshing){
             setLoading(true);
             setPage(page + 1);
         }
