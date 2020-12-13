@@ -19,6 +19,13 @@ const styles = StyleSheet.create({
     },
     text:{
         color:colors.cinzaClaro
+    },
+    textEmpty:{
+        textAlign:'center',
+        fontSize:20,
+        color:colors.amarelo,
+        fontFamily:'Righteous_400Regular',
+        paddingTop:20
     }
 })
 export default styles;

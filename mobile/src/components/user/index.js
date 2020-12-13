@@ -32,8 +32,10 @@ export default function User({user,photo,isFriend,id,onChange,idUser}){
     }
     return(
         <View style={styles.container}>
-            <RectButton onPress={()=>navigate('AnotherProfile',{idUser:user})}>
+            <RectButton onPress={()=>navigate('AnotherProfile',{idUser:user})} >
+                {photo ?
                 <Image source={{uri:photo}} style={styles.image}/>
+                :<View style={[styles.image,{backgroundColor:colors.rosa}]}/>}
             </RectButton>
             <View style={styles.info}>
                 <Text style={styles.textUser}>@{user}</Text> 

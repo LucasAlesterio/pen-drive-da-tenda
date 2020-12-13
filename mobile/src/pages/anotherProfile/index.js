@@ -81,10 +81,14 @@ async function searchMyLinks(user,flag){
         .then((response)=>{
             const links = response.data.links;
             if(links){
-                if(myLinks && !flag){
+                if(myLinks.length > 0 && !flag){
                     setMyLinks(myLinks.concat(response.data.links));
                 }else{
-                    setMyLinks(response.data.links);
+                    if(response.data.links.length == 0){
+                        setMyLinks('empty');
+                    }else{
+                        setMyLinks(response.data.links);
+                    }
                 }
             }
             setCount(response.data.count);
@@ -121,7 +125,9 @@ async function updateFriend(){
             scrollEventThrottle={16}
             ref={ref}
             >
+                {user.photograph ?
                 <Image source={{uri:user.photograph}} style={styles.imageProfile}/>
+                :<View style={[styles.imageProfile,{backgroundColor:colors.rosa}]}/>}
                 <View style={styles.containerUser}>
                     <Text style={[styles.text,styles.textUser]}>@{user.user}</Text>
                     {user.isFriend ? 
@@ -140,7 +146,7 @@ async function updateFriend(){
                     </View>
                     <View style={styles.containerLinks}>
                         {
-                        myLinks.length > 0 ?  
+                        myLinks.length > 0 && myLinks !== 'empty' ?  
                         myLinks.map((link)=>(
                             <Link 
                             key={link._id}
@@ -153,7 +159,7 @@ async function updateFriend(){
                             />
                         ))
                         :
-                        null
+                        (myLinks == 'empty' ? <Text style={[styles.textUser,{borderWidth:0}]}>Ainda não há links :( </Text>:null)
                         }
                         <View style={{width:'100%',alignItems:'center',paddingBottom:(vh*0.05)}}>
                             {loading ? <MiniLoading/> : null}

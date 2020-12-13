@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Alert, Dimensions, FlatList} from 'react-native';
+import { View, Alert, Dimensions, FlatList, Text} from 'react-native';
 import { useNavigation, useScrollToTop  } from '@react-navigation/native';
 import api from '../../service/api';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,14 +19,11 @@ export default function Search(){
     const [page,setPage] = useState(0);
     const [links,setLinks] = useState([]);
     const [typeList,setTypeList] = useState([]);
-    const [pageSize,setPageSize] = useState(12);
-    const nLinks = 12;
+    const pageSize = 12;
     const [count,setCount] = useState(0);
     const vw = Dimensions.get('window').width;
-    const vh = Dimensions.get('window').height;
     const [refreshing,setRefreshing] = useState(false);
     const [idUser,setIdUser] = useState('');
-    //navigate('Tabs',{screen:'Search'});
     const ref = useRef(null);
     const { navigate } = useNavigation();
     useScrollToTop(ref);
@@ -70,11 +67,14 @@ export default function Search(){
                     navigate('Landing');
                 }
             }else{
-                //console.log(response.data.links)
                 if(links && !initial){
                     setLinks(links.concat(response.data.links));
                 }else{
-                    setLinks(response.data.links);
+                    if(response.data.links.length == 0){
+                        setLinks('empty');
+                    }else{
+                        setLinks(response.data.links);
+                    }
                 }
                 if(count != response.data.count ){
                     setCount(response.data.count);
@@ -93,6 +93,7 @@ export default function Search(){
     },[page,type,order,pageSize])
 
     useEffect(()=>{
+        setPage(0);
         loadTypes();
     },[]);
 
@@ -100,7 +101,6 @@ export default function Search(){
         if(e !== order){
             setPage(0);
             setLinks([]);
-            //setPageSize(nLinks * (page + 1))
             setOrder(e);
         }
     }
@@ -108,7 +108,6 @@ export default function Search(){
         if(e !== type){
             setPage(0);
             setLinks([]);
-            //setPageSize(nLinks * (page + 1));
             setType(e);
         }
     }
@@ -158,13 +157,14 @@ export default function Search(){
                 items={ [['Aa-Zz',1],['Zz-Aa',2],['Mais recentes',3],['Menos recente',4],['Maior avaliação',5],['Menor avaliação',6]]}/>
                 
             </View>
+            {links === 'empty' && <Text style={styles.textEmpty}>Não encontramos nada :( </Text>}
             <FlatList 
             ref={ref}
             columnWrapperStyle={{justifyContent: 'space-around'}}
             numColumns={2}
             refreshing={refreshing}
             onRefresh={()=>onRefresh()}
-            data={links}
+            data={links === 'empty' ? [] : links}
             renderItem={({item})=>(
                 <Link
                 image={item.mini}

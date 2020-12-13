@@ -20,6 +20,9 @@ export default function TimeLine(){
     useScrollToTop(ref);
 
     useFocusEffect( useCallback(()=>{
+        setLoading(true);
+        setLinks([]);
+        setPage(0);
         getData(true);
     },[]));
 
@@ -39,7 +42,9 @@ export default function TimeLine(){
                 }else{
                     setLinks(response.data.link);
                 }
-                setCount(response.data.count);
+                if(response.data.token !== count){
+                    setCount(response.data.count);
+                }
                 setLoading(false);
             }).catch((error)=>{
                 console.log(error);
