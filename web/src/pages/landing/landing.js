@@ -249,7 +249,7 @@ export default function Landing(){
         <div id="landing">
             <div className="cabecalhoLanding"/>
             <div className="container">
-                <div className="logo"><img src={logo}/></div>
+                <div className="logo"><img alt="Logo" src={logo}/></div>
                 <div className="containerBotao">
                     <Botao onClick={()=>setOpenLogin(true)} className="botao" >Login</Botao>
                     <Botao onClick={()=>setOpenCadastro(true)} className="botao" >Cadastrar</Botao>
