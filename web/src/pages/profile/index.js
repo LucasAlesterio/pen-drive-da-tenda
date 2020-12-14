@@ -127,7 +127,6 @@ export default function Profile(){
                 )));
             if(oldCount.length >= 1){
                 oldCount = [];
-                console.log('Clear');
             }
             oldCount.push(listLinks.data.count);
             if(response.data.me){
