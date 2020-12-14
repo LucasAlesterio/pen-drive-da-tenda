@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import Button from '../../components/button';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import logo from '../../../assets/pddt.png'
 
 export default function Landing(){
     const { navigate } = useNavigation();

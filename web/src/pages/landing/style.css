@@ -23,17 +23,15 @@ form{
 }
 #landing .container{
     display: flex;
-    width: 70%;
+    width: 55%;
     display: flex;
     justify-content: space-around;
     height: 80vh;
     align-items: center;
     padding-bottom: 6rem;
 }
-#landing .container .logo{
-    background-color: var(--cinza-escuro);
-    height: 30rem;
-    width: 50rem;
+#landing .container .logo img{
+    width: 70%;
 }
 #landing .container .containerBotao{
     display: flex;
@@ -41,7 +39,6 @@ form{
     justify-content: space-around;
     min-height: 50%;
     padding:3rem 0;
-    width: auto;
 }
 #landing .container .botao{
     font-size: 2.4rem;

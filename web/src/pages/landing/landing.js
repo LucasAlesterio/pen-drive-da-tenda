@@ -9,6 +9,7 @@ import {FiUser,FiKey,FiMail,FiAtSign} from 'react-icons/fi'
 import { useHistory } from "react-router-dom";
 import api from '../../service/api';
 import './style.css';
+import logo from '../../assets/pddt.png';
 
 export default function Landing(){
     const [openLogin,setOpenLogin] = useState(false);
@@ -248,7 +249,7 @@ export default function Landing(){
         <div id="landing">
             <div className="cabecalhoLanding"/>
             <div className="container">
-                <div className="logo" ></div>
+                <div className="logo"><img src={logo}/></div>
                 <div className="containerBotao">
                     <Botao onClick={()=>setOpenLogin(true)} className="botao" >Login</Botao>
                     <Botao onClick={()=>setOpenCadastro(true)} className="botao" >Cadastrar</Botao>
