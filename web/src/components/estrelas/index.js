@@ -4,7 +4,7 @@ import './style.css';
 
 export default function Estrelas(props){
     const n = props.average;
-    if(n === null){
+    if(n === null || n === undefined){
         return(
             <>
                 <BsStarFill color="0A0A0A" size={props.size}/> 

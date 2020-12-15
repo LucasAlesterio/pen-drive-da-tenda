@@ -15,18 +15,17 @@
     border:var(--amarelo) solid 2px;
 }
 .usuario .foto>img{
-    display: inline;
-    margin: 0 auto;
-    height:auto;
-    min-height: 13rem;
+    display: flex;
+    min-height: 100%;
     width: 100%;
+    object-fit: cover;
+
 }
 .usuario .foto .fotoNull{
     background-color: var(--rosa);
     height: 13rem;
     width: 13rem;
     border-radius: 50%;
-    border:var(--amarelo) solid 2px;
 }
 .usuario .foto:hover{
     filter:brightness(0.7);
